@@ -1,0 +1,7 @@
+.modal-warning-btns{
+    display: flex;
+    justify-content: space-around;
+}
+.modal-card-head .title {
+    margin: auto;
+}

@@ -1,0 +1,43 @@
+.checkboard{
+    margin-top: 50px;
+    padding: 40px;
+    margin-top: 50px;
+    /* display: flex;
+    align-items: center; */
+    padding: 40px;
+    background-color: whitesmoke;
+}
+.screen{
+    /* align-items: center;
+    justify-content: center; */
+    display: block;
+    width: 700px;
+    height: 500px;
+    margin: auto;
+    border-radius: 25px;
+    position: relative;
+}
+.face{
+    position: absolute;
+    border-radius: 200px;
+    width: 300px;
+    height: 300px;
+    display: block;
+    border-style: dashed;
+    margin-top: 20px;
+    margin-left: 200px;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+}
+.title-check{
+    margin: auto;
+}
+
+.btn-check{
+    margin: auto;
+}
+.mt-10{
+    margin-top: 10px;
+}

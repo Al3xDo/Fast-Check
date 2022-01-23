@@ -1,0 +1,43 @@
+*.py[co]
+*.DS_*
+# Packages
+*.egg
+*.egg-info
+dist
+build
+eggs
+parts
+bin
+var
+sdist
+develop-eggs
+.installed.cfg
+
+# Installer logs
+pip-log.txt
+
+# Pipfile
+Pipfile
+Pipfile.lock
+.env
+
+# Unit test / coverage reports
+.coverage
+.tox
+
+#Translations
+*.mo
+
+#Mr Developer
+venv
+*.pyc
+build
+
+# py
+config.py
+
+#folder
+filesystem/
+
+face_verification_models/
+serving command.txt

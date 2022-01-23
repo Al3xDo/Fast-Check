@@ -1,0 +1,53 @@
+.my-form{
+    margin-top: 80px;
+    min-height: 400px;
+    padding-left: 400px;
+    padding-right: 400px;
+    padding-top: 50px;
+    min-width: 500px;
+    padding-bottom: 20px;
+    position: relative;
+}
+.box{
+    align-items: center;
+}
+.mt-20{
+    margin-top: 20px;
+}
+.form-setting{
+    display: flex;
+    justify-content: space-around;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+.btn-form{
+    margin-top: 20px;
+    display: flex;
+    justify-content: space-around;
+}
+.ml-5{
+    margin-left: 5px;
+}
+
+/* EditUserModal */
+.edit-close-modal{
+    float: right;
+    size:15px;
+    font-size: xx-large;
+}
+.edit-button{
+    font-size: 20px;
+
+}
+.edit-email-fontsize{
+    font-size: 20px;
+}
+.user-info{
+    display: inline-flex;
+}
+
+.no-border{
+    border: none;
+    outline: none;
+    background: none;
+}

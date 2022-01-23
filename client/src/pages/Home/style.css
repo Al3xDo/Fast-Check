@@ -1,0 +1,76 @@
+
+.course-board{
+  min-height: 600px;
+  padding: 0px;
+  margin-top: 10px;
+}
+.title{
+  font-size: 25px;
+}
+.course{
+  padding-bottom: 40px;
+  position: relative;
+  display: inline-block;
+  flex-direction: row;
+  margin-right: 20px;
+  margin-left: 0;
+  margin-top:10px;
+}
+.mb-30{
+  margin-bottom: 30px
+}
+
+.w-h-200{
+  width: 300px;
+  height: 220px;
+}
+
+.courre-description{
+  margin-top: 30px;
+  height: 300px;
+}
+.course-icon{
+  position:absolute;
+  bottom: 0;
+  margin-right: 20px;
+  margin-bottom: 20px;
+}
+.course-icon{
+  right: 0;
+}
+.course-button{
+  display: inline-flex
+}
+.bordered{
+  border: 5px solid red;
+}
+
+/* course filter */
+.ml-80{
+  margin-left: 30px;
+}
+.search-field{
+  display: contents; 
+}
+.menu{
+  margin-left: 900px;
+}
+
+
+
+.search-field .input {
+  width: 250px;;
+}
+
+.transition-tab{
+  margin:0;
+  height: 200px;
+    width:250px;
+    float: right;
+    margin-right:50px;
+    position:relative;
+    padding: 0;
+    text-align: left;
+    background-color: black;
+    z-index: 100;
+}
