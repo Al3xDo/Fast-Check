@@ -5,15 +5,11 @@ import Room from "../../components/Room.js"
 import * as RoomAction from "../../actions/room"
 import { connect } from 'react-redux';
 import { useEffect } from 'react';
-import { callApiWithToken } from '../../utils/apiCaller';
-import { toastError } from '../../utils/toastNotify';
-import * as Config from "../../constant/api"
-import { Redirect } from 'react-router';
-import { useHistory } from "react-router-dom"
+import { useSelector } from 'react-redux';
 const HomePage = (props) => {
     // const [choice, setChoice] = useState(0);
     const { getRoomsRequest, token } = props;
-    const history = useHistory()
+    // const history = useHistory()
     useEffect(() => {
         getRoomsRequest(token)
         // callApiWithToken(Config.ROOMS_ENDPOINT, "GET", {}, token)
