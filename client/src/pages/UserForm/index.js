@@ -48,9 +48,9 @@ const UserFormPage = (props) => {
         callApi(Config.SIGNUP_ENDPOINT, 'POST', data)
         .then(res => {
             // save token
-            // saveToken(res.data.token)
+            saveToken(res.data.token)
             toastSuccess(String(res.data.message))
-            window.location("/login")
+            // window.location("/login")
         })
         .catch(err => {
             toastError(String(err.response.data.message))

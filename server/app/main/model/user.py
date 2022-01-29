@@ -10,10 +10,10 @@ from ..config import key
 
 class User(db.Model):
     __tablename__="user"
-    id= db.Column(db.String(150), primary_key=True,nullable=False)
+    id= db.Column(db.String(150), primary_key=True,nullable=False, autoincrement=False)
     name= db.Column(db.String(80))
     email= db.Column(db.String(80), nullable=False, unique=True)
-    password_hash= db.Column(db.String(150), nullable=False, unique=True)
+    password_hash= db.Column(db.String(100), nullable=False, unique=True)
     hasAvatar= db.Column(db.Boolean(), default=False)
 
     @property

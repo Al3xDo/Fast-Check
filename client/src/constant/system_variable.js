@@ -1,1 +1,1 @@
-export const LENGTH_OF_PASSWORD=3  
+export const LENGTH_OF_PASSWORD=2  
