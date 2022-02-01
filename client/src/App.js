@@ -4,23 +4,24 @@ import routes from "./routes";
 import Header from "./components/Header.js";
 import Footer from "./components/Footer.js";
 import configureStore from "./redux/configReducer";
+import { store } from "./store";
 import { Provider } from "react-redux";
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import PrivateRoutes from "./pages/PrivateRoutes";
-const store = configureStore()
+// import PrivateRoutes from "./pages/PrivateRoutes";
+// const store = configureStore()
 const showContentMenus = (routes) => {
   var result = null;
   if (routes.length > 0) {
     result = routes.map((route, index) => {
       // if (route.path === "/login")
-        return (
-          <Route
-            key={index}
-            path={route.path}
-            exact={route.exact}
-            component={route.main} />
-        )
+      return (
+        <Route
+          key={index}
+          path={route.path}
+          exact={route.exact}
+          component={route.main} />
+      )
       // return (
       //   <PrivateRoutes
       //     key={index}
@@ -40,7 +41,7 @@ const App = () => {
       <Router>
         <Switch>
           {/*  renders nothing for the / and /login routes, but renders the Header component for every other route. */}
-          <Route exact path="/login" />
+          {/* <Route exact path="/login" /> */}
           <Route path="/" component={Header} />
         </Switch>
         <div className="container">
@@ -51,7 +52,7 @@ const App = () => {
         </div>
         <Switch>
           {/*  renders nothing for the / and /login routes, but renders the Header component for every other route. */}
-          <Route exact path="/login" />
+          {/* <Route exact path="/login" /> */}
           <Route path="/" component={Footer} />
         </Switch>
       </Router>

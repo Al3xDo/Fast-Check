@@ -28,6 +28,7 @@ _user = UserDto.user
 class UserSignUp(Resource):
     # @api.marshal_with(_user)
     # @api.expect(_user, validate=True)
+    # @cross_origin(supports_credentials=True)
     def post(self):
         """Creates a new User """
         data = request.json
