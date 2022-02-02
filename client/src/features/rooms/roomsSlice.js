@@ -39,50 +39,48 @@ export const logIn = createAsyncThunk(
         }
     }
 )
-export const authSlice = createSlice({
-    name: "auth",
+export const roomsSlice = createSlice({
+    name: "rooms",
     initialState: {
-        rooms: [],
+        entities: [],
         loading: "idle",
         error: "",
     },
     reducers: {
     },
-    extraReducers: (builder) => {
-        builder.addCase(signUp.pending, (state) => {
-            state.token = {};
-            state.loading = "loading"
-        })
-            .addCase(signUp.fulfilled, (state, { payload }) => {
-                state.token = payload.data.token;
-                window.localStorage.setItem("token", payload.data.token);
-                state.loading = "loaded"
-            })
-            .addCase(signUp.rejected, (state, action) => {
-                state.loading = "error";
-                state.error = action.error
-            });
-        builder.addCase(logIn.pending, (state) => {
-            state.token = {};
-            state.loading = "loading"
-        })
-            .addCase(logIn.fulfilled, (state, { payload }) => {
-                // console.log(payload)
-                state.token = payload.data.token;
-                state.loading = "loaded"
-            })
-            .addCase(logIn.rejected, (state, action) => {
-                // console.log(action)
-                state.loading = "error";
-                state.error = action.error
-            })
-    }
+    // extraReducers: (builder) => {
+    //     builder.addCase(signUp.pending, (state) => {
+    //         state.token = {};
+    //         state.loading = "loading"
+    //     })
+    //         .addCase(signUp.fulfilled, (state, { payload }) => {
+    //             state.token = payload.data.token;
+    //             // window.localStorage.setItem("token", payload.data.token);
+    //             state.loading = "loaded"
+    //         })
+    //         .addCase(signUp.rejected, (state, action) => {
+    //             state.loading = "error";
+    //             state.error = action.error
+    //         });
+    //     builder.addCase(logIn.pending, (state) => {
+    //         state.token = {};
+    //         state.loading = "loading"
+    //     })
+    //         .addCase(logIn.fulfilled, (state, { payload }) => {
+    //             state.entites = payload.data.rooms;
+    //             state.loading = "loaded"
+    //         })
+    //         .addCase(logIn.rejected, (state, action) => {
+    //             state.loading = "error";
+    //             state.error = action.error
+    //         })
+    // }
 })
 
 export const selectRooms = createSelector(
     (state) => ({
         loading: state.rooms.loading,
-        token: state.rooms.token
+        token: state.rooms.entities
     }), (state) => state
 )
 

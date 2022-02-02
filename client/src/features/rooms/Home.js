@@ -1,32 +1,19 @@
 import React from 'react';
 import "./style.css"
 import Room from "../../components/Room.js"
-// import Calendar from "../../components/Calendar"
-import * as RoomAction from "../../actions/room"
-import { connect } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { useEffect } from 'react';
 import { useSelector } from 'react-redux';
-const HomePage = (props) => {
+import { useHistory } from 'react-router';
+import { selectRooms } from './roomsSlice';
+export const Home = (props) => {
     // const [choice, setChoice] = useState(0);
     const { getRoomsRequest, token } = props;
-    // const history = useHistory()
+    const history = useHistory()
+    const dispatch = useDispatch()
+    const roomState = useSelector(selectRooms)
     useEffect(() => {
-        getRoomsRequest(token)
-        // callApiWithToken(Config.ROOMS_ENDPOINT, "GET", {}, token)
-        //     .then(res => {
-        //         getRooms(res.data)
-        //     })
-        //     .catch(err => {
-        //         if (err.response.status === 404) {
-        //             toastError(String(err.response.data.message))
-        //         }
-        //         else {
-        //             toastError(String(err.response.data.message))
-        //         }
-        //         history.push("/login")
-        //         // console.log(err.response.data)
-        //         // dispatch(updateMSG(err.response.data))
-        //     })
+        // getRoomsRequest(token)
     }, [])
 
     const showRoom = () => {

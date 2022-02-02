@@ -4,6 +4,7 @@ import CheckPage from "./pages/Check"
 import UserPage from "./pages/User"
 import ErrorPage from "./pages/Error"
 import { SignUp, LogIn } from './features/auth'
+import { Home } from "./features/rooms/Home"
 
 const routes = [
     {
@@ -19,7 +20,7 @@ const routes = [
     {
         path: "/",
         exact: true,
-        main: () => <HomePage />
+        main: () => <Home />
     },
     {
         path: "/check",
