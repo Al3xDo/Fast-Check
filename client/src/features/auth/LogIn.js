@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux"
 import { useHistory } from "react-router";
+import { toastError } from "../../utils/toastNotify";
 import { selectAuth, logIn } from "./authSlice";
 
 export const LogIn = (props) => {
@@ -15,7 +16,12 @@ export const LogIn = (props) => {
             email: email,
             password: password
         }
-        dispatch(logIn(user))
+        try {
+            dispatch(logIn(user))
+        }
+        catch (e) {
+            toastError(e.message)
+        }
     }
     authState.loading === "loaded" && history.push("/")
     return (

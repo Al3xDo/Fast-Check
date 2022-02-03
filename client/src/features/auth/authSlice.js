@@ -84,10 +84,11 @@ export const authSlice = createSlice({
             })
     }
 })
-
+export const { load } = authSlice.actions
 export const selectAuth = createSelector(
     (state) => ({
         loading: state.auth.loading,
+        token: state.auth.token
     }), (state) => state
 )
 

@@ -22,21 +22,21 @@ const routes = [
         exact: true,
         main: () => <Home />
     },
-    {
-        path: "/check",
-        exact: true,
-        main: () => <CheckPage />
-    },
-    {
-        path: "/information",
-        exact: true,
-        main: () => <UserPage />
-    },
-    {
-        path: "",
-        exact: false,
-        main: () => <ErrorPage />
-    }
+    // {
+    //     path: "/check",
+    //     exact: true,
+    //     main: () => <CheckPage />
+    // },
+    // {
+    //     path: "/information",
+    //     exact: true,
+    //     main: () => <UserPage />
+    // },
+    // {
+    //     path: "",
+    //     exact: false,
+    //     main: () => <ErrorPage />
+    // }
 ]
 
 

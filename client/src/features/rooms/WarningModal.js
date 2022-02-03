@@ -1,7 +1,7 @@
 import React from 'react';
 import { useState } from 'react';
 import "./warningmodal.css"
-const WarningModal = (props) => {
+export const WarningModal = (props) => {
 
     const onClose = (event) => {
         props.onClose(event);

@@ -21,7 +21,9 @@ const showContentMenus = (routes) => {
           key={index}
           path={route.path}
           exact={route.exact}
-          component={route.main} />
+        >
+          {route.main()}
+        </PrivateRoute>
       )
     })
   }
@@ -44,7 +46,7 @@ const App = () => {
         </div>
         <Switch>
           {/*  renders nothing for the / and /login routes, but renders the Header component for every other route. */}
-          {/* <Route exact path="/login" /> */}
+          <Route exact path="/login" />
           <Route path="/" component={Footer} />
         </Switch>
       </Router>

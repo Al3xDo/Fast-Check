@@ -2,22 +2,54 @@ import React from 'react';
 import "./style.css"
 import Room from "../../components/Room.js"
 import { useDispatch } from 'react-redux';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router';
 import { selectRooms } from './roomsSlice';
+import axios from 'axios';
+import { toastError, toastSuccess } from '../../utils/toastNotify';
+import { selectAuth } from '../auth/authSlice';
+import { callApi } from '../../utils/apiCaller';
 export const Home = (props) => {
     // const [choice, setChoice] = useState(0);
-    const { getRoomsRequest, token } = props;
-    const history = useHistory()
-    const dispatch = useDispatch()
-    const roomState = useSelector(selectRooms)
+    // const { getRoomsRequest, token } = props;
+    // const history = useHistory()
+    // const dispatch = useDispatch()
+    // const roomState = useSelector(selectRooms)
+    const authState = useSelector(selectAuth)
+    const [rooms, setRooms] = useState([])
     useEffect(() => {
         // getRoomsRequest(token)
+        console.log("go home")
+        async function fetchRooms() {
+            try {
+                let config = {
+                    headers: {
+                        'Authorization': `Bearer ${authState.token}`,
+                        'Content-Type': 'application/json',
+                        'Accept': "*/*",
+                        'Access-Control-Allow-Origin': '*',
+                    }
+                }
+                const response = await axios.get('http://localhost:3001/room/rooms', config)
+                setRooms(response.data)
+            }
+            catch (e) {
+                toastError(e.message)
+            }
+        }
+        fetchRooms()
     }, [])
-
-    const showRoom = () => {
-        const { rooms } = props
+    const onDelete = (id) => {
+        try {
+            const response = callApi(`room/${id}`, 'DELETE', {}, authState.token)
+            toastSuccess("response.data")
+        }
+        catch (e) {
+            toastError(e.message)
+        }
+    }
+    const showRoom = (rooms) => {
         var result = null;
         if (rooms.length > 0) {
             result = rooms.map((room, index) => {
@@ -32,9 +64,6 @@ export const Home = (props) => {
             })
         }
         return result
-    }
-    const onDelete = (event) => {
-
     }
     return (
         <>
@@ -56,8 +85,7 @@ export const Home = (props) => {
             <hr />
             {/* {renderBoard()} */}
             <div className="course-board">
-
-                {showRoom()}
+                {showRoom(rooms)}
             </div>
         </>
     );
