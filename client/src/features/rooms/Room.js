@@ -24,6 +24,7 @@ export const Room = (props) => {
         if (event) {
             props.onDelete(id)
         }
+        setActive("")
     }
     return (
         <div className="course box w-h-200 level block">

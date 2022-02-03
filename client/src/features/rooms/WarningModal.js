@@ -13,7 +13,7 @@ export const WarningModal = (props) => {
                 <div className="box">
                     <header className="modal-card-head">
                         <h1 className="title">
-                            bạn có chắc chắn muốn thoát ?
+                            bạn có chắc chắn muốn xoá phòng ?
                         </h1>
                     </header>
                     <section className="modal-card-body modal-warning-btns ">

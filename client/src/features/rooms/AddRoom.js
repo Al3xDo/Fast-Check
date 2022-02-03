@@ -1,19 +1,24 @@
 import React, { useState } from 'react';
 import "./addroom.css"
-import { callApiWithToken } from '../utils/apiCaller';
-import { toastError, toastSuccess } from '../utils/toastNotify';
 export const AddRoom = (props) => {
     const [name, setName] = useState("")
     const [timeSchedule, setTimeSchedule] = useState("")
     const [dateSchedule, setDateSchedule] = useState("")
     const [password, setPassword] = useState("")
-    // const [code, setCode]= useState("")
+    const [code, setCode] = useState("")
     const formatDate = (date) => {
         const year = date.slice(0, 4)
         const month = date.slice(6, 7)
         const day = date.slice(8)
         const formatedDate = day + "/" + month + "/" + year
         return formatedDate
+    }
+    const onClear = () => {
+        setName("")
+        setTimeSchedule("")
+        setDateSchedule("")
+        setPassword("")
+        setCode("")
     }
     const onSubmit = () => {
         var room = {
@@ -22,13 +27,9 @@ export const AddRoom = (props) => {
             timeSchedule: timeSchedule,
             password: password,
         }
-        // callApiWithToken(Config.ROOM_CREATE_ENDPOINT, 'POST', room, props.token)
-        //     .then(res => {
-        //         toastSuccess(String(res.data.message))
-        //     })
-        //     .catch(err => {
-        //         toastError(String(err.response.message))
-        //     })
+        props.onAddRoom(room)
+        props.onClose()
+        props.onClear()
     }
     return (
         <div className={`modal ${props.onOpen}`}>

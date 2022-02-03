@@ -10,7 +10,7 @@ import { AddRoom } from "./AddRoom"
 export const Home = () => {
     const authState = useSelector(selectAuth)
     const [rooms, setRooms] = useState([])
-    const [open, setOpen] = useState("")
+    const [open, setOpen] = useState(false)
     useEffect(() => {
         function fetchRooms() {
             callApi("room/rooms", "GET", {}, authState.token)
@@ -27,19 +27,15 @@ export const Home = () => {
         callApi(`room/${id}`, 'DELETE', {}, authState.token)
             .then(res => {
                 toastSuccess(res.data.message)
-                var temp = rooms
-                temp = temp.filter((room) => room.id !== id)
-                setRooms(temp)
             })
             .catch(e => {
                 toastError(e.message)
             })
     }
-    const onAdd = (newRoom) => {
-        callApi(`room/create`, 'POST', newRoom, authState.token)
+    const onAdd = (id) => {
+        callApi(`room/create`, 'POST', {}, authState.token)
             .then(res => {
                 toastSuccess(res.data.message)
-                setRooms(prev => [...prev, newRoom])
             })
             .catch(e => {
                 toastError(e.message)
@@ -78,14 +74,12 @@ export const Home = () => {
                 >All Course</button>
                 <button
                     className='ml-80 button is-link'
-                    onClick={() => setOpen("is-active")}
+                    onClick={() => setOpen(!open)}
                 >
                     Add room
                 </button>
                 <AddRoom
                     onOpen={open}
-                    onAddRoom={onAdd}
-                    onClose={() => setOpen("")}
                 />
                 <div className=" search-field">
                     <button
@@ -99,6 +93,7 @@ export const Home = () => {
                 ><ion-icon name="apps-outline"></ion-icon></button>
             </div>
             <hr />
+            {/* {renderBoard()} */}
             <div className="course-board">
                 {showRoom(rooms)}
             </div>

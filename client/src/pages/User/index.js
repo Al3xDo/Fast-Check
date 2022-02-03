@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react"
 import ListClass from "../../components/ListClass";
 import Calendar from "../../components/Calendar"
-import AddRoom from "../../components/AddRoom"
+// import AddRoom from "../../components/AddRoom"
 import EditUserModal from "../../components/EditUserModal";
 import { connect } from "react-redux";
 import * as RoomActions from "../../actions/room"
@@ -20,27 +20,27 @@ function UserPage(props) {
             return <Calendar />
         }
         else if (showItem === 1) {
-            return <ListClass/>
+            return <ListClass />
         }
-        else if (showItem === 2) {
-            return <AddRoom />
-        }
+        // else if (showItem === 2) {
+        //     return <AddRoom />
+        // }
     }
     useEffect(() => {
         props.UserActionsCreator.getUserRequest(props.token)
-      }, [props.UserActionsCreator.getUserRequest])
+    }, [props.UserActionsCreator.getUserRequest])
     return (
         <div className="user-board columns">
             <div className="columns">
-            <div className="avatar">
-            <img 
-                className="is-avatar"
-                src={`data:image/jpeg;base64,${props.user.avatar}`}
-                alt="user-avatar"
-                />
-                <EditUserModal name= {props.user.name} email={props.user.email}/>
-            </div>
-                
+                <div className="avatar">
+                    <img
+                        className="is-avatar"
+                        src={`data:image/jpeg;base64,${props.user.avatar}`}
+                        alt="user-avatar"
+                    />
+                    <EditUserModal name={props.user.name} email={props.user.email} />
+                </div>
+
             </div>
             <div className="columns w-800">
                 <div className="information ml-200" >
@@ -65,14 +65,14 @@ function UserPage(props) {
         </div>
     )
 }
-const mapStateToProps =(state) => {
+const mapStateToProps = (state) => {
     return {
         rooms: state.room,
         user: state.user,
         token: state.token
     }
 }
-const mapDispatchToProps =(dispatch) => {
+const mapDispatchToProps = (dispatch) => {
     return {
         UserActionsCreator: bindActionCreators(UserActions, dispatch),
         RoomActionsCreator: bindActionCreators(RoomActions, dispatch)
