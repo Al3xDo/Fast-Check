@@ -1,7 +1,7 @@
 import axios from 'axios'
 import * as Config from '../constant/api'
 
-export function callApi(endpoint, method = 'GET', body) {
+export function callApiWithToken(endpoint, method = 'GET', body, token) {
 
     return axios({
         method: method,
@@ -17,19 +17,19 @@ export function callApi(endpoint, method = 'GET', body) {
     })
 }
 
-export function callApiWithToken(endpoint, method = 'GET', body, token) {
+export function callApi(endpoint, method = 'GET', body, token = null) {
     return axios({
         method: method,
         url: `${Config.API_ENDPOINT}/${endpoint}`,
         // url: `${Config.API_ENDPOINT}/${}`,
         headers: {
             Authorization: `Bearer ${token}`,
-            // 'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Origin': '*',
             'Content-Type': 'application/json',
             'Access-Control-Allow-Origin': '*',
-            "Access-Control-Allow-Methods": "GET, POST, PUT, PATCH, POST, DELETE, OPTIONS",
-            "Access-Control-Allow-Headers": "Content-Type",
-            "Access-Control-Max-Age": "86400"
+            // "Access-Control-Allow-Methods": "GET, POST, PUT, PATCH, POST, DELETE, OPTIONS",
+            // "Access-Control-Allow-Headers": "Content-Type",
+            // "Access-Control-Max-Age": "86400"
         },
         data: body
     })

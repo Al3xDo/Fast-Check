@@ -1,7 +1,7 @@
 import React from 'react';
 import { useState } from 'react';
 import "./warningmodal.css"
-const WarningModal = (props) => {
+export const WarningModal = (props) => {
 
     const onClose = (event) => {
         props.onClose(event);
@@ -18,13 +18,13 @@ const WarningModal = (props) => {
                     </header>
                     <section className="modal-card-body modal-warning-btns ">
                         <button
-                            class="button is-primary mr-5"
+                            className="button is-primary mr-5"
                             aria-label="close"
                             onClick={() => { onClose(true) }}
                         >Chắc chắn
                         </button>
                         <button
-                            class="button is-danger"
+                            className="button is-danger"
                             aria-label="close"
                             onClick={() => { onClose(false) }}
                         >Không

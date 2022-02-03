@@ -31,7 +31,11 @@ def save_new_user(data):
         except AttributeError:
             return utils_response_object.write_response_object(config.STATUS_FAIL, config.MSG_JSON_NOT_VALIDATE), config.STATUS_CODE_CONFLICT
         save_changes(new_user)
-        return utils_response_object.send_response_object_CREATED(config.MSG_REGISTER_SUCCESS)
+        return  {
+            config.STATUS: config.STATUS_SUCCESS,
+            config.MESSAGE: config.MSG_ADD_USER_SUCCESS,
+            "token": str(new_user.encode_auth_token(new_user.id))
+            }, config.STATUS_CODE_CREATED
     else:
         return utils_response_object.write_response_object(config.STATUS_FAIL, config.MSG_USER_ALREADY_EXIST), config.STATUS_CODE_CONFLICT
 

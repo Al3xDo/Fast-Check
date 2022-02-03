@@ -3,18 +3,24 @@ import UserFormPage from "./pages/UserForm"
 import CheckPage from "./pages/Check"
 import UserPage from "./pages/User"
 import ErrorPage from "./pages/Error"
-
+import { SignUp, LogIn } from './features/auth'
+import { Home } from "./features/rooms/Home"
 
 const routes = [
-    {
-        path: "/login",
-        exact: true,
-        main: () => <UserFormPage />
-    },
+    // {
+    //     path: "/signup",
+    //     exact: true,
+    //     main: () => <SignUp />
+    // },
+    // {
+    //     path: "/login",
+    //     exact: true,
+    //     main: () => <LogIn />
+    // },
     {
         path: "/",
         exact: true,
-        main: () => <HomePage />
+        main: () => <Home />
     },
     {
         path: "/check",
