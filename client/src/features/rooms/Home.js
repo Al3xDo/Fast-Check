@@ -1,6 +1,6 @@
 import React from 'react';
 import "./style.css"
-import Room from "../../components/Room.js"
+import { Room } from './Room';
 import { useDispatch } from 'react-redux';
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
@@ -17,10 +17,9 @@ export const Home = (props) => {
     // const dispatch = useDispatch()
     // const roomState = useSelector(selectRooms)
     const authState = useSelector(selectAuth)
+    // console.log(authState.token)
     const [rooms, setRooms] = useState([])
     useEffect(() => {
-        // getRoomsRequest(token)
-        console.log("go home")
         async function fetchRooms() {
             try {
                 let config = {
@@ -42,12 +41,15 @@ export const Home = (props) => {
     }, [])
     const onDelete = (id) => {
         try {
+            console.log(authState.token)
             const response = callApi(`room/${id}`, 'DELETE', {}, authState.token)
-            toastSuccess("response.data")
         }
         catch (e) {
             toastError(e.message)
         }
+    }
+    const onAdd = () => {
+
     }
     const showRoom = (rooms) => {
         var result = null;

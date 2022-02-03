@@ -18,13 +18,13 @@ export const WarningModal = (props) => {
                     </header>
                     <section className="modal-card-body modal-warning-btns ">
                         <button
-                            class="button is-primary mr-5"
+                            className="button is-primary mr-5"
                             aria-label="close"
                             onClick={() => { onClose(true) }}
                         >Chắc chắn
                         </button>
                         <button
-                            class="button is-danger"
+                            className="button is-danger"
                             aria-label="close"
                             onClick={() => { onClose(false) }}
                         >Không

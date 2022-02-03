@@ -75,6 +75,7 @@ export const authSlice = createSlice({
             .addCase(logIn.fulfilled, (state, { payload }) => {
                 // console.log(payload)
                 state.token = payload.data.token;
+                window.localStorage.setItem("token", payload.data.token);
                 state.loading = "loaded"
             })
             .addCase(logIn.rejected, (state, action) => {

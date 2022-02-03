@@ -1,13 +1,11 @@
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux"
-import { useHistory } from "react-router";
+import { Redirect } from "react-router";
 import { toastError } from "../../utils/toastNotify";
 import { selectAuth, logIn } from "./authSlice";
 
-export const LogIn = (props) => {
+export const LogIn = () => {
     const authState = useSelector(selectAuth)
-    const history = useHistory()
-    const isLoading = useState('idle')
     const dispatch = useDispatch()
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
@@ -23,7 +21,7 @@ export const LogIn = (props) => {
             toastError(e.message)
         }
     }
-    authState.loading === "loaded" && history.push("/")
+    if (authState.loading === "loaded") return <Redirect to="/" />
     return (
         <form className="my-form" >
             <div className="box">

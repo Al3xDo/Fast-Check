@@ -7,36 +7,36 @@ import { SignUp, LogIn } from './features/auth'
 import { Home } from "./features/rooms/Home"
 
 const routes = [
-    {
-        path: "/signup",
-        exact: true,
-        main: () => <SignUp />
-    },
-    {
-        path: "/login",
-        exact: true,
-        main: () => <LogIn />
-    },
+    // {
+    //     path: "/signup",
+    //     exact: true,
+    //     main: () => <SignUp />
+    // },
+    // {
+    //     path: "/login",
+    //     exact: true,
+    //     main: () => <LogIn />
+    // },
     {
         path: "/",
         exact: true,
         main: () => <Home />
     },
-    // {
-    //     path: "/check",
-    //     exact: true,
-    //     main: () => <CheckPage />
-    // },
-    // {
-    //     path: "/information",
-    //     exact: true,
-    //     main: () => <UserPage />
-    // },
-    // {
-    //     path: "",
-    //     exact: false,
-    //     main: () => <ErrorPage />
-    // }
+    {
+        path: "/check",
+        exact: true,
+        main: () => <CheckPage />
+    },
+    {
+        path: "/information",
+        exact: true,
+        main: () => <UserPage />
+    },
+    {
+        path: "",
+        exact: false,
+        main: () => <ErrorPage />
+    }
 ]
 
 

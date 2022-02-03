@@ -3,7 +3,7 @@ import { Route, Redirect } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import { selectAuth, load } from '../features/auth/authSlice'
 import { LogIn } from '../features/auth'
-
+import { BrowserRouter, Switch } from 'react-router-dom'
 // A wrapper for <Route> that redirects to the login
 // screen if you're not yet authenticated or if auth is not
 // yet loaded
@@ -12,20 +12,19 @@ export const PrivateRoute = ({ children, ...rest }) => {
     const dispatch = useDispatch()
     useEffect(() => {
         if (authState.loading !== "loaded") {
+            // console.log("dispatch")
             dispatch(load())
         }
     }, []);
-    console.log(authState)
+    // console.log(authState)
     return (
         <Route
             {...rest}
             render={({ location }) =>
-                authState.token !== "" ? (
+                authState.loading === "loaded" ? (
                     children
                 ) : (
                     <Redirect
-                        // to="/login"
-                        // component={LogIn}
                         to={{
                             pathname: '/login',
                             state: { from: location },
