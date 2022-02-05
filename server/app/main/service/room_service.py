@@ -15,18 +15,18 @@ def save_new_room(data, userId):
     user= User.query.filter_by(id= str(userId)).first()
     if user:
         new_room = Room(
-            roomName=data['name'],
+            roomName=data['roomName'],
             id= str(uuid.uuid4())
         )
         new_participant= Participant(userId, new_room.id, datetime.datetime.now().strftime("%d-%m-%Y"), 1)
         save_changes(new_room, new_participant)
         return utils_response_object.send_response_object_CREATED(config.MSG_CREATE_ROOM_SUCCESS)
-    else:
-        return utils_response_object.send_response_object_INTERNAL_ERROR()
+    # else:
+    #     return utils_response_object.send_response_object_INTERNAL_ERROR()
 def serialize_room(room, isAdmin=None):
     roomDict={
         "id": room.id,
-        "name": room.roomName,
+        "roomName": room.roomName,
         "isAdmin": True if isAdmin ==1 else False 
     }
     try:
@@ -66,11 +66,14 @@ def delete_a_room(userId, id):
     response_object={}
     # try:
     # check if user is admin
+    print(userId)
     userRight= db.session.query(Participant).filter_by(userId= userId, roomId= id).first()
     if userRight.isAdmin ==1:
         try:
-            deleteParticipant= db.session.query(Participant).filter_by(userId= userId, roomId= str(id)).delete()
-            deleteRoom= db.session.query(Room).filter_by(id= str(id)).delete()
+            # delete participant
+            db.session.query(Participant).filter_by(userId= userId, roomId= str(id)).delete()
+            # delete room
+            db.session.query(Room).filter_by(id= str(id)).delete()
             db.session.commit()
             return utils_response_object.send_response_object_SUCCESS(config.MSG_DELETE_ROOM_SUCCESS)
         except sexc.SQLAlchemyError as e:
@@ -80,17 +83,18 @@ def delete_a_room(userId, id):
 
 
 def update_a_room(userId,data):
-    response_object={}
     # try:
     # check if user is admin
     query= db.session.query(Participant).filter_by(userId= userId, roomId= data['id']).first()
     if query.isAdmin ==1:
-        try:
-            query= db.session.query(Room).filter_by(id= str(data['id'])).update(dict(data))
-            db.session.commit()
-            return utils_response_object.send_response_object_SUCCESS(config.MSG_UPDATE_ROOM_SUCCESS)
-        except sexc.SQLAlchemyError as e:
-            return utils_response_object.send_response_object_INTERNAL_ERROR()
+        # remove isAdmin field
+        del data['isAdmin']
+        # try:
+        query= db.session.query(Room).filter_by(id= str(data['id'])).update(dict(data))
+        db.session.commit()
+        return utils_response_object.send_response_object_SUCCESS(config.MSG_UPDATE_ROOM_SUCCESS)
+        # except sexc.SQLAlchemyError as e:
+        #     return utils_response_object.send_response_object_INTERNAL_ERROR()
     else:
         return utils_response_object.send_response_object_ERROR(config.MSG_USER_DONT_HAVE_RIGHT)
 def convertPublicIdToRoomId(publicId):

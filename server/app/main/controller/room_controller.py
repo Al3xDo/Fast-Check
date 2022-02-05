@@ -65,9 +65,12 @@ class Room(Resource):
     @api.doc('delete a room')
     @token_required
     def delete(self, id):
+        print(request)
         userId= get_JWT_identity(request)
         return delete_a_room(userId, id)
-        
+@api.route('/')
+@api.response(404, 'Room not found.')
+class Room(Resource):
     @api.doc('update a room')
     @token_required
     def put(self):

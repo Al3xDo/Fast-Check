@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import "./addroom.css"
 export const AddRoom = (props) => {
-    const [name, setName] = useState("")
+    const [roomName, setName] = useState("")
     const [timeSchedule, setTimeSchedule] = useState("")
     const [dateSchedule, setDateSchedule] = useState("")
     const [password, setPassword] = useState("")
@@ -22,14 +22,14 @@ export const AddRoom = (props) => {
     }
     const onSubmit = () => {
         var room = {
-            name: name,
+            roomName: roomName,
             dateSchedule: formatDate(dateSchedule),
             timeSchedule: timeSchedule,
             password: password,
         }
         props.onAddRoom(room)
         props.onClose()
-        props.onClear()
+        onClear()
     }
     return (
         <div className={`modal ${props.onOpen}`}>
@@ -43,8 +43,8 @@ export const AddRoom = (props) => {
                         <div className="control">
                             <input className="input"
                                 type="text" placeholder="Text input"
-                                value={name}
-                                name="name"
+                                value={roomName}
+                                name="roomName"
                                 onChange={(event) => { setName(event.target.value) }}
                             />
                         </div>

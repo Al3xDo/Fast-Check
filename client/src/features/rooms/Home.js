@@ -7,28 +7,46 @@ import { toastError, toastSuccess } from '../../utils/toastNotify';
 import { selectAuth } from '../auth/authSlice';
 import { callApi } from '../../utils/apiCaller';
 import { AddRoom } from "./AddRoom"
+import { EditRoom } from "./EditRoom"
+import { WarningModal } from "./WarningModal"
 export const Home = () => {
     const authState = useSelector(selectAuth)
     const [rooms, setRooms] = useState([])
     const [open, setOpen] = useState("")
+    const [openEdit, setOpenEdit] = useState("")
+    const [editRoom, setEditRoom] = useState(null)
+    const [deleteId, setDeleteId] = useState("")
+    const [openWarning, setOpenWarning] = useState("")
+    function fetchRooms() {
+        callApi("room/rooms", "GET", {}, authState.token)
+            .then(res => {
+                setRooms(res.data)
+            })
+            .catch(e => {
+                toastError(e.message)
+            })
+    }
     useEffect(() => {
-        function fetchRooms() {
-            callApi("room/rooms", "GET", {}, authState.token)
-                .then(res => {
-                    setRooms(res.data)
-                })
-                .catch(e => {
-                    toastError(e.message)
-                })
-        }
+
         fetchRooms()
     }, [])
-    const onDelete = (id) => {
-        callApi(`room/${id}`, 'DELETE', {}, authState.token)
+    const formatDate = (date) => {
+        if (!date) {
+            return null
+        }
+        const year = date.slice(0, 4)
+        const month = date.slice(6, 7)
+        const day = date.slice(8)
+        const formatedDate = day + "/" + month + "/" + year
+        return formatedDate
+    }
+
+    const onDelete = () => {
+        callApi(`room/${deleteId}`, 'DELETE', {}, authState.token)
             .then(res => {
                 toastSuccess(res.data.message)
                 var temp = rooms
-                temp = temp.filter((room) => room.id !== id)
+                temp = temp.filter((room) => room.id !== deleteId)
                 setRooms(temp)
             })
             .catch(e => {
@@ -39,20 +57,54 @@ export const Home = () => {
         callApi(`room/create`, 'POST', newRoom, authState.token)
             .then(res => {
                 toastSuccess(res.data.message)
-                setRooms(prev => [...prev, newRoom])
             })
             .catch(e => {
                 toastError(e.message)
             })
+        fetchRooms()
     }
-    const onEdit = (id) => {
-        callApi(`room/${id}`, 'PUT', {}, authState.token)
+    const onEdit = () => {
+        setEditRoom({
+            ...editRoom,
+            dateSchedule: formatDate(editRoom.dateSchedule)
+        })
+        callApi(`room/`, 'PUT', editRoom, authState.token)
             .then(res => {
                 toastSuccess(res.data.message)
             })
             .catch(e => {
                 toastError(e.message)
             })
+        fetchRooms()
+        setEditRoom("")
+    }
+    const onOpenEditModal = (id) => {
+        setOpenEdit("is-active")
+        const temp = rooms.filter(room => room.id === id)[0]
+        setEditRoom(temp)
+    }
+    const onCloseEditModal = () => {
+        setOpenEdit("")
+        setEditRoom(null)
+    }
+    const onOpenWarningModal = (id) => {
+        setOpenWarning("is-active")
+        setDeleteId(id)
+    }
+    const onCloseWarningModal = (choice) => {
+        setOpenWarning("")
+        if (choice) {
+            onDelete()
+        }
+        setDeleteId("")
+    }
+    const onChange = (e) => {
+        var name = e.target.name
+        var val = e.target.value
+        setEditRoom({
+            ...editRoom,
+            [name]: val
+        })
     }
     const showRoom = (rooms) => {
         var result = null;
@@ -60,11 +112,13 @@ export const Home = () => {
             result = rooms.map((room, index) => {
                 return (<Room
                     key={index}
-                    name={room.name}
+                    roomName={room.roomName}
                     id={room.id}
                     participantNumber={room.participantNumber}
                     isAdmin={room.isAdmin}
                     onDelete={onDelete}
+                    onOpenWarningModal={onOpenWarningModal}
+                    onOpenEditModal={onOpenEditModal}
                 />)
             })
         }
@@ -87,6 +141,20 @@ export const Home = () => {
                     onAddRoom={onAdd}
                     onClose={() => setOpen("")}
                 />
+                <WarningModal
+                    onOpen={openWarning}
+                    onClose={onCloseWarningModal}
+                />
+                {editRoom &&
+                    <EditRoom
+                        onOpen={openEdit}
+                        onEditRoom={onEdit}
+                        editRoom={editRoom}
+                        onClose={onCloseEditModal}
+                        onChangeEdit={onChange}
+                    />
+
+                }
                 <div className=" search-field">
                     <button
                         className="ml-80 button is-link"

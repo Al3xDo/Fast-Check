@@ -3,8 +3,7 @@ import "./room.css"
 import { WarningModal } from './WarningModal';
 import { useState } from 'react';
 export const Room = (props) => {
-    const { name, participantNumber, isAdmin, id } = props
-    const [active, setActive] = useState("")
+    const { roomName, participantNumber, isAdmin, id } = props
     const showButton = () => {
         if (isAdmin) {
             return (
@@ -20,26 +19,23 @@ export const Room = (props) => {
             )
         }
     }
-    const onClose = (event) => {
-        if (event) {
-            props.onDelete(id)
-        }
-        setActive("")
+    const onOpenEditModal = (id) => {
+        props.onOpenEditModal(id)
+    }
+    const onOpenWarningModal = (id) => {
+        props.onOpenWarningModal(id)
     }
     return (
         <div className="course box w-h-200 level block">
             <div className="title-div">
-                <h1 className="title">{name}</h1>
-                <ion-icon
-                    className="delete-icon"
-                    name="close-outline"
-                    onClick={() => { setActive("is-active") }}
+                <h1 className="title">{roomName}</h1>
+                <ion-icon name="ellipsis-vertical-outline"
+                    onClick={() => onOpenEditModal(id)}
                 ></ion-icon>
-                <WarningModal
-                    onOpen={active}
-                    onClose={onClose}
-                    id={id}
-                />
+                <ion-icon name="trash-outline"
+                    onClick={() => onOpenWarningModal(id)}
+                ></ion-icon>
+
             </div>
 
             <div className="course-description">
