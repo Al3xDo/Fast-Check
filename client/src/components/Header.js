@@ -1,8 +1,3 @@
-import { connect } from "react-redux"
-import { compose } from "redux"
-import { Redirect } from "react-router"
-import { deleteToken } from "../actions/token"
-import { useState } from "react"
 import { Link } from "react-router-dom"
 import catLogo from "../asset/image/cat.png"
 const Header = (props) => {

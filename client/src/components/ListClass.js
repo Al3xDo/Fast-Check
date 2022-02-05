@@ -1,11 +1,9 @@
 import React from 'react';
 import RoomItemTable from './RoomItemTable';
 import { useEffect } from 'react';
-import { connect } from 'react-redux';
-import * as RoomAction from "../actions/room"
-const ListClass = (props) => {
+export const ListClass = (props) => {
     useEffect(() => {
-        const {getRoomsRequest,token} = props;
+        const { getRoomsRequest, token } = props;
         getRoomsRequest(token)
     }, [props.token])
     const showRoom = () => {
@@ -14,13 +12,13 @@ const ListClass = (props) => {
         if (rooms.length > 0) {
             result = rooms.map((room, index) => {
                 return (
-                <RoomItemTable
-                    key={index}
-                    index={index}
-                    name={room.name}
-                    participantNumber={room.participantNumber}
-                    isAdmin= {room.isAdmin}
-                />)
+                    <RoomItemTable
+                        key={index}
+                        index={index}
+                        name={room.name}
+                        participantNumber={room.participantNumber}
+                        isAdmin={room.isAdmin}
+                    />)
             })
         }
         return result
@@ -44,19 +42,3 @@ const ListClass = (props) => {
         </div>
     );
 }
-
-const mapStateToProps = state => {
-    return {
-        rooms: state.room,
-        token: state.token
-    }
-}
-const mapDispatchToProps = dispatch => {
-    return {
-        getRoomsRequest: (token) => {
-            dispatch(RoomAction.getRoomsRequest(token))
-        }
-    }
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(ListClass);

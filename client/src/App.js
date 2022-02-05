@@ -3,15 +3,12 @@ import "./App.css"
 import routes from "./routes";
 import Header from "./components/Header.js";
 import Footer from "./components/Footer.js";
-import configureStore from "./redux/configReducer";
 import { store } from "./store";
 import { Provider } from "react-redux";
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { PrivateRoute } from "./components/PrivateRoute";
 import { LogIn, SignUp } from "./features/auth";
-// import PrivateRoutes from "./pages/PrivateRoutes";
-// const store = configureStore()
 const showContentMenus = (routes) => {
   var result = null;
   if (routes.length > 0) {
