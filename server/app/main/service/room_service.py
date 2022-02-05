@@ -16,18 +16,20 @@ def save_new_room(data, userId):
     if user:
         new_room = Room(
             roomName=data['roomName'],
-            id= str(uuid.uuid4())
+            id= str(uuid.uuid4()),
+            publiId= str(uuid.uuid4().hex)
         )
         new_participant= Participant(userId, new_room.id, datetime.datetime.now().strftime("%d-%m-%Y"), 1)
         save_changes(new_room, new_participant)
         return utils_response_object.send_response_object_CREATED(config.MSG_CREATE_ROOM_SUCCESS)
-    # else:
-    #     return utils_response_object.send_response_object_INTERNAL_ERROR()
+    else:
+        return utils_response_object.send_response_object_INTERNAL_ERROR()
 def serialize_room(room, isAdmin=None):
     roomDict={
         "id": room.id,
         "roomName": room.roomName,
-        "isAdmin": True if isAdmin ==1 else False 
+        "isAdmin": True if isAdmin ==1 else False,
+        "publicId": room.publicId
     }
     try:
         roomDict["dateSchedule"] = room.dateSchedule

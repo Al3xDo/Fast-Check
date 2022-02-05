@@ -1,9 +1,8 @@
 import React from 'react';
 import "./room.css"
-import { WarningModal } from './WarningModal';
-import { useState } from 'react';
+
 export const Room = (props) => {
-    const { roomName, participantNumber, isAdmin, id } = props
+    const { roomName, participantNumber, isAdmin, id, publicId } = props.room
     const showButton = () => {
         if (isAdmin) {
             return (
@@ -44,6 +43,13 @@ export const Room = (props) => {
                 {/* <h2>Class size: 52</h2> */}
             </div>
             <div className="course-icon row">
+                <button className="button"
+                    onClick={() => props.onOpenInviteModal(publicId)}
+                >
+                    <span className="icon is-small">
+                        <ion-icon name="share-social-outline"></ion-icon>
+                    </span>
+                </button>
                 {showButton()}
             </div>
         </div>

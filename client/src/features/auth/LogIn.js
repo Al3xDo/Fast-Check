@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux"
 import { Redirect } from "react-router";
 import { toastError } from "../../utils/toastNotify";
 import { selectAuth, logIn } from "./authSlice";
-
+import "./style.css"
 export const LogIn = () => {
     const authState = useSelector(selectAuth)
     const dispatch = useDispatch()

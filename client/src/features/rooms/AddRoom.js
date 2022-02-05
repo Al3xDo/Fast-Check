@@ -33,62 +33,75 @@ export const AddRoom = (props) => {
     }
     return (
         <div className={`modal ${props.onOpen}`}>
-            <div className="add-class">
-                <div className="box">
-                    <div className="has-text-centered">
-                        <h1 className="title"> Thêm thông tin lớp</h1>
-                    </div>
-                    <div className="field">
-                        <label className="label">Tên lớp</label>
-                        <div className="control">
-                            <input className="input"
-                                type="text" placeholder="Text input"
-                                value={roomName}
-                                name="roomName"
-                                onChange={(event) => { setName(event.target.value) }}
-                            />
-                        </div>
-                    </div>
-                    <div className="time-field">
-                        <div className="field">
-                            <label className="label">Hẹn ngày</label>
-                            <div className="control">
-                                <input type="date" className="input"
-                                    value={dateSchedule}
-                                    name="dateSchedule"
-                                    onChange={(event) => { setDateSchedule(event.target.value) }}
-                                />
+            <div className="modal-background"></div>
+            <div className="modal-card">
+                <header className="modal-card-head">
+                    <p className="modal-card-title">Add room</p>
+                    <button className="delete" aria-label="close"
+                        onClick={props.onClose}
+                    ></button>
+                </header>
+                <section className="modal-card-body">
+                    <div className="add-class">
+                        <div className="box">
+                            <div className="field">
+                                <label className="label">Tên lớp</label>
+                                <div className="control">
+                                    <input className="input"
+                                        type="text" placeholder="Text input"
+                                        value={roomName}
+                                        name="roomName"
+                                        onChange={(event) => { setName(event.target.value) }}
+                                    />
+                                </div>
                             </div>
-                        </div>
-                        <div className="field">
-                            <label className="label">Hẹn giờ</label>
-                            <div className="control">
-                                <input type="time" className="input"
-                                    value={timeSchedule}
-                                    name="timeSchedule"
-                                    onChange={(event) => { setTimeSchedule(event.target.value) }}
-                                />
+                            <div className="time-field">
+                                <div className="field">
+                                    <label className="label">Hẹn ngày</label>
+                                    <div className="control">
+                                        <input type="date" className="input"
+                                            value={dateSchedule}
+                                            name="dateSchedule"
+                                            onChange={(event) => { setDateSchedule(event.target.value) }}
+                                        />
+                                    </div>
+                                </div>
+                                <div className="field">
+                                    <label className="label">Hẹn giờ</label>
+                                    <div className="control">
+                                        <input type="time" className="input"
+                                            value={timeSchedule}
+                                            name="timeSchedule"
+                                            onChange={(event) => { setTimeSchedule(event.target.value) }}
+                                        />
+                                    </div>
+                                </div>
                             </div>
+                            <div className="field">
+                                <label className="label">Mật khẩu</label>
+                                <div className="control">
+                                    <input className="input"
+                                        type="text" placeholder="Text input"
+                                        value={password}
+                                        name="password"
+                                        onChange={(event) => { setPassword(event.target.value) }}
+                                    />
+                                </div>
+                            </div>
+
                         </div>
                     </div>
-                    <div className="field">
-                        <label className="label">Mật khẩu</label>
-                        <div className="control">
-                            <input className="input"
-                                type="text" placeholder="Text input"
-                                value={password}
-                                name="password"
-                                onChange={(event) => { setPassword(event.target.value) }}
-                            />
-                        </div>
-                    </div>
+                </section>
+                <footer className="modal-card-foot">
                     <div className="submit has-text-centered">
                         <div className="button is-primary" onClick={onSubmit}>
                             Thêm lớp
                         </div>
                     </div>
-                </div>
+                    {/* <button className="button">Cancel</button> */}
+                </footer>
             </div>
+
         </div>
     );
 }

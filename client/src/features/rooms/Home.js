@@ -10,6 +10,8 @@ import { AddRoom } from "./AddRoom"
 import { EditRoom } from "./EditRoom"
 import { WarningModal } from "./WarningModal"
 import { useDebounce } from '../../hook/useDebounce';
+import { JoinRoomModal } from './JoinRoomModal';
+import { InviteModal } from "./InviteModal"
 export const Home = () => {
     const authState = useSelector(selectAuth)
     const [rooms, setRooms] = useState([])
@@ -20,12 +22,14 @@ export const Home = () => {
     const [openWarning, setOpenWarning] = useState("")
     const [searchName, setSearchName] = useDebounce("")
     const [searchRooms, setSearchRooms] = useState([])
+    const [openJoinRoomModal, setOpenJoinRoomModal] = useState("")
+    const [openInviteModal, setOpenInviteModal] = useState("")
+    const [publicId, setPublicId] = useState("")
     const [sort, setSort] = useState({
         type: 0,
         by: ""
     })
     const onSort = (choice) => {
-        // console.log(typeof (choice))
         switch (parseInt(choice)) {
             case 1:
                 rooms.sort((a, b) => {
@@ -157,13 +161,11 @@ export const Home = () => {
             result = rooms.map((room, index) => {
                 return (<Room
                     key={index}
-                    roomName={room.roomName}
-                    id={room.id}
-                    participantNumber={room.participantNumber}
-                    isAdmin={room.isAdmin}
+                    room={room}
                     onDelete={onDelete}
                     onOpenWarningModal={onOpenWarningModal}
                     onOpenEditModal={onOpenEditModal}
+                    onOpenInviteModal={onOpenInviteModal}
                 />)
             })
         }
@@ -177,10 +179,33 @@ export const Home = () => {
         if (searchName) {
             setSearchRooms(rooms.filter((room) => removeAccents(room.roomName).toLowerCase().indexOf(removeAccents(searchName.toLowerCase())) !== -1))
         }
+        else {
+            setSearchName([])
+        }
     }
-    // if (!searchName) {
-    //     setSearchRooms([])
-    // }
+    const onJoinRoom = (publicId) => {
+        callApi(`room/join/${publicId}`, "GET", {}, authState.token)
+            .then((res) => {
+                toastSuccess(res.data.message)
+            })
+            .catch((err) => {
+                toastError(err.message)
+            })
+    }
+    const onOpenJoinRoomModal = () => {
+        setOpenJoinRoomModal("is-active")
+    }
+    const onCloseJoinRoomModal = () => {
+        setOpenJoinRoomModal("")
+    }
+    const onOpenInviteModal = (publicId) => {
+        setOpenInviteModal("is-active")
+        setPublicId(publicId)
+    }
+    const onCloseInviteModal = () => {
+        setOpenInviteModal("")
+        // setPublicId(publicId)
+    }
     return (
         <>
             <div className="course-button">
@@ -193,24 +218,13 @@ export const Home = () => {
                 >
                     Add room
                 </button>
-                <AddRoom
-                    onOpen={open}
-                    onAddRoom={onAdd}
-                    onClose={() => setOpen("")}
-                />
-                <WarningModal
-                    onOpen={openWarning}
-                    onClose={onCloseWarningModal}
-                />
-                {editRoom &&
-                    <EditRoom
-                        onOpen={openEdit}
-                        onEditRoom={onEdit}
-                        editRoom={editRoom}
-                        onClose={onCloseEditModal}
-                        onChangeEdit={onChange}
-                    />
-                }
+                <button
+                    className='ml-80 button is-link'
+                    onClick={onOpenJoinRoomModal}
+                >
+                    <ion-icon name="people-outline"></ion-icon>
+                    Join room
+                </button>
                 <div className=" search-field">
                     <button
                         className="ml-80 button is-link"
@@ -221,8 +235,8 @@ export const Home = () => {
                         onChange={(e) => onSearch(e)}
                         placeholder="Tìm phòng học" />
                 </div>
-                <div className=" search-field ml-80">
-                    <div className="select">
+                <div className=" search-field">
+                    <div className="select ml-80">
                         <select
                             onChange={(e) => onSort(e.target.value)}
                         >
@@ -243,6 +257,34 @@ export const Home = () => {
                     className=" button is-link menu"
                 ><ion-icon name="apps-outline"></ion-icon></button>
             </div>
+            <AddRoom
+                onOpen={open}
+                onAddRoom={onAdd}
+                onClose={() => setOpen("")}
+            />
+            <WarningModal
+                onOpen={openWarning}
+                onClose={onCloseWarningModal}
+            />
+            {editRoom &&
+                <EditRoom
+                    onOpen={openEdit}
+                    onEditRoom={onEdit}
+                    editRoom={editRoom}
+                    onClose={onCloseEditModal}
+                    onChangeEdit={onChange}
+                />
+            }
+            <JoinRoomModal
+                open={openJoinRoomModal}
+                onClose={onCloseJoinRoomModal}
+                onSubmit={onJoinRoom}
+            />
+            <InviteModal
+                open={openInviteModal}
+                onClose={onCloseInviteModal}
+                publicId={publicId}
+            />
             <hr />
             <div className="course-board">
                 {searchName ?
