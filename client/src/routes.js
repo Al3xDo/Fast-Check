@@ -1,5 +1,5 @@
 // import CheckPage from "./pages/Check"
-// import UserPage from "./pages/User"
+import UserPage from "./pages/User"
 import ErrorPage from "./pages/Error"
 import { Home } from "./features/rooms/Home"
 
@@ -14,11 +14,11 @@ const routes = [
     //     exact: true,
     //     main: () => <CheckPage />
     // },
-    // {
-    //     path: "/information",
-    //     exact: true,
-    //     main: () => <UserPage />
-    // },
+    {
+        path: "/information",
+        exact: true,
+        main: () => <UserPage />
+    },
     {
         path: "",
         exact: false,

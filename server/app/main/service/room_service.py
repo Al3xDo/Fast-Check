@@ -68,7 +68,6 @@ def delete_a_room(userId, id):
     response_object={}
     # try:
     # check if user is admin
-    print(userId)
     userRight= db.session.query(Participant).filter_by(userId= userId, roomId= id).first()
     if userRight.isAdmin ==1:
         try:

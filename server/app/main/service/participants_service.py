@@ -7,6 +7,7 @@ from app.main.service.room_service import convertPublicIdToRoomId
 from app.main.util import utils_response_object
 import datetime
 from app.main.service import config
+from app.main.model.room import Room
 def out_a_room(userId, publicId):
     roomId= convertPublicIdToRoomId(publicId)
     if not roomId:
@@ -33,6 +34,12 @@ def join_a_room(userId, publicId):
         if not participant:
             participant= Participant(userId, roomId,datetime.datetime.now().strftime("%d-%m-%Y"))
             save_changes(participant)
+            room= Room.query.filter_by(id=roomId).first()
+            room.participantNumber+=1
+            try:
+                save_changes(room)
+            except:
+                return utils_response_object.send_response_object_INTERNAL_ERROR()
             return utils_response_object.send_response_object_SUCCESS(config.MSG_JOIN_ROOM_SUCCESS)
         else:
             return utils_response_object.send_response_object_ERROR(config.MSG_ALREADY_JOINED_IN)

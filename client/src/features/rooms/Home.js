@@ -191,6 +191,8 @@ export const Home = () => {
             .catch((err) => {
                 toastError(err.message)
             })
+        onCloseJoinRoomModal()
+        fetchRooms()
     }
     const onOpenJoinRoomModal = () => {
         setOpenJoinRoomModal("is-active")

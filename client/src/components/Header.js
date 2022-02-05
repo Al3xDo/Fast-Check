@@ -3,6 +3,7 @@ import { compose } from "redux"
 import { Redirect } from "react-router"
 import { deleteToken } from "../actions/token"
 import { useState } from "react"
+import catLogo from "../asset/image/cat.png"
 const Header = (props) => {
     const [logout, setLogout] = useState(false)
     const Logout = () => {
@@ -17,7 +18,7 @@ const Header = (props) => {
         <nav className="navbar is-light mb-30" role="navigation" aria-label="main navigation">
             <div className="navbar-brand">
                 <a className="navbar-item" href="/">
-                    <img src="/asset/image/cat.png" alt="logo" />
+                    <img src={catLogo} alt="logo" />
                 </a>
             </div>
             <div className="navbar-menu">
