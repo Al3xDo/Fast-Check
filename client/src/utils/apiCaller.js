@@ -26,9 +26,10 @@ export function callApi(endpoint, method = 'GET', body, token = null) {
             Authorization: `Bearer ${token}`,
             'Access-Control-Allow-Origin': '*',
             'Content-Type': 'application/json',
-            'Access-Control-Allow-Origin': '*',
-            // "Access-Control-Allow-Methods": "GET, POST, PUT, PATCH, POST, DELETE, OPTIONS",
+            // 'Access-Control-Allow-Origin': '*',
+            "Access-Control-Allow-Methods": "GET, POST, PUT, PATCH, POST, DELETE, OPTIONS",
             // "Access-Control-Allow-Headers": "Content-Type",
+            "Access-Control-Allow-Headers": "Origin, Content-Type, X-Auth-Token"
             // "Access-Control-Max-Age": "86400"
         },
         data: body

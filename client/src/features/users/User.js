@@ -3,12 +3,8 @@ import ListClass from "../../components/ListClass";
 import Calendar from "../../components/Calendar"
 // import AddRoom from "../../components/AddRoom"
 import EditUserModal from "../../components/EditUserModal";
-import { connect } from "react-redux";
-import * as RoomActions from "../../actions/room"
-import * as UserActions from "../../actions/user"
-import { bindActionCreators } from "redux";
 import "./style.css"
-function UserPage(props) {
+export const User = (props) => {
 
     // 0 -> show calendar
     // 1 -> show list class
@@ -65,17 +61,3 @@ function UserPage(props) {
         </div>
     )
 }
-const mapStateToProps = (state) => {
-    return {
-        rooms: state.room,
-        user: state.user,
-        token: state.token
-    }
-}
-const mapDispatchToProps = (dispatch) => {
-    return {
-        UserActionsCreator: bindActionCreators(UserActions, dispatch),
-        RoomActionsCreator: bindActionCreators(RoomActions, dispatch)
-    }
-}
-export default connect(mapStateToProps, mapDispatchToProps)(UserPage);

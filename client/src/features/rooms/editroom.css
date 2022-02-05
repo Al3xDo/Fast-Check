@@ -1,0 +1,14 @@
+.date-field{
+    display: flex;
+}
+
+.time-field{
+    display: flex;
+}
+
+.ml-20{
+    margin-left: 20px;
+}
+.ml-86{
+    margin-left: 86px;
+}
