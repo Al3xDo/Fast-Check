@@ -286,9 +286,14 @@ export const Home = () => {
                 publicId={publicId}
             />
             <hr />
-            <div className="course-board">
-                {searchName ?
-                    showRoom(searchRooms) : showRoom(rooms)}
+            <div style={{ minHeight: "500px" }}>
+                <div className="columns">
+                    {searchName ?
+                        showRoom(searchRooms) :
+                        (
+                            showRoom(rooms))
+                    }
+                </div>
             </div>
         </>
     );
