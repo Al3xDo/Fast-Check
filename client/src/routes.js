@@ -1,14 +1,9 @@
 // import CheckPage from "./pages/Check"
-import UserPage from "./pages/User"
+import { User } from "./features/users/User.js"
 import ErrorPage from "./pages/Error"
 import { Home } from "./features/rooms/Home"
 
 const routes = [
-    {
-        path: "/",
-        exact: true,
-        main: () => <Home />
-    },
     // {
     //     path: "/check",
     //     exact: true,
@@ -17,7 +12,12 @@ const routes = [
     {
         path: "/information",
         exact: true,
-        main: () => <UserPage />
+        main: () => <User />
+    },
+    {
+        path: "/",
+        exact: true,
+        main: () => <Home />
     },
     {
         path: "",

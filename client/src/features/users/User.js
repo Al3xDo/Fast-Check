@@ -1,40 +1,78 @@
 import { useState, useEffect } from "react"
 import ListClass from "../../components/ListClass";
 import Calendar from "../../components/Calendar"
-// import AddRoom from "../../components/AddRoom"
-import EditUserModal from "../../components/EditUserModal";
+import { callApi } from "../../utils/apiCaller";
+import { useSelector } from "react-redux";
+import { selectAuth } from "../auth/authSlice";
 import "./style.css"
+import { toastError, toastSuccess } from "../../utils/toastNotify";
 export const User = (props) => {
-
+    const authState = useSelector(selectAuth)
+    const [user, setUser] = useState(null)
+    function fetchUser() {
+        callApi("user/", "GET", {}, authState.token)
+            .then((res) => {
+                setUser(res.data)
+            })
+            .catch((err) => {
+                toastError(err.message)
+            })
+    }
+    useEffect(() => {
+        fetchUser()
+    }, []);
     // 0 -> show calendar
     // 1 -> show list class
     // 2 -> show add class
     const [showItem, setShowItem] = useState(1);
-
     const showItems = () => {
         if (showItem === 0) {
             return <Calendar />
         }
-        else if (showItem === 1) {
-            return <ListClass />
-        }
-        // else if (showItem === 2) {
-        //     return <AddRoom />
+        // else if (showItem === 1) {
+        //     return <ListClass />
         // }
     }
-    useEffect(() => {
-        props.UserActionsCreator.getUserRequest(props.token)
-    }, [props.UserActionsCreator.getUserRequest])
+
+    const onDelete = () => {
+        callApi("user", "DELETE", {}, authState.token)
+            .then((res) => {
+                toastSuccess(res.data.message)
+            })
+            .catch((err) => {
+                toastError(err.message)
+            })
+    }
+    const onEdit = () => {
+        callApi("user", "PUT", {}, authState.token)
+            .then((res) => {
+                fetchUser()
+                toastSuccess(res.data.message)
+            })
+            .catch((err) => {
+                toastError(err.message)
+            })
+    }
     return (
         <div className="user-board columns">
             <div className="columns">
                 <div className="avatar">
-                    <img
-                        className="is-avatar"
-                        src={`data:image/jpeg;base64,${props.user.avatar}`}
-                        alt="user-avatar"
-                    />
-                    <EditUserModal name={props.user.name} email={props.user.email} />
+                    {user && (
+                        <img
+                            className="is-avatar"
+                            src={`data:image/jpeg;base64,${user.avatar}`}
+                            alt="user-avatar"
+                        />
+                    )}
+                    <div className="user-infor">
+                        {user && (
+                            <>
+                                <h1>{user.email}</h1>
+                                <h1>{user.name}</h1>
+                            </>
+                        )}
+                    </div>
+                    {/* <EditUserModal name={user.name} email={user.email} /> */}
                 </div>
 
             </div>

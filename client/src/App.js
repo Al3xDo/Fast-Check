@@ -38,8 +38,6 @@ const App = () => {
   return (
     <Provider store={store}>
       <Router>
-        <Switch>
-        </Switch>
         <div className="container">
           <BrowserRouter>
             <Switch>
@@ -54,8 +52,6 @@ const App = () => {
           </BrowserRouter>
           <ToastContainer />
         </div>
-        <Switch>
-        </Switch>
       </Router>
     </Provider>
   );

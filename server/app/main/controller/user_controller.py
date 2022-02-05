@@ -11,7 +11,7 @@ import numpy as np
 import cv2
 # user_controller
 SIGNUP_ENDPOINT = "/signup"
-USER_ENDPOINT = "/user"
+USER_ENDPOINT = "/"
 UPLOAD_IMAGE = "/uploadImage"
 CHECK_TOKEN = "/checkToken"
 PREDICT_IMG = "/predict"

@@ -26,7 +26,8 @@ def save_new_user(data):
             new_user = User(
                 id=str(uuid.uuid4()),
                 email=data['email'],
-                password=data['password']
+                password=data['password'],
+                name=data['user'].split("@")[0]
             )
         except AttributeError:
             return utils_response_object.write_response_object(config.STATUS_FAIL, config.MSG_JSON_NOT_VALIDATE), config.STATUS_CODE_CONFLICT
@@ -62,7 +63,9 @@ def get_a_user(userId):
             encodedImg = get_response_image(imgDir)
             return serialize_user(user, encodedImg), config.STATUS_CODE_SUCCESS
         else:
-            return serialize_user(user), config.STATUS_CODE_SUCCESS
+            imgDir="./app/filesystem/images/default-image.jpg"
+            encodedImg= get_response_image(imgDir)
+            return serialize_user(user, encodedImg), config.STATUS_CODE_SUCCESS
     return utils_response_object.write_response_object(config.STATUS_FAIL, config.MSG_USER_NOT_FOUND), config.STATUS_CODE_NOT_FOUND
 
 
