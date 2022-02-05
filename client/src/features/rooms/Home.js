@@ -9,6 +9,7 @@ import { callApi } from '../../utils/apiCaller';
 import { AddRoom } from "./AddRoom"
 import { EditRoom } from "./EditRoom"
 import { WarningModal } from "./WarningModal"
+import { useDebounce } from '../../hook/useDebounce';
 export const Home = () => {
     const authState = useSelector(selectAuth)
     const [rooms, setRooms] = useState([])
@@ -17,6 +18,8 @@ export const Home = () => {
     const [editRoom, setEditRoom] = useState(null)
     const [deleteId, setDeleteId] = useState("")
     const [openWarning, setOpenWarning] = useState("")
+    const [searchName, setSearchName] = useDebounce("")
+    const [searchRooms, setSearchRooms] = useState([])
     function fetchRooms() {
         callApi("room/rooms", "GET", {}, authState.token)
             .then(res => {
@@ -124,6 +127,15 @@ export const Home = () => {
         }
         return result
     }
+    function removeAccents(str) {
+        return str.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+    }
+    const onSearch = (e) => {
+        setSearchName(e.target.value)
+        if (searchName) {
+            setSearchRooms(rooms.filter((room) => removeAccents(room.roomName).toLowerCase().indexOf(removeAccents(searchName.toLowerCase())) !== -1))
+        }
+    }
     return (
         <>
             <div className="course-button">
@@ -153,13 +165,17 @@ export const Home = () => {
                         onClose={onCloseEditModal}
                         onChangeEdit={onChange}
                     />
-
                 }
                 <div className=" search-field">
                     <button
                         className="ml-80 button is-link"
                     ><ion-icon name="search-outline"></ion-icon></button>
-                    <input className="input search" type="text" placeholder="class name" />
+                    <input className="input search"
+                        type="text"
+                        name="searchName"
+                        // value={searchName}
+                        onChange={(e) => onSearch(e)}
+                        placeholder="Tìm phòng học" />
                 </div>
 
                 <button
@@ -168,7 +184,8 @@ export const Home = () => {
             </div>
             <hr />
             <div className="course-board">
-                {showRoom(rooms)}
+                {searchName ?
+                    showRoom(searchRooms) : showRoom(rooms)}
             </div>
         </>
     );

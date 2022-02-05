@@ -1,5 +1,5 @@
-import CheckPage from "./pages/Check"
-import UserPage from "./pages/User"
+// import CheckPage from "./pages/Check"
+// import UserPage from "./pages/User"
 import ErrorPage from "./pages/Error"
 import { Home } from "./features/rooms/Home"
 
