@@ -20,6 +20,49 @@ export const Home = () => {
     const [openWarning, setOpenWarning] = useState("")
     const [searchName, setSearchName] = useDebounce("")
     const [searchRooms, setSearchRooms] = useState([])
+    const [sort, setSort] = useState({
+        type: 0,
+        by: ""
+    })
+    const onSort = (choice) => {
+        // console.log(typeof (choice))
+        switch (parseInt(choice)) {
+            case 1:
+                rooms.sort((a, b) => {
+                    if (a.roomName > b.roomName) return sort.type;
+                    if (a.roomName < b.roomName) return -sort.type;
+                    // name trùng nhau
+                    else return 0;
+                });
+                break
+            case 2:
+                rooms.sort((a, b) => {
+                    if (a.roomName > b.roomName) return -sort.type;
+                    if (a.roomName < b.roomName) return sort.type;
+                    // name trùng nhau
+                    else return 0;
+                });
+                break
+            case 3:
+                rooms.sort((a, b) => {
+                    if (a.participantNumber > b.participantNumber) return sort.type;
+                    if (a.participantNumber < b.participantNumber) return -sort.type;
+                    // name trùng nhau
+                    else return 0;
+                });
+                break
+            case 4:
+                rooms.sort((a, b) => {
+                    if (a.participantNumber > b.participantNumber) return -sort.type;
+                    if (a.participantNumber < b.participantNumber) return sort.type;
+                    // name trùng nhau
+                    else return 0;
+                });
+                break
+            default:
+                return
+        }
+    }
     function fetchRooms() {
         callApi("room/rooms", "GET", {}, authState.token)
             .then(res => {
@@ -30,7 +73,6 @@ export const Home = () => {
             })
     }
     useEffect(() => {
-
         fetchRooms()
     }, [])
     const formatDate = (date) => {
@@ -136,6 +178,9 @@ export const Home = () => {
             setSearchRooms(rooms.filter((room) => removeAccents(room.roomName).toLowerCase().indexOf(removeAccents(searchName.toLowerCase())) !== -1))
         }
     }
+    // if (!searchName) {
+    //     setSearchRooms([])
+    // }
     return (
         <>
             <div className="course-button">
@@ -173,11 +218,27 @@ export const Home = () => {
                     <input className="input search"
                         type="text"
                         name="searchName"
-                        // value={searchName}
                         onChange={(e) => onSearch(e)}
                         placeholder="Tìm phòng học" />
                 </div>
-
+                <div className=" search-field ml-80">
+                    <div className="select">
+                        <select
+                            onChange={(e) => onSort(e.target.value)}
+                        >
+                            <option value={0}>Sort room</option>
+                            <option value={1}>By name (A to Z)</option>
+                            <option value={2}>By name (Z to A)</option>
+                            <option value={3}> By participant number (low to high)</option>
+                            <option value={4}>By participant number (high to low)</option>
+                            {/* <option>By date schedule (early to</option>
+                            <option>By time schedule</option> */}
+                        </select>
+                    </div>
+                    {/* <button
+                        className="ml-80 button is-link"
+                    ><ion-icon name="funnel-outline"></ion-icon></button> */}
+                </div>
                 <button
                     className=" button is-link menu"
                 ><ion-icon name="apps-outline"></ion-icon></button>
