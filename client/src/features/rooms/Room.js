@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import "./room.css"
 
 export const Room = (props) => {
@@ -9,6 +9,12 @@ export const Room = (props) => {
     const onOpenWarningModal = (id, type = "delete") => {
         props.onOpenWarningModal(id, type)
     }
+    if (!isAdmin) {
+        props.subcribeRoom(publicId)
+    }
+    // useEffect(() => {
+    //     console.log(props.currentRoomCheckId)
+    // }, [props.currentRoomCheckId]);
     return (
         <div className="course box level block" style={{ width: "350px", height: "217px" }}>
             <div className="title-div columns" style={{ paddingRight: "1rem" }}>
@@ -57,8 +63,10 @@ export const Room = (props) => {
                         </div>
                     )}
                     <div className="column">
-                        {isAdmin ? (
-                            <button className="button is-primary level-right">
+                        {isAdmin || props.checkStatus ? (
+                            <button className="button is-primary level-right"
+                                onClick={() => props.check(publicId)}
+                            >
                                 Thực hiện điểm danh
                             </button>
                         ) : (

@@ -33,16 +33,19 @@ export const Home = () => {
     const [publicId, setPublicId] = useState("")
     const [type, setType] = useState("delete")
     const socketRef = useRef();
+    const [currentRoomCheckId, setCurrentRoomCheckId] = useState("")
     const [sort, setSort] = useState({
         type: 0,
         by: ""
     })
     useEffect(() => {
         socketRef.current = socketIOClient.connect(HOST, { transports: ['websocket', 'polling', 'flashsocket'] })
+
         socketRef.current.on('check', data => {
+            setCurrentRoomCheckId(data.roomId)
+            console.log(currentRoomCheckId)
             console.log(data)
         })
-
         //   socketRef.current.on('sendDataServer', dataGot => {
         //     setMess(oldMsgs => [...oldMsgs, dataGot.data])
         //   }) // mỗi khi có tin nhắn thì mess sẽ được render thêm 
@@ -207,6 +210,9 @@ export const Home = () => {
                     onOpenWarningModal={onOpenWarningModal}
                     onOpenEditModal={onOpenEditModal}
                     onOpenInviteModal={onOpenInviteModal}
+                    subcribeRoom={subcribeRoom}
+                    check={check}
+                    currentRoomCheckId={currentRoomCheckId}
                 />)
             })
         }
@@ -249,9 +255,21 @@ export const Home = () => {
         setOpenInviteModal("")
         // setPublicId(publicId)
     }
-    const sendMessage = () => {
-        console.log("a")
-        socketRef.current.emit("check", { content: "msg" })
+    const subcribeRoom = (roomPublicId) => {
+        console.log("subcribe")
+        socketRef.current.emit("check", { roomId: roomPublicId, isAdmin: false })
+        socketRef.current.emit("check", { roomId: roomPublicId, isAdmin: false })
+        socketRef.current.emit("check", { roomId: roomPublicId, isAdmin: false })
+        socketRef.current.emit("check", { roomId: roomPublicId, isAdmin: false })
+        socketRef.current.emit("check", { roomId: roomPublicId, isAdmin: false })
+        socketRef.current.emit("check", { roomId: roomPublicId, isAdmin: false })
+        socketRef.current.emit("check", { roomId: roomPublicId, isAdmin: false })
+        socketRef.current.emit("check", { roomId: roomPublicId, isAdmin: false })
+        socketRef.current.emit("check", { roomId: roomPublicId, isAdmin: false })
+    }
+    const check = (roomPublicId) => {
+        console.log("check")
+        socketRef.current.emit("check", { roomId: roomPublicId, isAdmin: true })
     }
     return (
         <>
@@ -271,13 +289,6 @@ export const Home = () => {
                 >
                     <ion-icon name="people-outline"></ion-icon>
                     Join room
-                </button>
-                <button
-                    className='ml-80 button is-link'
-                    onClick={sendMessage}
-                >
-                    <ion-icon name="people-outline"></ion-icon>
-                    Send
                 </button>
                 <div className=" search-field">
                     <button

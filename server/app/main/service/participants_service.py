@@ -8,6 +8,7 @@ from app.main.util import utils_response_object
 import datetime
 from app.main.service import config
 from app.main.model.room import Room
+
 def out_a_room(userId, publicId):
     roomId= convertPublicIdToRoomId(publicId)
     if not roomId:

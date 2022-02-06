@@ -27,7 +27,6 @@ export const LogIn = (props) => {
     return (
         <form className="my-form" >
             <div className="box">
-                <butto></butto>
                 <h1 className="title has-text-centered">Log In</h1>
                 <div className="field">
                     <label className="label">Email</label>

@@ -6,7 +6,6 @@ from ..util.decorators import token_required
 from ..util.utils import get_JWT_identity
 from ..service.participants_service import join_a_room, out_a_room, createAttendance, checkAttendance
 
-
 OUT_ROOM_ENDPOINT="/out"
 JOIN_ROOM_ENDPOINT="/join"
 CREATE_ATTENDANCE_ENDPOINT="/create_attendance"
