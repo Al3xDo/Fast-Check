@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react"
-import ListClass from "../../components/ListClass";
 import Calendar from "../../components/Calendar"
 import { callApi } from "../../utils/apiCaller";
 import { useSelector } from "react-redux";
@@ -9,6 +8,8 @@ import { toastError, toastSuccess } from "../../utils/toastNotify";
 export const User = (props) => {
     const authState = useSelector(selectAuth)
     const [user, setUser] = useState(null)
+    const [name, setName] = useState("")
+    const [showEditForm, setShowEditForm] = useState(false)
     function fetchUser() {
         callApi("user/", "GET", {}, authState.token)
             .then((res) => {
@@ -21,19 +22,6 @@ export const User = (props) => {
     useEffect(() => {
         fetchUser()
     }, []);
-    // 0 -> show calendar
-    // 1 -> show list class
-    // 2 -> show add class
-    const [showItem, setShowItem] = useState(1);
-    const showItems = () => {
-        if (showItem === 0) {
-            return <Calendar />
-        }
-        // else if (showItem === 1) {
-        //     return <ListClass />
-        // }
-    }
-
     const onDelete = () => {
         callApi("user", "DELETE", {}, authState.token)
             .then((res) => {
@@ -44,7 +32,7 @@ export const User = (props) => {
             })
     }
     const onEdit = () => {
-        callApi("user", "PUT", {}, authState.token)
+        callApi("user/", "PUT", { name: name }, authState.token)
             .then((res) => {
                 fetchUser()
                 toastSuccess(res.data.message)
@@ -52,6 +40,10 @@ export const User = (props) => {
             .catch((err) => {
                 toastError(err.message)
             })
+    }
+    const onSubmitEdit = () => {
+        setShowEditForm(false)
+        onEdit()
     }
     return (
         <div className="user-board columns">
@@ -64,21 +56,48 @@ export const User = (props) => {
                             alt="user-avatar"
                         />
                     )}
-                    <div className="user-infor">
-                        {user && (
-                            <>
-                                <h1>{user.email}</h1>
-                                <h1>{user.name}</h1>
-                            </>
-                        )}
-                    </div>
-                    {/* <EditUserModal name={user.name} email={user.email} /> */}
+                    <button
+                        className="button is-rounded mt-20"
+                        style={{ width: "100%" }}
+                        onClick={() => setShowEditForm(true)}
+                    >
+                        <span class="icon mr-1">
+                            <ion-icon name="create-outline"></ion-icon>
+                        </span>
+                        Edit User
+                    </button>
+                    {showEditForm ? (
+                        <div className="box mt-20">
+                            <h1>Name</h1>
+                            <input className="input is-normal is-hovered"
+                                onChange={(e) => setName(e.target.value)}
+                            />
+                            <div className="box-footer mt-20">
+                                <div className="level-right">
+                                    <button className="button is-primary level-item"
+                                        onClick={onSubmitEdit}
+                                    > Save</button>
+                                    <button className="button level-item"
+                                        onClick={() => setShowEditForm(false)}
+                                    > Cancel</button>
+                                </div>
+                            </div>
+                        </div>
+                    ) : (
+                        user && (
+                            <div className="mt-20 ml-20">
+                                <h1 className="is-size-4">{user.email}</h1>
+                                <h1 className="is-size-5 has-text-weight-light">{user.name}</h1>
+                            </div>
+                        )
+                    )}
+
                 </div>
 
             </div>
             <div className="columns w-800">
                 <div className="information ml-200" >
-                    <div className="buttons">
+                    {/* <div className="buttons">
                         <button
                             className="button is-info mgr-10"
                             onClick={() => setShowItem(0)}
@@ -92,8 +111,8 @@ export const User = (props) => {
                             onClick={() => setShowItem(2)}
                         > <ion-icon name="add-outline"></ion-icon></button>
                         <input className="search-field" type="text" placeholder="class name" />
-                    </div>
-                    {showItems()}
+                    </div> */}
+                    <Calendar />
                 </div>
             </div>
         </div>

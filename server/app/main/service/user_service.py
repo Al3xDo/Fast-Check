@@ -69,13 +69,14 @@ def get_a_user(userId):
     return utils_response_object.write_response_object(config.STATUS_FAIL, config.MSG_USER_NOT_FOUND), config.STATUS_CODE_NOT_FOUND
 
 
-def update_a_user(data):
-    try:
-        updateUser = User.query.filter_by(id=data["id"]).update(data)
-        db.session.commit()
-        return  utils_response_object.send_response_object_SUCCESS(config.MSG_UPDATE_USER_SUCCESS)
-    except exc.SQLAlchemyError:
-        return utils_response_object.send_response_object_INTERNAL_ERROR()
+def update_a_user(data,userId):
+    # try:
+    print(data)
+    updateUser = User.query.filter_by(id=userId).update(data)
+    db.session.commit()
+    return  utils_response_object.send_response_object_SUCCESS(config.MSG_UPDATE_USER_SUCCESS)
+    # except:
+    #     return utils_response_object.send_response_object_INTERNAL_ERROR()
 
 
 def delete_a_user(userId):

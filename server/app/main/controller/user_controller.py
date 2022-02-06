@@ -51,7 +51,8 @@ class User(Resource):
     def put(self):
         """get a user given its identifier"""
         data = request.json
-        return update_a_user(data)
+        userId = get_JWT_identity(request)
+        return update_a_user(data, userId)
 
     @token_required
     def delete(self):

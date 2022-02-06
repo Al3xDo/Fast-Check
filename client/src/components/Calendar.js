@@ -25,36 +25,32 @@ const Calendar = () => {
     }
     const showDate = () => {
         var xhtml = [];
-        const date = new Date(year, month, 0);
+        const date = new Date(year, month + 1, 0);
         const prevDate = new Date(year, month, 0);
-        const lastDayInLastMonth = prevDate.getDate();
+        const lastDayInLastMonth = prevDate.getDay();
+        const daysInLastMonth = prevDate.getDate()
         const daysInMonth = date.getDate();
-        const firstDayInMonth = date.getDay();
-        for (var i = 0; i <= firstDayInMonth + daysInMonth; i++) {
-            if (i < firstDayInMonth) {
-                xhtml.push(
-                    <div className="calendar-card old-day" key={i} >
-                        <div className="calendar-day ">
-                            {i + lastDayInLastMonth - firstDayInMonth + 1}
-                        </div>
-                    </div >
-                )
-            }
-            else {
-                xhtml.push(
-                    <div className="calendar-card " key={i}>
-                        <div className="calendar-day">
-                            {i - firstDayInMonth + 1}
-                        </div>
-                    </div >
-                )
-            }
+        for (var i = lastDayInLastMonth - 1; i >= 0; i--) {
+            xhtml.push(
+                <div className="calendar-card old-day" key={i + 32} >
+                    <div className="calendar-day ">
+                        {daysInLastMonth - i}
+                    </div>
+                </div>
+            )
         }
-        return (
-            <div className="calendar-board">
-                {xhtml}
-            </div>
-        )
+        for (var i = 1; i <= daysInMonth; i++) {
+            xhtml.push(
+                <div className="calendar-card " key={i}>
+                    <div className="calendar-day">
+                        {i}
+                    </div>
+                </div>
+            )
+        }
+        return (<div className="calendar-board">
+            {xhtml}
+        </div>)
     }
     return (
         <div className="calendar-board">
@@ -78,7 +74,6 @@ const Calendar = () => {
 
             </div>
             <div className="calendar-date">
-
                 <div className="has-text-centered is-inline-block">
                     Mon
                 </div>

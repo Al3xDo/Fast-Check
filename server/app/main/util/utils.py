@@ -77,9 +77,6 @@ def detect_face(image):
 
 
 def get_response_image(imageDir):
-    print(imageDir)
-    print(os.getcwd())
-    print(os.path.exists(imageDir))
     img = Image.open(imageDir, mode='r')
     img_byte_arr = io.BytesIO()
     img.save(img_byte_arr, format='PNG')

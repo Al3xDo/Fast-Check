@@ -1,11 +1,6 @@
 import React from 'react';
 import RoomItemTable from './RoomItemTable';
-import { useEffect } from 'react';
 export const ListClass = (props) => {
-    useEffect(() => {
-        const { getRoomsRequest, token } = props;
-        getRoomsRequest(token)
-    }, [props.token])
     const showRoom = () => {
         const { rooms } = props
         var result = null;
