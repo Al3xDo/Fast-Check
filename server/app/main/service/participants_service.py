@@ -16,6 +16,8 @@ def out_a_room(userId, publicId):
         # participant= Participant.query.filter_by(userId=userId, roomId=roomId).first()
         # print(participant)
         participant= Participant.query.filter_by(userId=userId, roomId=roomId).delete()
+        room= Room.query.filter_by(id=roomId)
+        room.participantNumber-=1
         # if participant not exists
         if participant == 0:
             return utils_response_object.send_response_object_ERROR(config.MSG_YOU_ARE_NOT_IN_ROOM)

@@ -1,7 +1,7 @@
 import React from 'react';
 import "./style.css"
 import { Room } from './Room';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useSelector } from 'react-redux';
 import { toastError, toastSuccess } from '../../utils/toastNotify';
 import { selectAuth } from '../auth/authSlice';
@@ -12,6 +12,12 @@ import { WarningModal } from "./WarningModal"
 import { useDebounce } from '../../hook/useDebounce';
 import { JoinRoomModal } from './JoinRoomModal';
 import { InviteModal } from "./InviteModal"
+import socketIOClient from "socket.io-client"
+import { Socket } from 'socket.io-client';
+import io from "socket.io-client"
+const HOST = "http://localhost:3001"
+// const socket = Socket(HOST, { transports: ['websocket', "polling"] })
+// const socket = io(HOST, )
 export const Home = () => {
     const authState = useSelector(selectAuth)
     const [rooms, setRooms] = useState([])
@@ -25,10 +31,26 @@ export const Home = () => {
     const [openJoinRoomModal, setOpenJoinRoomModal] = useState("")
     const [openInviteModal, setOpenInviteModal] = useState("")
     const [publicId, setPublicId] = useState("")
+    const [type, setType] = useState("delete")
+    const socketRef = useRef();
     const [sort, setSort] = useState({
         type: 0,
         by: ""
     })
+    useEffect(() => {
+        socketRef.current = socketIOClient.connect(HOST, { transports: ['websocket', 'polling', 'flashsocket'] })
+        socketRef.current.on('check', data => {
+            console.log(data)
+        })
+
+        //   socketRef.current.on('sendDataServer', dataGot => {
+        //     setMess(oldMsgs => [...oldMsgs, dataGot.data])
+        //   }) // mỗi khi có tin nhắn thì mess sẽ được render thêm 
+
+        return () => {
+            socketRef.current.disconnect();
+        };
+    }, []);
     const onSort = (choice) => {
         switch (parseInt(choice)) {
             case 1:
@@ -89,7 +111,6 @@ export const Home = () => {
         const formatedDate = day + "/" + month + "/" + year
         return formatedDate
     }
-
     const onDelete = () => {
         callApi(`room/${deleteId}`, 'DELETE', {}, authState.token)
             .then(res => {
@@ -127,6 +148,16 @@ export const Home = () => {
         fetchRooms()
         setEditRoom("")
     }
+    const onOutRoom = () => {
+        callApi(`room/out/${deleteId}`, 'GET', {}, authState.token)
+            .then(res => {
+                toastSuccess(res.data.message)
+                fetchRooms()
+            })
+            .catch(err => {
+                toastError(err.message)
+            })
+    }
     const onOpenEditModal = (id) => {
         setOpenEdit("is-active")
         const temp = rooms.filter(room => room.id === id)[0]
@@ -136,14 +167,24 @@ export const Home = () => {
         setOpenEdit("")
         setEditRoom(null)
     }
-    const onOpenWarningModal = (id) => {
+    const onOpenWarningModal = (id, type) => {
         setOpenWarning("is-active")
+        setType(type)
         setDeleteId(id)
     }
     const onCloseWarningModal = (choice) => {
         setOpenWarning("")
         if (choice) {
-            onDelete()
+            switch (type) {
+                case "out":
+                    onOutRoom(deleteId)
+                    break;
+                case "delete":
+                    onDelete()
+                    break
+                default:
+                    break;
+            }
         }
         setDeleteId("")
     }
@@ -208,6 +249,10 @@ export const Home = () => {
         setOpenInviteModal("")
         // setPublicId(publicId)
     }
+    const sendMessage = () => {
+        console.log("a")
+        socketRef.current.emit("check", { content: "msg" })
+    }
     return (
         <>
             <div className="course-button">
@@ -226,6 +271,13 @@ export const Home = () => {
                 >
                     <ion-icon name="people-outline"></ion-icon>
                     Join room
+                </button>
+                <button
+                    className='ml-80 button is-link'
+                    onClick={sendMessage}
+                >
+                    <ion-icon name="people-outline"></ion-icon>
+                    Send
                 </button>
                 <div className=" search-field">
                     <button
@@ -266,6 +318,7 @@ export const Home = () => {
             />
             <WarningModal
                 onOpen={openWarning}
+                type={type}
                 onClose={onCloseWarningModal}
             />
             {editRoom &&
@@ -289,7 +342,7 @@ export const Home = () => {
             />
             <hr />
             <div style={{ minHeight: "500px" }}>
-                <div className="columns">
+                <div className="columns is-multiline">
                     {searchName ?
                         showRoom(searchRooms) :
                         (

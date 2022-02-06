@@ -9,6 +9,7 @@ import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { PrivateRoute } from "./components/PrivateRoute";
 import { LogIn, SignUp } from "./features/auth";
+import { useEffect } from "react"
 const showContentMenus = (routes) => {
   var result = null;
   if (routes.length > 0) {

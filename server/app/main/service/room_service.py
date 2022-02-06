@@ -17,7 +17,7 @@ def save_new_room(data, userId):
         new_room = Room(
             roomName=data['roomName'],
             id= str(uuid.uuid4()),
-            publiId= str(uuid.uuid4().hex)
+            publicId= str(uuid.uuid4().hex)
         )
         new_participant= Participant(userId, new_room.id, datetime.datetime.now().strftime("%d-%m-%Y"), 1)
         save_changes(new_room, new_participant)

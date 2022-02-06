@@ -23,6 +23,7 @@ class Room(Resource):
     @token_required
     def get(self, id):
         userId= get_JWT_identity(request)
+        print(userId)
         return out_a_room(userId, id)
 
 @api.route(JOIN_ROOM_ENDPOINT+'/<id>')

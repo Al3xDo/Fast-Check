@@ -1,5 +1,8 @@
+import json
 from flask import request
 from flask_restplus import Resource
+from httplib2 import Response
+from pkg_resources import yield_lines
 from ..util.dto import UserDto
 from ..service.user_service import delete_a_user, model_predict_grpc, save_new_user, update_a_user, upload_image, get_a_user
 from ..util.decorators import token_required
@@ -9,13 +12,14 @@ import base64
 import numpy as np
 import numpy as np
 import cv2
+from ..service.sse import format_sse, MessageAnnouncer
 # user_controller
 SIGNUP_ENDPOINT = "/signup"
 USER_ENDPOINT = "/"
 UPLOAD_IMAGE = "/uploadImage"
 CHECK_TOKEN = "/checkToken"
 PREDICT_IMG = "/predict"
-CHECK_IMAGE= "checkImage"
+CHECK_IMAGE= "/checkImage"
 
 api = UserDto.api
 _user = UserDto.user
@@ -91,7 +95,6 @@ class User(Resource):
         image = np.fromstring(base64.b64decode(image), np.uint8)
         img = cv2.imdecode(image, cv2.IMREAD_COLOR)
         return model_predict_grpc(img, userId)
-
 
 # @api.route("/predict")
 # class User(Resource):
