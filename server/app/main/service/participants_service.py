@@ -1,5 +1,6 @@
 from app.main import db
 from app.main.model.participants import Participant, AttendanceHistory, AttendanceStatus
+# from app.main.model.attendance import AttendanceHistory, AttendanceStatus
 from app.main.model.participants import Participant
 from sqlalchemy.orm import exc
 from sqlalchemy import exc as exc1
@@ -8,6 +9,8 @@ from app.main.util import utils_response_object
 import datetime
 from app.main.service import config
 from app.main.model.room import Room
+from app.main.util.preprocess_datetime import getCurrentDate
+from app.main.util.preprocess_datetime import getCurrentTime
 
 def out_a_room(userId, publicId):
     roomId= convertPublicIdToRoomId(publicId)
@@ -55,28 +58,34 @@ def checkAttendance(userId):
     pass
 
 
-def createAttendance(userId,roomId,timeStart, timeEnd):
+def createAttendance(userId,publicId,timeStart, timeEnd):
+    roomId=convertPublicIdToRoomId(publicId)
     checker= Participant.query.filter_by(roomId= roomId, userId=userId).first()
     # if is admin -> create attendance history for all participants in room
     try:
         if checker.isAdmin:
+            date= getCurrentDate()
             attendance_history=AttendanceHistory(roomId,date,timeStart, timeEnd)
             save_changes(attendance_history)
             participant_list= Participant.query.filter_by(roomId=roomId).all()
             for participant in participant_list:
-                attendance_status= AttendanceStatus(participant.id, attendance_history.id)
+                attendance_status= AttendanceStatus(participant.id, attendance_history.id, isPresent=participant.isAdmin)
                 save_changes(attendance_status)
             return utils_response_object.send_response_object_CREATED(config.MSG_CREATE_ATTENDANCE_HISTORY_SUCCESS)
         else:
             return utils_response_object.send_response_object_ERROR(config.MSG_CREATE_ATTENDANCE_HISTORY_FAIL)
-    except:
+    except Exception as e:
+        print(e)
         return utils_response_object.send_response_object_INTERNAL_ERROR()
 
-def checkAttendance(userId, publicId, currentDate, timeStart, timeEnd, currentTime):
+def checkAttendance(userId, publicId,timeStart, timeEnd):
     roomId= convertPublicIdToRoomId(publicId)
+    currentDate= getCurrentDate()
+    currentTime= getCurrentTime()
     if not roomId:
         return utils_response_object.send_response_object_ERROR(config.MSG_ROOM_NOT_EXISTS + " or " + config.MSG_ROOM_PUBLIC_ID_IS_NOT_VALID)
-    attendance_histoy=AttendanceHistory.query.filter_by(roomId= roomId, currentTime= currentDate, timeStart=timeStart, timeEnd=timeEnd).first()
+    
+    attendance_histoy=AttendanceHistory.query.filter_by(roomId= roomId, date= currentDate, timeStart=timeStart, timeEnd=timeEnd).first()
     try:
         if attendance_histoy:
             participant= Participant.query.filter_by(userId= userId, roomId=roomId).first()

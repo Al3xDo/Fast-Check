@@ -33,18 +33,20 @@ class Room(Resource):
         userId= get_JWT_identity(request)
         return join_a_room(userId, id)
 
-@api.route(CREATE_ATTENDANCE_ENDPOINT+'/<id>')
+@api.route(CREATE_ATTENDANCE_ENDPOINT+'/<publicId>')
 class Room(Resource):
     @api.doc('create attendance')
     @token_required
-    def post(self, id):
+    def post(self, publicId):
         userId= get_JWT_identity(request)
-        data= request.json
-        return join_a_room(userId, id)
-@api.route(CHECK_ATTENDANCE_ENDPOINT+'/<id>')
+        
+        # data= request.json
+        return createAttendance(userId, publicId, "11:51", "12:00")
+@api.route(CHECK_ATTENDANCE_ENDPOINT+'/<publicId>')
 class Room(Resource):
     @api.doc('check attendance')
     @token_required
-    def post(self, id):
+    def post(self, publicId):
         userId= get_JWT_identity(request)
-        return join_a_room(userId, id)
+        return checkAttendance(userId, publicId, "11:51", "12:00")
+        # return join_a_room(userId, id)
