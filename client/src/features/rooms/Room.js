@@ -1,4 +1,6 @@
 import React, { useEffect } from 'react';
+import { useMemo } from 'react';
+import { toastInfo, toastSuccess } from '../../utils/toastNotify';
 import "./room.css"
 
 export const Room = (props) => {
@@ -12,9 +14,11 @@ export const Room = (props) => {
     if (!isAdmin) {
         props.subcribeRoom(publicId)
     }
-    // useEffect(() => {
-    //     console.log(props.currentRoomCheckId)
-    // }, [props.currentRoomCheckId]);
+    useEffect(() => {
+        if (props.currentRoomCheckId === publicId) {
+            toastInfo("Room has started checking attendance")
+        }
+    }, [props.currentRoomCheckId]);
     return (
         <div className="course box level block" style={{ width: "350px", height: "217px" }}>
             <div className="title-div columns" style={{ paddingRight: "1rem" }}>
@@ -70,7 +74,7 @@ export const Room = (props) => {
                                 Thực hiện điểm danh
                             </button>
                         ) : (
-                            <button className="button is-primary level-right" disabled>
+                            <button className="button is-primary level-right" disabled={props.currentRoomCheckId !== publicId}>
                                 Điểm danh
                             </button>
                         )

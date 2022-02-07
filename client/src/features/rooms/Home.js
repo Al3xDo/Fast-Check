@@ -43,8 +43,6 @@ export const Home = () => {
 
         socketRef.current.on('check', data => {
             setCurrentRoomCheckId(data.roomId)
-            console.log(currentRoomCheckId)
-            console.log(data)
         })
         //   socketRef.current.on('sendDataServer', dataGot => {
         //     setMess(oldMsgs => [...oldMsgs, dataGot.data])
@@ -256,15 +254,6 @@ export const Home = () => {
         // setPublicId(publicId)
     }
     const subcribeRoom = (roomPublicId) => {
-        console.log("subcribe")
-        socketRef.current.emit("check", { roomId: roomPublicId, isAdmin: false })
-        socketRef.current.emit("check", { roomId: roomPublicId, isAdmin: false })
-        socketRef.current.emit("check", { roomId: roomPublicId, isAdmin: false })
-        socketRef.current.emit("check", { roomId: roomPublicId, isAdmin: false })
-        socketRef.current.emit("check", { roomId: roomPublicId, isAdmin: false })
-        socketRef.current.emit("check", { roomId: roomPublicId, isAdmin: false })
-        socketRef.current.emit("check", { roomId: roomPublicId, isAdmin: false })
-        socketRef.current.emit("check", { roomId: roomPublicId, isAdmin: false })
         socketRef.current.emit("check", { roomId: roomPublicId, isAdmin: false })
     }
     const check = (roomPublicId) => {
