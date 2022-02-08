@@ -1,9 +1,0 @@
-import axiosService from "../axiosService";
-import { API_ENDPOINT } from "../constant/user";
-
-
-const url = "/accounts"
-
-export const getAccount = () => {
-    return axiosService.get(`${API_ENDPOINT}${url}/1`)
-}

@@ -1,30 +1,24 @@
-import HomePage from "./pages/Home"
-import UserFormPage from "./pages/UserForm"
-import CheckPage from "./pages/Check"
-import UserPage from "./pages/User"
+// import CheckPage from "./pages/Check"
+import { User } from "./features/users/User.js"
 import ErrorPage from "./pages/Error"
-
+import { Home } from "./features/rooms/Home"
+import { Check } from "./features/check/Check.js"
 
 const routes = [
     {
-        path: "/login",
+        path: "/checking",
         exact: true,
-        main: () => <UserFormPage />
-    },
-    {
-        path: "/",
-        exact: true,
-        main: () => <HomePage />
-    },
-    {
-        path: "/check",
-        exact: true,
-        main: () => <CheckPage />
+        main: () => <Check />
     },
     {
         path: "/information",
         exact: true,
-        main: () => <UserPage />
+        main: () => <User />
+    },
+    {
+        path: "/",
+        exact: true,
+        main: () => <Home />
     },
     {
         path: "",

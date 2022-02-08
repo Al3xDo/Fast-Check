@@ -14,7 +14,7 @@ class UserDto:
 class RoomDto:
     api = Namespace('room', description='room related operations')
     room = api.model('room', {
-        'name': fields.String(required=True, description='room name'),
+        'roomName': fields.String(required=True, description='room name'),
         'dateSchedule': fields.String( description='schedule end time'),
         'timeSchedule': fields.String( description='schedule start time'),
         'code': fields.String( description='room code'),

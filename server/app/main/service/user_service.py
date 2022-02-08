@@ -26,12 +26,17 @@ def save_new_user(data):
             new_user = User(
                 id=str(uuid.uuid4()),
                 email=data['email'],
-                password=data['password']
+                password=data['password'],
+                name=data['user'].split("@")[0]
             )
         except AttributeError:
             return utils_response_object.write_response_object(config.STATUS_FAIL, config.MSG_JSON_NOT_VALIDATE), config.STATUS_CODE_CONFLICT
         save_changes(new_user)
-        return utils_response_object.send_response_object_CREATED(config.MSG_REGISTER_SUCCESS)
+        return  {
+            config.STATUS: config.STATUS_SUCCESS,
+            config.MESSAGE: config.MSG_ADD_USER_SUCCESS,
+            "token": str(new_user.encode_auth_token(new_user.id))
+            }, config.STATUS_CODE_CREATED
     else:
         return utils_response_object.write_response_object(config.STATUS_FAIL, config.MSG_USER_ALREADY_EXIST), config.STATUS_CODE_CONFLICT
 
@@ -58,17 +63,20 @@ def get_a_user(userId):
             encodedImg = get_response_image(imgDir)
             return serialize_user(user, encodedImg), config.STATUS_CODE_SUCCESS
         else:
-            return serialize_user(user), config.STATUS_CODE_SUCCESS
+            imgDir="./app/filesystem/images/default-image.jpg"
+            encodedImg= get_response_image(imgDir)
+            return serialize_user(user, encodedImg), config.STATUS_CODE_SUCCESS
     return utils_response_object.write_response_object(config.STATUS_FAIL, config.MSG_USER_NOT_FOUND), config.STATUS_CODE_NOT_FOUND
 
 
-def update_a_user(data):
-    try:
-        updateUser = User.query.filter_by(id=data["id"]).update(data)
-        db.session.commit()
-        return  utils_response_object.send_response_object_SUCCESS(config.MSG_UPDATE_USER_SUCCESS)
-    except exc.SQLAlchemyError:
-        return utils_response_object.send_response_object_INTERNAL_ERROR()
+def update_a_user(data,userId):
+    # try:
+    print(data)
+    updateUser = User.query.filter_by(id=userId).update(data)
+    db.session.commit()
+    return  utils_response_object.send_response_object_SUCCESS(config.MSG_UPDATE_USER_SUCCESS)
+    # except:
+    #     return utils_response_object.send_response_object_INTERNAL_ERROR()
 
 
 def delete_a_user(userId):
@@ -210,3 +218,6 @@ def save_changes(data):
 #             config.STATUS: config.STATUS_FAIL,
 #         }
 #         return response_object, config.STATUS_CODE_ERROR
+
+def compare_face(imageA, email):
+    return {"status": "success", "message": "You have been checked"}, 200
