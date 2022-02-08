@@ -1,7 +1,5 @@
 import { createAsyncThunk, createSelector, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
-import user from "../../reducer/user";
-import { toastError, toastSuccess } from "../../utils/toastNotify";
 
 export const signUp = createAsyncThunk(
     'auth/signUp',

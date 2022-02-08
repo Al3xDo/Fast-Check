@@ -3,11 +3,15 @@ import datetime
 from app.main import db
 from app.main.model.room import Room
 from app.main.model.user import User
-from app.main.model.participants import Participant
+from app.main.model.participants import Participant, AttendanceHistory, AttendanceStatus
 from sqlalchemy.orm import exc
 from sqlalchemy import exc as sexc
 from app.main.service import config
 from app.main.util import utils_response_object
+from sqlalchemy import between
+from app.main.util.preprocess_datetime import getCurrentTime
+from sqlalchemy import join
+from sqlalchemy import text
 # need a writing log service to tracking the error
 
 
@@ -17,19 +21,20 @@ def save_new_room(data, userId):
         new_room = Room(
             roomName=data['roomName'],
             id= str(uuid.uuid4()),
-            publiId= str(uuid.uuid4().hex)
+            publicId= str(uuid.uuid4().hex)
         )
         new_participant= Participant(userId, new_room.id, datetime.datetime.now().strftime("%d-%m-%Y"), 1)
         save_changes(new_room, new_participant)
         return utils_response_object.send_response_object_CREATED(config.MSG_CREATE_ROOM_SUCCESS)
     else:
         return utils_response_object.send_response_object_INTERNAL_ERROR()
-def serialize_room(room, isAdmin=None):
+def serialize_room(room, isAdmin=None,AttendanceId=None):
     roomDict={
         "id": room.id,
         "roomName": room.roomName,
         "isAdmin": True if isAdmin ==1 else False,
-        "publicId": room.publicId
+        "publicId": room.publicId,
+        "AttendanceId": AttendanceId
     }
     try:
         roomDict["dateSchedule"] = room.dateSchedule
@@ -45,11 +50,28 @@ def serialize_room(room, isAdmin=None):
         pass
     return roomDict
 def get_all_room(userId):
-    query= db.session.query(Room, Participant.isAdmin).join(Participant).filter(Participant.userId == userId).all()
-    #convert to dict for json 
-    joinedRooms=[]
-    for result in query:
-        joinedRooms.append(serialize_room(result[0], result[1]))
+    currentTime= getCurrentTime()
+    query= db.engine.execute(text('''
+        SELECT room.*, attendanceIds.statusId, participants.isAdmin, attendanceIds.isPresent
+        FROM room
+        LEFT JOIN (SELECT roomId, attendance_status.id AS statusId, attendance_status.isPresent
+				FROM attendance_history, attendance_status
+				WHERE (CAST(:currentTime AS TIME) BETWEEN timeStart AND timeEnd)
+				AND attendance_history.id = attendance_status.attendanceHistoryId
+				AND attendance_status.userId = :userId
+				) AS attendanceIds
+        ON attendanceIds.roomId = room.id
+        LEFT JOIN participants
+        ON participants.roomId = room.id
+        WHERE participants.userId=:userId
+        '''),{'userId': userId, 'currentTime': currentTime})
+    item, joinedRooms = {}, []
+    for row in query:
+        for column, value in row.items():
+            # build up the dictionary
+            item = {**item, **{column: value}}
+        joinedRooms.append(item)
+    currentTime=getCurrentTime()
     return joinedRooms
 
 

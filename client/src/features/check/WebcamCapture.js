@@ -1,10 +1,12 @@
 import Webcam from "react-webcam"
 // import { useRef } from "react";
-import { useRef, useCallback } from "react";
-import { callApi, callApiWithToken } from "../utils/apiCaller";
-import * as Config from "../constant/api"
-import { toastSuccess, toastError } from "../utils/toastNotify";
-import { useHistory } from "react-router-dom"
+import { useRef, useCallback, useState } from "react";
+import { callApi } from "../../utils/apiCaller";
+import { toastError, toastSuccess } from "../../utils/toastNotify";
+import { useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
+import { selectAuth } from "../auth/authSlice";
+import { Redirect } from "react-router";
 const videoConstraints = {
     width: 1280,
     height: 720,
@@ -12,6 +14,8 @@ const videoConstraints = {
 }
 const WebcamCapture = (props) => {
     // const history = useHistory()
+    const [redirectToHome, setRedirectToHome] = useState(false)
+    const authState = useSelector(selectAuth)
     const webcamRef = useRef(null);
     const capture = useCallback(
         () => {
@@ -20,20 +24,25 @@ const WebcamCapture = (props) => {
             var data = {
                 "image": imageSrc
             }
-            // console.log(props.token)
-            callApiWithToken("user/checkImage", "POST", data, props.token)
+            callApi(`par/check_attendance/${props.attendanceStatusId}`, "GET", {}, authState.token)
                 .then(res => {
-                    toastSuccess(res.data.message)
-                    // clearInterval(streamVideo)
-                    // history.push("/")
+                    if (res.status === 200) {
+                        toastError(res.data.message)
+                    }
+                    else {
+                        toastSuccess(res.data.message);
+                    }
+                    console.log(redirectToHome)
+                    setRedirectToHome(true)
                 })
                 .catch(err => {
-                    console.log(err)
-                    // clearInterval(streamVideo)
+
+                    toastError(err.message);
                 })
         },
         [webcamRef]
     );
+    if (redirectToHome) return <Redirect to="/" />
     // const streamVideo = setInterval(capture, 10000)
     return (
         <>

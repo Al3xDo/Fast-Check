@@ -1,6 +1,6 @@
 import axios from 'axios'
-import * as Config from '../constant/api'
 
+const API_ENDPOINT = "http://localhost:3001"
 export function callApiWithToken(endpoint, method = 'GET', body, token) {
 
     return axios({
@@ -12,7 +12,7 @@ export function callApiWithToken(endpoint, method = 'GET', body, token) {
             "Access-Control-Allow-Headers": "Origin, Content-Type, X-Auth-Token",
             "Access-Control-Max-Age": "86400"
         },
-        url: `${Config.API_ENDPOINT}/${endpoint}`,
+        url: `${API_ENDPOINT}/${endpoint}`,
         data: body
     })
 }
@@ -20,17 +20,13 @@ export function callApiWithToken(endpoint, method = 'GET', body, token) {
 export function callApi(endpoint, method = 'GET', body, token = null) {
     return axios({
         method: method,
-        url: `${Config.API_ENDPOINT}/${endpoint}`,
-        // url: `${Config.API_ENDPOINT}/${}`,
+        url: `${API_ENDPOINT}/${endpoint}`,
         headers: {
             Authorization: `Bearer ${token}`,
             'Access-Control-Allow-Origin': '*',
             'Content-Type': 'application/json',
-            // 'Access-Control-Allow-Origin': '*',
             "Access-Control-Allow-Methods": "GET, POST, PUT, PATCH, POST, DELETE, OPTIONS",
-            // "Access-Control-Allow-Headers": "Content-Type",
             "Access-Control-Allow-Headers": "Origin, Content-Type, X-Auth-Token"
-            // "Access-Control-Max-Age": "86400"
         },
         data: body
     })

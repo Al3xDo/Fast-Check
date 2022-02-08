@@ -1,12 +1,12 @@
+from socket import socket
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import Bcrypt
 from flask_cors import CORS
 from .config import config_by_name
 
-
 db= SQLAlchemy()
-
+# socketio= SocketIO()
 def create_app(config_name):
     app= Flask(__name__)
     # cors = CORS(app)

@@ -1,7 +1,7 @@
 import React from 'react';
 import "./style.css"
 import { Room } from './Room';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useSelector } from 'react-redux';
 import { toastError, toastSuccess } from '../../utils/toastNotify';
 import { selectAuth } from '../auth/authSlice';
@@ -12,6 +12,13 @@ import { WarningModal } from "./WarningModal"
 import { useDebounce } from '../../hook/useDebounce';
 import { JoinRoomModal } from './JoinRoomModal';
 import { InviteModal } from "./InviteModal"
+import socketIOClient from "socket.io-client"
+import { Socket } from 'socket.io-client';
+import io from "socket.io-client"
+import { AttendaceModal } from './AttendanceModal';
+const HOST = "http://localhost:3001"
+// const socket = Socket(HOST, { transports: ['websocket', "polling"] })
+// const socket = io(HOST, )
 export const Home = () => {
     const authState = useSelector(selectAuth)
     const [rooms, setRooms] = useState([])
@@ -24,11 +31,32 @@ export const Home = () => {
     const [searchRooms, setSearchRooms] = useState([])
     const [openJoinRoomModal, setOpenJoinRoomModal] = useState("")
     const [openInviteModal, setOpenInviteModal] = useState("")
+    const [openAttendanceModal, setOpenAttendanceModal] = useState("")
     const [publicId, setPublicId] = useState("")
+    const [type, setType] = useState("delete")
+    const socketRef = useRef();
+    const [currentRoomCheckId, setCurrentRoomCheckId] = useState("")
+    const [attendanceHistoryId, setAttendanceHistoryId] = useState("")
+    const [attendanceIds, setAttendanceIds] = useState([])
     const [sort, setSort] = useState({
         type: 0,
         by: ""
     })
+    useEffect(() => {
+        socketRef.current = socketIOClient.connect(HOST, { transports: ['websocket', 'polling', 'flashsocket'] })
+
+        socketRef.current.on('check', data => {
+            setCurrentRoomCheckId(data.roomId)
+            setAttendanceHistoryId(data.attendanceHistoryId)
+        })
+        //   socketRef.current.on('sendDataServer', dataGot => {
+        //     setMess(oldMsgs => [...oldMsgs, dataGot.data])
+        //   }) // mỗi khi có tin nhắn thì mess sẽ được render thêm 
+
+        return () => {
+            socketRef.current.disconnect();
+        };
+    }, []);
     const onSort = (choice) => {
         switch (parseInt(choice)) {
             case 1:
@@ -76,6 +104,15 @@ export const Home = () => {
                 toastError(e.message)
             })
     }
+    function fetchAttendanceIds() {
+        callApi("par/get_attendance", "GET", {}, authState.token)
+            .then(res => {
+                setAttendanceIds(res.data)
+            })
+            .catch(e => {
+                toastError(e.message)
+            })
+    }
     useEffect(() => {
         fetchRooms()
     }, [])
@@ -89,7 +126,6 @@ export const Home = () => {
         const formatedDate = day + "/" + month + "/" + year
         return formatedDate
     }
-
     const onDelete = () => {
         callApi(`room/${deleteId}`, 'DELETE', {}, authState.token)
             .then(res => {
@@ -127,6 +163,35 @@ export const Home = () => {
         fetchRooms()
         setEditRoom("")
     }
+    const onOutRoom = () => {
+        callApi(`room/out/${deleteId}`, 'GET', {}, authState.token)
+            .then(res => {
+                toastSuccess(res.data.message)
+                fetchRooms()
+            })
+            .catch(err => {
+                toastError(err.message)
+            })
+    }
+    const onCreateAttendance = (data) => {
+        callApi(`par/create_attendance/${publicId}`, "POST", data, authState.token)
+            .then(res => {
+                toastSuccess(res.data.message)
+                check(publicId, res.data.attendanceHistoryId)
+            })
+            .catch(err => {
+                toastError(err.message)
+            })
+    }
+    const onCheckAttendanceCall = (data) => {
+        callApi(`par/check_attendance/${publicId}`, "POST", data, authState.token)
+            .then(res => {
+                toastSuccess(res.data.message)
+            })
+            .catch(err => {
+                toastError(err.message)
+            })
+    }
     const onOpenEditModal = (id) => {
         setOpenEdit("is-active")
         const temp = rooms.filter(room => room.id === id)[0]
@@ -136,14 +201,24 @@ export const Home = () => {
         setOpenEdit("")
         setEditRoom(null)
     }
-    const onOpenWarningModal = (id) => {
+    const onOpenWarningModal = (id, type) => {
         setOpenWarning("is-active")
+        setType(type)
         setDeleteId(id)
     }
     const onCloseWarningModal = (choice) => {
         setOpenWarning("")
         if (choice) {
-            onDelete()
+            switch (type) {
+                case "out":
+                    onOutRoom(deleteId)
+                    break;
+                case "delete":
+                    onDelete()
+                    break
+                default:
+                    break;
+            }
         }
         setDeleteId("")
     }
@@ -166,6 +241,10 @@ export const Home = () => {
                     onOpenWarningModal={onOpenWarningModal}
                     onOpenEditModal={onOpenEditModal}
                     onOpenInviteModal={onOpenInviteModal}
+                    onOpenAttendanceModal={onOpenAttendanceModal}
+                    onCheckAttendace={onCheckAttendance}
+                    subcribeRoom={subcribeRoom}
+                    check={check}
                 />)
             })
         }
@@ -206,8 +285,34 @@ export const Home = () => {
     }
     const onCloseInviteModal = () => {
         setOpenInviteModal("")
-        // setPublicId(publicId)
     }
+    const onOpenAttendanceModal = (id) => {
+        setOpenAttendanceModal("is-active")
+        setPublicId(id)
+    }
+    const onCloseAttendaceModal = (timeStart, timeEnd) => {
+        setOpenAttendanceModal("")
+        const data = {
+            timeStart: timeStart,
+            timeEnd: timeEnd
+        }
+        // console.log(data)
+        // onCreateAttendance(data)
+    }
+    const onCheckAttendance = () => {
+        setOpenAttendanceModal("")
+        // const data = {
+        //     attendanceHistoryId: attendanceHistoryId
+        // }
+        // onCheckAttendanceCall(data)
+    }
+    const subcribeRoom = (roomPublicId) => {
+        socketRef.current.emit("check", { roomId: roomPublicId, isAdmin: false })
+    }
+    const check = (roomPublicId, attendanceHistoryId) => {
+        socketRef.current.emit("check", { roomId: roomPublicId, isAdmin: true, attendanceHistoryId: attendanceHistoryId })
+    }
+
     return (
         <>
             <div className="course-button">
@@ -266,6 +371,7 @@ export const Home = () => {
             />
             <WarningModal
                 onOpen={openWarning}
+                type={type}
                 onClose={onCloseWarningModal}
             />
             {editRoom &&
@@ -287,9 +393,16 @@ export const Home = () => {
                 onClose={onCloseInviteModal}
                 publicId={publicId}
             />
+            <AttendaceModal
+                open={openAttendanceModal}
+                onClose={() => setOpenAttendanceModal("")}
+                onCreateAttendance={onCreateAttendance}
+                onCheckAttendace={onCheckAttendance}
+                publicId={publicId}
+            />
             <hr />
             <div style={{ minHeight: "500px" }}>
-                <div className="columns">
+                <div className="columns is-multiline">
                     {searchName ?
                         showRoom(searchRooms) :
                         (

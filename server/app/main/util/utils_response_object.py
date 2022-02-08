@@ -15,7 +15,7 @@ def write_response_object_INTERNAL_ERROR():
             config.STATUS: config.STATUS_FAIL,
             config.MESSAGE: config.MSG_INTERNAL_ERROR
             }
-    return response_object
+    return response_object, config.STATUS_CODE_INTERNAL_ERROR
 def send_response_object_INTERNAL_ERROR():
     response_object= {
             config.STATUS: config.STATUS_FAIL,
@@ -23,11 +23,13 @@ def send_response_object_INTERNAL_ERROR():
             }
     return response_object, config.STATUS_CODE_INTERNAL_ERROR
 
-def send_response_object_CREATED(message):
+def send_response_object_CREATED(message,otherData=None):
     response_object= {
             config.STATUS: config.STATUS_SUCCESS,
             config.MESSAGE: message
             }
+    if otherData != None:
+        response_object.update(otherData)
     return response_object, config.STATUS_CODE_CREATED
 
 def send_response_object_ACCEPTED(message):
@@ -51,3 +53,9 @@ def send_response_object_ERROR(message):
             config.MESSAGE: message
             }
     return response_object, config.STATUS_CODE_ERROR
+def send_response_object_NOT_ACCEPTABLE(message):
+    response_object= {
+            config.STATUS: config.STATUS_FAIL,
+            config.MESSAGE: message
+            }
+    return response_object, config.STATUS_CODE_NOT_ACCEPTABLE

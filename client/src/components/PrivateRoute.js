@@ -12,11 +12,9 @@ export const PrivateRoute = ({ children, ...rest }) => {
     const dispatch = useDispatch()
     useEffect(() => {
         if (authState.loading !== "loaded") {
-            // console.log("dispatch")
             dispatch(load())
         }
     }, []);
-    // console.log(authState)
     return (
         <Route
             {...rest}

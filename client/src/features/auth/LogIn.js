@@ -3,11 +3,13 @@ import { useDispatch, useSelector } from "react-redux"
 import { Redirect } from "react-router";
 import { toastError } from "../../utils/toastNotify";
 import { selectAuth, logIn } from "./authSlice";
+import { useLocation } from "react-router";
 import "./style.css"
-export const LogIn = () => {
+export const LogIn = (props) => {
     const authState = useSelector(selectAuth)
     const dispatch = useDispatch()
     const [email, setEmail] = useState("")
+    const location = useLocation()
     const [password, setPassword] = useState("")
     const handleSubmit = () => {
         const user = {
@@ -21,7 +23,7 @@ export const LogIn = () => {
             toastError(e.message)
         }
     }
-    if (authState.loading === "loaded") return <Redirect to="/" />
+    if (authState.loading === "loaded") return <Redirect to={location.state.from.pathname} />
     return (
         <form className="my-form" >
             <div className="box">
