@@ -1,4 +1,7 @@
 from lib2to3.pgen2.token import AT
+import os
+
+import cv2
 from app.main import db
 from app.main.model.participants import Participant,AttendanceHistory, AttendanceStatus
 # from app.main.model.attendance import 
@@ -15,6 +18,7 @@ from app.main.model.user import User
 from app.main.util.preprocess_datetime import getCurrentDate, preprocessTime
 from app.main.util.preprocess_datetime import getCurrentTime
 import uuid
+import face_recognition
 def out_a_room(userId, publicId):
     roomId= convertPublicIdToRoomId(publicId)
     if not roomId:
@@ -81,7 +85,42 @@ def createAttendance(userId,publicId,data):
         print(e)
         return utils_response_object.send_response_object_INTERNAL_ERROR()
 
-def checkAttendance(attendanceStatusId):
+# def model_predict_res(imageA, email):
+#     imgA= detect_face(imageA)
+#     imgB= get_face_image(email)
+#     inputObj= {
+#         "input_31": preprocess_image(imgA),
+#         "input_32": preprocess_image(imgB)
+#     }
+#     response = tfserving_request(inputObj)
+#     if response.status_code ==200:
+#         response_data= json.loads(response.text)['predictions'][0][0]
+#         response_object= {
+#             config.STATUS: config.STATUS_SUCCESS,
+#         }
+#         if response_data == 0:
+#             response_object[config.MESSAGE]= "the same"
+#         else:
+#             response_object[config.MESSAGE]= "not the same"
+#         return response_object, config.STATUS_CODE_SUCCESS
+#     else:
+#         response_object= {
+#             config.STATUS: config.STATUS_FAIL,
+#         }
+#         return response_object, config.STATUS_CODE_ERROR
+def compare_2_face(uploadedImage, userSampleImagePath):
+    sample_image= face_recognition.load_image_file(userSampleImagePath)
+    sample_encoding= face_recognition.face_encodings(sample_image)[0]
+    uploaded_encoding= face_recognition.face_encodings(uploadedImage)[0]
+    result= face_recognition.compare_faces([sample_encoding], uploaded_encoding)
+    print(result)
+    return result[0]
+def checkAttendance(uploadedImage, userId,attendanceStatusId):
+    userSampleImagePath=f"./app/filesystem/user_face_images/{userId}.jpg"
+    if not (os.path.exists(userSampleImagePath)):
+        return utils_response_object.send_response_object_SUCCESS("you have not uploaded your sample image")
+    if not compare_2_face(uploadedImage, userSampleImagePath):
+        return utils_response_object.send_response_object_SUCCESS("your image does not match")
     currentTime= datetime.datetime.now().time()
     attendance_status= AttendanceStatus.query.filter_by(id=attendanceStatusId).first()
     if not attendance_status:

@@ -22,8 +22,8 @@ export const Room = (props) => {
     }, [props.currentRoomCheckId]);
     const openButton = (statusId, isPresent) => {
         if (statusId !== null) {
-            if (isPresent !== 1) return false
-            return true
+            if (isPresent === null) return true
+            return false
         }
         return false
     }
@@ -90,13 +90,13 @@ export const Room = (props) => {
                                 </button>
                             )
                         ) : (
-                            <Link to={openButton(statusId, isPresent) ? "#" : { pathname: '/checking', attendanceStatusId: statusId }}>
+                            <Link to={{ pathname: '/checking', attendanceStatusId: statusId }}>
                                 <button
                                     className="button is-primary level-right"
-                                    disabled={openButton(statusId, isPresent)}
+                                    disabled={!openButton(statusId, isPresent)}
                                     onClick={props.onCheckAttendance}
                                 >
-                                    {openButton ? "Đã điểm danh" : "Điểm danh"}
+                                    Điểm danh
                                 </button>
                             </Link>
                         )

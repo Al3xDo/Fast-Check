@@ -24,7 +24,7 @@ const WebcamCapture = (props) => {
             var data = {
                 "image": imageSrc
             }
-            callApi(`par/check_attendance/${props.attendanceStatusId}`, "GET", {}, authState.token)
+            callApi(`par/check_attendance/${props.attendanceStatusId}`, "POST", data, authState.token)
                 .then(res => {
                     if (res.status === 200) {
                         toastError(res.data.message)
@@ -32,7 +32,6 @@ const WebcamCapture = (props) => {
                     else {
                         toastSuccess(res.data.message);
                     }
-                    console.log(redirectToHome)
                     setRedirectToHome(true)
                 })
                 .catch(err => {

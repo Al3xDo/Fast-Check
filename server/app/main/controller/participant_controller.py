@@ -5,7 +5,10 @@ from ..util.dto import ParticipantDto
 from ..util.decorators import token_required
 from ..util.utils import get_JWT_identity
 from ..service.participants_service import join_a_room, out_a_room, createAttendance, checkAttendance
-
+import re
+import base64
+import numpy as np
+import cv2
 OUT_ROOM_ENDPOINT="/out"
 JOIN_ROOM_ENDPOINT="/join"
 CREATE_ATTENDANCE_ENDPOINT="/create_attendance"
@@ -43,8 +46,11 @@ class Room(Resource):
 @api.route(CHECK_ATTENDANCE_ENDPOINT+'/<attendanceStatusId>')
 class Room(Resource):
     @api.doc('check attendance')
-    # @token_required
-    def get(self, attendanceStatusId):
-        # userId= get_JWT_identity(request)
-        # data= request.json
-        return checkAttendance(attendanceStatusId)
+    @token_required
+    def post(self, attendanceStatusId):
+        userId = get_JWT_identity(request)
+        data = request.json
+        image = re.sub('^data:image/.+;base64,', '', data['image'])
+        image = np.fromstring(base64.b64decode(image), np.uint8)
+        img = cv2.imdecode(image, cv2.IMREAD_COLOR)
+        return checkAttendance(img, userId,attendanceStatusId)
