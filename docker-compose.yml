@@ -1,0 +1,29 @@
+services:
+  server:
+    build:
+      context: ./server
+      dockerfile: dockerfile.server
+      links:
+        -db
+      port:
+        - "3001:3001"
+    command: >
+      sh -c "python manage.py db migrate &&
+             python manage.py db upgrade &&
+             python manage.py run"
+    image: flask-api
+  db:
+    image: mysql:8.0/28
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+    volumes:
+      - ./db:/docker-entrypoint-initdb.d/:ro
+  client:
+    build:
+      context: ./client
+      dockerfile: dockerfile.client
+    image: react-client
+    ports:
+      - "3000:3000"
