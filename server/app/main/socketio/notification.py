@@ -5,7 +5,7 @@ clients=[]
 def handle_message(data):
     if data['isAdmin']:
         join_room(data['roomId'])
-        emit("check", {"roomId": data['roomId']},room= data['roomId'], include_self=False)
+        emit("check", {"roomId": data['roomId'], "attendanceHistoryId": data['attendanceHistoryId']},room= data['roomId'], include_self=False)
     else:
         join_room(data['roomId'])
     

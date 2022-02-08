@@ -4,7 +4,7 @@ from flask_restplus import Resource
 from httplib2 import Response
 from pkg_resources import yield_lines
 from ..util.dto import UserDto
-from ..service.user_service import delete_a_user, model_predict_grpc, save_new_user, update_a_user, upload_image, get_a_user
+from ..service.user_service import compare_face, delete_a_user, model_predict_grpc, save_new_user, update_a_user, upload_image, get_a_user
 from ..util.decorators import token_required
 from ..util.utils import get_JWT_identity
 import re
@@ -87,14 +87,13 @@ class User(Resource):
     @api.doc('upload user avatar image')
     @token_required
     def post(self):
-        print(request.json)
         userId = get_JWT_identity(request)
         # userId="12"
         data = request.json
         image = re.sub('^data:image/.+;base64,', '', data['image'])
         image = np.fromstring(base64.b64decode(image), np.uint8)
         img = cv2.imdecode(image, cv2.IMREAD_COLOR)
-        return model_predict_grpc(img, userId)
+        return compare_face(img, userId)
 
 # @api.route("/predict")
 # class User(Resource):

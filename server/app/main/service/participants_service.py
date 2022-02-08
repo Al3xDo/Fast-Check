@@ -1,17 +1,20 @@
+from lib2to3.pgen2.token import AT
 from app.main import db
-from app.main.model.participants import Participant, AttendanceHistory, AttendanceStatus
-# from app.main.model.attendance import AttendanceHistory, AttendanceStatus
+from app.main.model.participants import Participant,AttendanceHistory, AttendanceStatus
+# from app.main.model.attendance import 
 from app.main.model.participants import Participant
 from sqlalchemy.orm import exc
 from sqlalchemy import exc as exc1
+from sqlalchemy import between
 from app.main.service.room_service import convertPublicIdToRoomId
 from app.main.util import utils_response_object
 import datetime
 from app.main.service import config
 from app.main.model.room import Room
-from app.main.util.preprocess_datetime import getCurrentDate
+from app.main.model.user import User
+from app.main.util.preprocess_datetime import getCurrentDate, preprocessTime
 from app.main.util.preprocess_datetime import getCurrentTime
-
+import uuid
 def out_a_room(userId, publicId):
     roomId= convertPublicIdToRoomId(publicId)
     if not roomId:
@@ -56,10 +59,10 @@ def join_a_room(userId, publicId):
 
 def checkAttendance(userId):
     pass
-
-
-def createAttendance(userId,publicId,timeStart, timeEnd):
+def createAttendance(userId,publicId,data):
     roomId=convertPublicIdToRoomId(publicId)
+    timeStart=data['timeStart']
+    timeEnd=data['timeEnd']
     checker= Participant.query.filter_by(roomId= roomId, userId=userId).first()
     # if is admin -> create attendance history for all participants in room
     try:
@@ -69,39 +72,34 @@ def createAttendance(userId,publicId,timeStart, timeEnd):
             save_changes(attendance_history)
             participant_list= Participant.query.filter_by(roomId=roomId).all()
             for participant in participant_list:
-                attendance_status= AttendanceStatus(participant.id, attendance_history.id, isPresent=participant.isAdmin)
+                attendance_status= AttendanceStatus(id=str(uuid.uuid4()),userId=participant.userId,attendanceHistoryId= attendance_history.id, isPresent=participant.isAdmin)
                 save_changes(attendance_status)
-            return utils_response_object.send_response_object_CREATED(config.MSG_CREATE_ATTENDANCE_HISTORY_SUCCESS)
+            return utils_response_object.send_response_object_CREATED(config.MSG_CREATE_ATTENDANCE_HISTORY_SUCCESS,{"attendanceHistoryId": attendance_history.id})
         else:
             return utils_response_object.send_response_object_ERROR(config.MSG_CREATE_ATTENDANCE_HISTORY_FAIL)
     except Exception as e:
         print(e)
         return utils_response_object.send_response_object_INTERNAL_ERROR()
 
-def checkAttendance(userId, publicId,timeStart, timeEnd):
-    roomId= convertPublicIdToRoomId(publicId)
-    currentDate= getCurrentDate()
-    currentTime= getCurrentTime()
-    if not roomId:
+def checkAttendance(attendanceStatusId):
+    currentTime= datetime.datetime.now().time()
+    attendance_status= AttendanceStatus.query.filter_by(id=attendanceStatusId).first()
+    if not attendance_status:
         return utils_response_object.send_response_object_ERROR(config.MSG_ROOM_NOT_EXISTS + " or " + config.MSG_ROOM_PUBLIC_ID_IS_NOT_VALID)
-    
-    attendance_histoy=AttendanceHistory.query.filter_by(roomId= roomId, date= currentDate, timeStart=timeStart, timeEnd=timeEnd).first()
+    attendance_history=AttendanceHistory.query.filter_by(id=attendance_status.attendanceHistoryId).first()
     try:
-        if attendance_histoy:
-            participant= Participant.query.filter_by(userId= userId, roomId=roomId).first()
-            attendance_status= AttendanceStatus.query.filter_by(attendanceHistoryId=attendance_histoy.id, participantId= participant.id).first()
-            if attendance_status.isPresent:
-                return utils_response_object.send_response_object_ERROR(config.MSG_ALREADY_HAVE_CHECKED_ATTENDANCE)
+        if attendance_status.isPresent:
+            return utils_response_object.send_response_object_SUCCESS(config.MSG_ALREADY_HAVE_CHECKED_ATTENDANCE)
+        else:
+            if attendance_history.timeStart <= currentTime <= attendance_history.timeEnd:
+                attendance_status.isPresent= True
+                save_changes(attendance_status)
+                return utils_response_object.send_response_object_CREATED(config.MSG_CHECKED_ATTENDACE_SUCESSFULLY)
             else:
-                if timeStart <= currentTime <= timeEnd:
-                    attendance_status.isPresent= True
-                    save_changes(attendance_status)
-                    return utils_response_object.send_response_object_CREATED(config.MSG_CHECKED_ATTENDACE_SUCESSFULLY)
-                else:
-                    return utils_response_object.send_response_object_ERROR(config.MSG_TIME_CHECKED_ATTENDACE_OVER_SUCESSFULLY)
-    except:
+                return utils_response_object.send_response_object_ERROR(config.MSG_TIME_CHECKED_ATTENDACE_OVER_SUCESSFULLY)
+    except Exception as e:
+        print(e)
         return utils_response_object.send_response_object_INTERNAL_ERROR()
-
 def save_changes(data):
     db.session.add(data)
     db.session.commit()

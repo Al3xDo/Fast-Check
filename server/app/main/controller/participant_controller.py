@@ -12,7 +12,6 @@ CREATE_ATTENDANCE_ENDPOINT="/create_attendance"
 CHECK_ATTENDANCE_ENDPOINT="/check_attendance"
 
 
-
 api = ParticipantDto.api
 # _room = RoomDto.room
 
@@ -39,14 +38,13 @@ class Room(Resource):
     @token_required
     def post(self, publicId):
         userId= get_JWT_identity(request)
-        
-        # data= request.json
-        return createAttendance(userId, publicId, "11:51", "12:00")
-@api.route(CHECK_ATTENDANCE_ENDPOINT+'/<publicId>')
+        data= request.json
+        return createAttendance(userId, publicId,data)
+@api.route(CHECK_ATTENDANCE_ENDPOINT+'/<attendanceStatusId>')
 class Room(Resource):
     @api.doc('check attendance')
-    @token_required
-    def post(self, publicId):
-        userId= get_JWT_identity(request)
-        return checkAttendance(userId, publicId, "11:51", "12:00")
-        # return join_a_room(userId, id)
+    # @token_required
+    def get(self, attendanceStatusId):
+        # userId= get_JWT_identity(request)
+        # data= request.json
+        return checkAttendance(attendanceStatusId)

@@ -15,6 +15,7 @@ import { InviteModal } from "./InviteModal"
 import socketIOClient from "socket.io-client"
 import { Socket } from 'socket.io-client';
 import io from "socket.io-client"
+import { AttendaceModal } from './AttendanceModal';
 const HOST = "http://localhost:3001"
 // const socket = Socket(HOST, { transports: ['websocket', "polling"] })
 // const socket = io(HOST, )
@@ -30,10 +31,13 @@ export const Home = () => {
     const [searchRooms, setSearchRooms] = useState([])
     const [openJoinRoomModal, setOpenJoinRoomModal] = useState("")
     const [openInviteModal, setOpenInviteModal] = useState("")
+    const [openAttendanceModal, setOpenAttendanceModal] = useState("")
     const [publicId, setPublicId] = useState("")
     const [type, setType] = useState("delete")
     const socketRef = useRef();
     const [currentRoomCheckId, setCurrentRoomCheckId] = useState("")
+    const [attendanceHistoryId, setAttendanceHistoryId] = useState("")
+    const [attendanceIds, setAttendanceIds] = useState([])
     const [sort, setSort] = useState({
         type: 0,
         by: ""
@@ -43,6 +47,7 @@ export const Home = () => {
 
         socketRef.current.on('check', data => {
             setCurrentRoomCheckId(data.roomId)
+            setAttendanceHistoryId(data.attendanceHistoryId)
         })
         //   socketRef.current.on('sendDataServer', dataGot => {
         //     setMess(oldMsgs => [...oldMsgs, dataGot.data])
@@ -94,6 +99,15 @@ export const Home = () => {
         callApi("room/rooms", "GET", {}, authState.token)
             .then(res => {
                 setRooms(res.data)
+            })
+            .catch(e => {
+                toastError(e.message)
+            })
+    }
+    function fetchAttendanceIds() {
+        callApi("par/get_attendance", "GET", {}, authState.token)
+            .then(res => {
+                setAttendanceIds(res.data)
             })
             .catch(e => {
                 toastError(e.message)
@@ -159,6 +173,25 @@ export const Home = () => {
                 toastError(err.message)
             })
     }
+    const onCreateAttendance = (data) => {
+        callApi(`par/create_attendance/${publicId}`, "POST", data, authState.token)
+            .then(res => {
+                toastSuccess(res.data.message)
+                check(publicId, res.data.attendanceHistoryId)
+            })
+            .catch(err => {
+                toastError(err.message)
+            })
+    }
+    const onCheckAttendanceCall = (data) => {
+        callApi(`par/check_attendance/${publicId}`, "POST", data, authState.token)
+            .then(res => {
+                toastSuccess(res.data.message)
+            })
+            .catch(err => {
+                toastError(err.message)
+            })
+    }
     const onOpenEditModal = (id) => {
         setOpenEdit("is-active")
         const temp = rooms.filter(room => room.id === id)[0]
@@ -208,9 +241,10 @@ export const Home = () => {
                     onOpenWarningModal={onOpenWarningModal}
                     onOpenEditModal={onOpenEditModal}
                     onOpenInviteModal={onOpenInviteModal}
+                    onOpenAttendanceModal={onOpenAttendanceModal}
+                    onCheckAttendace={onCheckAttendance}
                     subcribeRoom={subcribeRoom}
                     check={check}
-                    currentRoomCheckId={currentRoomCheckId}
                 />)
             })
         }
@@ -251,15 +285,34 @@ export const Home = () => {
     }
     const onCloseInviteModal = () => {
         setOpenInviteModal("")
-        // setPublicId(publicId)
+    }
+    const onOpenAttendanceModal = (id) => {
+        setOpenAttendanceModal("is-active")
+        setPublicId(id)
+    }
+    const onCloseAttendaceModal = (timeStart, timeEnd) => {
+        setOpenAttendanceModal("")
+        const data = {
+            timeStart: timeStart,
+            timeEnd: timeEnd
+        }
+        // console.log(data)
+        // onCreateAttendance(data)
+    }
+    const onCheckAttendance = () => {
+        setOpenAttendanceModal("")
+        // const data = {
+        //     attendanceHistoryId: attendanceHistoryId
+        // }
+        // onCheckAttendanceCall(data)
     }
     const subcribeRoom = (roomPublicId) => {
         socketRef.current.emit("check", { roomId: roomPublicId, isAdmin: false })
     }
-    const check = (roomPublicId) => {
-        console.log("check")
-        socketRef.current.emit("check", { roomId: roomPublicId, isAdmin: true })
+    const check = (roomPublicId, attendanceHistoryId) => {
+        socketRef.current.emit("check", { roomId: roomPublicId, isAdmin: true, attendanceHistoryId: attendanceHistoryId })
     }
+
     return (
         <>
             <div className="course-button">
@@ -338,6 +391,13 @@ export const Home = () => {
             <InviteModal
                 open={openInviteModal}
                 onClose={onCloseInviteModal}
+                publicId={publicId}
+            />
+            <AttendaceModal
+                open={openAttendanceModal}
+                onClose={() => setOpenAttendanceModal("")}
+                onCreateAttendance={onCreateAttendance}
+                onCheckAttendace={onCheckAttendance}
                 publicId={publicId}
             />
             <hr />

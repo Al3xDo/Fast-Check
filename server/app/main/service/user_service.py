@@ -218,3 +218,6 @@ def save_changes(data):
 #             config.STATUS: config.STATUS_FAIL,
 #         }
 #         return response_object, config.STATUS_CODE_ERROR
+
+def compare_face(imageA, email):
+    return {"status": "success", "message": "You have been checked"}, 200

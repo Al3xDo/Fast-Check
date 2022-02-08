@@ -2,13 +2,14 @@
 import { User } from "./features/users/User.js"
 import ErrorPage from "./pages/Error"
 import { Home } from "./features/rooms/Home"
+import { Check } from "./features/check/Check.js"
 
 const routes = [
-    // {
-    //     path: "/check",
-    //     exact: true,
-    //     main: () => <CheckPage />
-    // },
+    {
+        path: "/checking",
+        exact: true,
+        main: () => <Check />
+    },
     {
         path: "/information",
         exact: true,

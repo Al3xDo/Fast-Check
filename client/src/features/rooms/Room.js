@@ -2,9 +2,10 @@ import React, { useEffect } from 'react';
 import { useMemo } from 'react';
 import { toastInfo, toastSuccess } from '../../utils/toastNotify';
 import "./room.css"
+import { Link } from 'react-router-dom';
 
 export const Room = (props) => {
-    const { roomName, participantNumber, isAdmin, id, publicId } = props.room
+    const { roomName, participantNumber, isAdmin, id, publicId, statusId, isPresent } = props.room
     const onOpenEditModal = (id) => {
         props.onOpenEditModal(id)
     }
@@ -19,6 +20,13 @@ export const Room = (props) => {
             toastInfo("Room has started checking attendance")
         }
     }, [props.currentRoomCheckId]);
+    const openButton = (statusId, isPresent) => {
+        if (statusId !== null) {
+            if (isPresent !== 1) return false
+            return true
+        }
+        return false
+    }
     return (
         <div className="course box level block" style={{ width: "350px", height: "217px" }}>
             <div className="title-div columns" style={{ paddingRight: "1rem" }}>
@@ -67,16 +75,30 @@ export const Room = (props) => {
                         </div>
                     )}
                     <div className="column">
-                        {isAdmin || props.checkStatus ? (
-                            <button className="button is-primary level-right"
-                                onClick={() => props.check(publicId)}
-                            >
-                                Thực hiện điểm danh
-                            </button>
+                        {isAdmin ? (
+                            statusId !== null ? (
+                                <button className="button is-primary level-right"
+                                    disabled
+                                >
+                                    Đang điểm danh
+                                </button>
+                            ) : (
+                                <button className="button is-primary level-right"
+                                    onClick={() => props.onOpenAttendanceModal(publicId)}
+                                >
+                                    Thực hiện điểm danh
+                                </button>
+                            )
                         ) : (
-                            <button className="button is-primary level-right" disabled={props.currentRoomCheckId !== publicId}>
-                                Điểm danh
-                            </button>
+                            <Link to={openButton(statusId, isPresent) ? "#" : { pathname: '/checking', attendanceStatusId: statusId }}>
+                                <button
+                                    className="button is-primary level-right"
+                                    disabled={openButton(statusId, isPresent)}
+                                    onClick={props.onCheckAttendance}
+                                >
+                                    {openButton ? "Đã điểm danh" : "Điểm danh"}
+                                </button>
+                            </Link>
                         )
                         }
                     </div>
