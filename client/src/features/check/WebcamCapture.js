@@ -22,7 +22,8 @@ const WebcamCapture = (props) => {
             const imageSrc = webcamRef.current.getScreenshot();
             // console.log(imageSrc)
             var data = {
-                "image": imageSrc
+                "image": imageSrc,
+                "attendanceStatusId": props.attendanceStatusId
             }
             callApi(`par/check_attendance/${props.attendanceStatusId}`, "POST", data, authState.token)
                 .then(res => {

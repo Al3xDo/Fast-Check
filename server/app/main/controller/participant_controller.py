@@ -43,7 +43,7 @@ class Room(Resource):
         userId= get_JWT_identity(request)
         data= request.json
         return createAttendance(userId, publicId,data)
-@api.route(CHECK_ATTENDANCE_ENDPOINT+'/<attendanceStatusId>')
+@api.route(CHECK_ATTENDANCE_ENDPOINT)
 class Room(Resource):
     @api.doc('check attendance')
     @token_required
@@ -53,4 +53,5 @@ class Room(Resource):
         image = re.sub('^data:image/.+;base64,', '', data['image'])
         image = np.fromstring(base64.b64decode(image), np.uint8)
         img = cv2.imdecode(image, cv2.IMREAD_COLOR)
+        attendanceStatusId= data['attendanceStatusId']
         return checkAttendance(img, userId,attendanceStatusId)

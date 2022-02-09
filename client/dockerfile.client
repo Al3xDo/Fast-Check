@@ -4,9 +4,10 @@ WORKDIR /client
 
 EXPOSE 3000
 
-ENV PATH /app/node_modules/.bin:$PATH
-COPY package.json yarn.lock ./
+COPY package.json ./
 COPY ./src ./src
 COPY ./public ./public
-RUN npm install
-RUN npm build
+
+
+CMD ["npm install"]
+CMD ["npm build"]
