@@ -22,7 +22,7 @@ export const Room = (props) => {
     }, [props.currentRoomCheckId]);
     const openButton = (statusId, isPresent) => {
         if (statusId !== null) {
-            if (isPresent === null) return true
+            if (isPresent === null || isPresent === 0) return true
             return false
         }
         return false

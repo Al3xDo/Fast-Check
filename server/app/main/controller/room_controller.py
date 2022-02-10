@@ -1,5 +1,3 @@
-from operator import ge
-from socket import socket
 from flask import request
 from flask_restplus import Resource
 

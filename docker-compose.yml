@@ -1,0 +1,36 @@
+version: "2.1"
+services:
+  server:
+    container_name: fast-check-api
+    build:
+      context: ./server
+      dockerfile: dockerfile.server
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "3001:3001"
+    # command: >
+    #   sh -c "python ./server/manage.py db migrate &&
+    #          python ./server/manage.py db upgrade &&
+    #          python ./server/manage.py run"
+    image: flask-api
+  db:
+    image: mysql:8.0.28
+    healthcheck:
+      test: "exit 0"
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+    # volumes:
+    #   - /var/lib/mysql
+  client:
+    tty: true
+    container_name: fast-check-client
+    build:
+      context: ./client
+      dockerfile: dockerfile.client
+    image: fast-check-client
+    ports:
+      - "3000:3000"

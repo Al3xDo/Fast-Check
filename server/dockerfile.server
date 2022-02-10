@@ -1,0 +1,15 @@
+FROM python:3.7.11
+
+RUN mkdir -p /usr/src/app
+
+WORKDIR /usr/src/app
+
+ADD . /usr/src/app
+
+RUN pip install --upgrade pip
+RUN pip install cmake
+RUN pip install -r requirements.txt
+RUN apt-get update && apt-get install -y python3-opencv
+RUN pip install opencv-python
+# run server
+CMD python manage.py run
