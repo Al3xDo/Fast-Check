@@ -19,6 +19,8 @@ from app.main.util.preprocess_datetime import getCurrentDate, preprocessTime
 from app.main.util.preprocess_datetime import getCurrentTime
 import uuid
 import face_recognition
+
+from app.main.service.user_service import getUserImgDir
 def out_a_room(userId, publicId):
     roomId= convertPublicIdToRoomId(publicId)
     if not roomId:
@@ -108,37 +110,45 @@ def createAttendance(userId,publicId,data):
 #             config.STATUS: config.STATUS_FAIL,
 #         }
 #         return response_object, config.STATUS_CODE_ERROR
-def compare_2_face(uploadedImage, userSampleImagePath):
-    sample_image= face_recognition.load_image_file(userSampleImagePath)
-    sample_encoding= face_recognition.face_encodings(sample_image)[0]
+def create_encoding_sample_list(saveFolder,image_names):
+    encoding_list=[]
+    for i in image_names:
+        sample_image= face_recognition.load_image_file(os.path.join(saveFolder,i))
+        sample_encoding= face_recognition.face_encodings(sample_image)[0]
+        encoding_list.append(sample_encoding)
+    return encoding_list
+def compare_2_face(uploadedImage, sample_encoding_list):
     uploaded_encoding= face_recognition.face_encodings(uploadedImage)[0]
-    result= face_recognition.compare_faces([sample_encoding], uploaded_encoding)
-    print(result)
+    result= face_recognition.compare_faces(sample_encoding_list, uploaded_encoding)
     return result[0]
 def checkAttendance(uploadedImage, userId,attendanceStatusId):
-    userSampleImagePath=f"./app/filesystem/user_face_images/{userId}.jpg"
-    if not (os.path.exists(userSampleImagePath)):
-        return utils_response_object.send_response_object_SUCCESS("you have not uploaded your sample image")
-    if not compare_2_face(uploadedImage, userSampleImagePath):
-        return utils_response_object.send_response_object_SUCCESS("your image does not match")
     currentTime= datetime.datetime.now().time()
     attendance_status= AttendanceStatus.query.filter_by(id=attendanceStatusId).first()
     if not attendance_status:
         return utils_response_object.send_response_object_ERROR(config.MSG_ROOM_NOT_EXISTS + " or " + config.MSG_ROOM_PUBLIC_ID_IS_NOT_VALID)
     attendance_history=AttendanceHistory.query.filter_by(id=attendance_status.attendanceHistoryId).first()
-    try:
-        if attendance_status.isPresent:
-            return utils_response_object.send_response_object_SUCCESS(config.MSG_ALREADY_HAVE_CHECKED_ATTENDANCE)
-        else:
-            if attendance_history.timeStart <= currentTime <= attendance_history.timeEnd:
+    # try:
+    if attendance_status.isPresent:
+        return utils_response_object.send_response_object_SUCCESS(config.MSG_ALREADY_HAVE_CHECKED_ATTENDANCE)
+    else:
+        if attendance_history.timeStart <= currentTime <= attendance_history.timeEnd:
+
+            saveFolder= getUserImgDir(userId,False)
+            if not (os.path.exists(saveFolder)):
+                return utils_response_object.send_response_object_SUCCESS("you have not uploaded your sample image")
+            image_names= os.listdir(saveFolder)
+            encodingSampleImgs= create_encoding_sample_list(saveFolder,image_names)
+            if compare_2_face(uploadedImage, encodingSampleImgs):
                 attendance_status.isPresent= True
                 save_changes(attendance_status)
                 return utils_response_object.send_response_object_CREATED(config.MSG_CHECKED_ATTENDACE_SUCESSFULLY)
             else:
-                return utils_response_object.send_response_object_ERROR(config.MSG_TIME_CHECKED_ATTENDACE_OVER_SUCESSFULLY)
-    except Exception as e:
-        print(e)
-        return utils_response_object.send_response_object_INTERNAL_ERROR()
+                return utils_response_object.send_response_object_ACCEPTED("your image does not match with sample image")
+        else:
+            return utils_response_object.send_response_object_ERROR(config.MSG_TIME_CHECKED_ATTENDACE_OVER_SUCESSFULLY)
+    # except Exception as e:
+    #     print(e)
+    #     return utils_response_object.send_response_object_INTERNAL_ERROR()
 def save_changes(data):
     db.session.add(data)
     db.session.commit()
