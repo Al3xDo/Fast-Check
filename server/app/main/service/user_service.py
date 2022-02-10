@@ -1,5 +1,4 @@
 import os
-import tensorflow as tf
 import uuid
 
 from werkzeug.utils import secure_filename
@@ -10,13 +9,8 @@ from app.main.model.participants import AttendanceStatus
 from sqlalchemy import exc
 from app.main.service import config
 from app.main.util import utils_response_object
-import grpc
-from tensorflow_serving.apis import predict_pb2
-from tensorflow_serving.apis import prediction_service_pb2_grpc
-# import requests
 import numpy as np
 from ..util.utils import preprocess_email, preprocess_image, detect_face, get_face_image, get_response_image
-from ..util.utils import save_logs_image
 
 
 def save_new_user(data):
@@ -185,39 +179,3 @@ def check_attendance_fail():
 def save_changes(data):
     db.session.add(data)
     db.session.commit()
-
-# import requests
-# def tfserving_request(req_input):  # 1
-#     url = config.MODEL_SERVING_API_REST  # 2
-#     input_request = {"signature": "serving-default",
-#                      "instances": [req_input]}  # 3
-#     response = requests.post(url=url, json=input_request)
-#     return response
-
-
-# def model_predict_res(imageA, email):
-#     imgA= detect_face(imageA)
-#     imgB= get_face_image(email)
-#     inputObj= {
-#         "input_31": preprocess_image(imgA),
-#         "input_32": preprocess_image(imgB)
-#     }
-#     response = tfserving_request(inputObj)
-#     if response.status_code ==200:
-#         response_data= json.loads(response.text)['predictions'][0][0]
-#         response_object= {
-#             config.STATUS: config.STATUS_SUCCESS,
-#         }
-#         if response_data == 0:
-#             response_object[config.MESSAGE]= "the same"
-#         else:
-#             response_object[config.MESSAGE]= "not the same"
-#         return response_object, config.STATUS_CODE_SUCCESS
-#     else:
-#         response_object= {
-#             config.STATUS: config.STATUS_FAIL,
-#         }
-#         return response_object, config.STATUS_CODE_ERROR
-
-def compare_face(imageA, email):
-    return {"status": "success", "message": "You have been checked"}, 200

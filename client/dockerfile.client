@@ -1,6 +1,11 @@
 FROM node:16.13.2
 
-WORKDIR /client
+RUN mkdir -p /usr/src/client
+
+WORKDIR /usr/src/client
+
+ADD . /usr/src/client
+
 
 EXPOSE 3000
 
@@ -8,6 +13,6 @@ COPY package.json ./
 COPY ./src ./src
 COPY ./public ./public
 
-
-CMD ["npm install"]
-CMD ["npm build"]
+RUN npm install -g npm@8.4.1
+RUN ls
+RUN npm run build

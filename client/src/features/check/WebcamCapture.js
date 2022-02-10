@@ -25,7 +25,7 @@ const WebcamCapture = (props) => {
                 "image": imageSrc,
                 "attendanceStatusId": props.attendanceStatusId
             }
-            callApi(`par/check_attendance/${props.attendanceStatusId}`, "POST", data, authState.token)
+            callApi(`par/check_attendance`, "POST", data, authState.token)
                 .then(res => {
                     if (res.status === 200) {
                         toastError(res.data.message)

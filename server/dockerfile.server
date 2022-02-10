@@ -1,12 +1,15 @@
-FROM python:3.7
+FROM python:3.7.11
 
+RUN mkdir -p /usr/src/app
 
-EXPOSE 3001
+WORKDIR /usr/src/app
 
-WORKDIR /server
+ADD . /usr/src/app
 
-COPY requirements.txt /server
-# RUN pip3 install -r requirements.txt
-
-CMD ["pip3 install -r requirements"]
-CMD ["python3", "manage.py", "run"]
+RUN pip install --upgrade pip
+RUN pip install cmake
+RUN pip install -r requirements.txt
+RUN apt-get update && apt-get install -y python3-opencv
+RUN pip install opencv-python
+# run server
+CMD python manage.py run
