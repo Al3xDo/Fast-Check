@@ -32,11 +32,10 @@ const WebcamCapture = (props) => {
                     }
                     else {
                         toastSuccess(res.data.message);
+                        setRedirectToHome(true)
                     }
-                    setRedirectToHome(true)
                 })
                 .catch(err => {
-
                     toastError(err.message);
                 })
         },

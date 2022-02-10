@@ -48,7 +48,6 @@ class Room(Resource):
     @api.doc('check attendance')
     @token_required
     def post(self):
-        print("a")
         userId = get_JWT_identity(request)
         data = request.json
         image = re.sub('^data:image/.+;base64,', '', data['image'])
