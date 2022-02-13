@@ -5,10 +5,12 @@ import { useSelector } from "react-redux";
 import { selectAuth } from "../auth/authSlice";
 import "./style.css"
 import { toastError, toastSuccess } from "../../utils/toastNotify";
+import UploadSampleImage from "./UploadSampleImage";
 export const User = (props) => {
     const authState = useSelector(selectAuth)
     const [user, setUser] = useState(null)
     const [name, setName] = useState("")
+    const [openUploadSampleImageModal, setOpenUploadSampleImageModal] = useState("")
     const [showEditForm, setShowEditForm] = useState(false)
     function fetchUser() {
         callApi("user/", "GET", {}, authState.token)
@@ -91,7 +93,15 @@ export const User = (props) => {
                             </div>
                         )
                     )}
-
+                    <button className="button is-primary"
+                        onClick={() => setOpenUploadSampleImageModal("is-active")}
+                    >
+                        Upload sample image
+                    </button>
+                    <UploadSampleImage
+                        open={openUploadSampleImageModal}
+                        onClose={() => setOpenUploadSampleImageModal("")}
+                    />
                 </div>
 
             </div>

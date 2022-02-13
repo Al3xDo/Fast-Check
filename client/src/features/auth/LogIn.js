@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux"
 import { Redirect } from "react-router";
-import { toastError, toastSuccess } from "../../utils/toastNotify";
-import { selectAuth, logIn, set } from "./authSlice";
+import { toastError } from "../../utils/toastNotify";
+import { selectAuth, logIn } from "./authSlice";
 import { useLocation } from "react-router";
 import "./style.css"
 import { callApi } from "../../utils/apiCaller";

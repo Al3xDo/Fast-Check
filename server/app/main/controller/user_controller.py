@@ -1,5 +1,6 @@
 from flask import request
 from flask_restplus import Resource
+from app.main.service.participants_service import checkAttendance
 from ..util.dto import UserDto
 from ..service.user_service import  delete_a_user, save_new_user, update_a_user, upload_image, get_a_user
 from ..util.decorators import token_required
@@ -84,5 +85,8 @@ class User(Resource):
     @token_required
     def post(self):
         userId = get_JWT_identity(request)
-        file = request.files.get('file')
-        return upload_image(userId, file, isAvatar=False)
+        data = request.json
+        image = re.sub('^data:image/.+;base64,', '', data['image'])
+        image = np.fromstring(base64.b64decode(image), np.uint8)
+        img = cv2.imdecode(image, cv2.IMREAD_COLOR)
+        return upload_image(userId, img, isAvatar=False)

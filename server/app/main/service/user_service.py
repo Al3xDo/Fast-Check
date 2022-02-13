@@ -11,7 +11,8 @@ from app.main.service import config
 from app.main.util import utils_response_object
 import numpy as np
 from ..util.utils import preprocess_email, preprocess_image, detect_face, get_face_image, get_response_image
-
+import cv2
+import face_recognition
 FILESYSTEM_PATH="./app/filesystem/"
 FACE_IMAGES_PATH="user_face_images/"
 IMAGES_PATH="images/"
@@ -95,31 +96,33 @@ def allowed_file(filename):
 def upload_image(userId, file, isAvatar=True):
     try:
         user = User.query.filter_by(id=userId).first()
-        if file:
-            filename = secure_filename(file.filename)
-            if allowed_file(filename):
-                if isAvatar:
-                    saveDir = getUserImgDir(userId)
-                    # save to the filesystem
-                    file.save(saveDir)
-                    # save image dir to database
-                    user.hasAvatar = True
-                    db.session.commit()
-                    return utils_response_object.send_response_object_ACCEPTED(config.MSG_UPLOAD_IMAGE_SUCCESS)
-                else:
-                    saveFolder = getUserImgDir(userId, False)
-                    if not os.path.exists(saveFolder):
-                        os.mkdir(saveFolder)
-                    imgNum= len(os.listdir(saveFolder))
-                    file.save(saveFolder+str(imgNum)+".jpg")
-                    return utils_response_object.send_response_object_CREATED("Upload sample image success")
-            else:
-                return utils_response_object.write_response_object(config.STATUS_FAIL, config.MSG_FILETYPE_IS_NOT_ALLOWED), config.STATUS_CODE_NOT_ACCEPTABLE
+            # filename = secure_filename(file.filename)
+        if isAvatar:
+            saveDir = getUserImgDir(userId)
+            # save to the filesystem
+            cv2.imwrite(saveDir, file)
+            user.hasAvatar = True
+            db.session.commit()
+            return utils_response_object.send_response_object_ACCEPTED(config.MSG_UPLOAD_IMAGE_SUCCESS)
         else:
-            return utils_response_object.write_response_object(config.STATUS_FAIL, config.MSG_FILE_NOT_EXITS), config.STATUS_CODE_NOT_ACCEPTABLE
+            face_locations= face_recognition.face_locations(file)
+            user_face_location= None
+            if len(face_locations) >1:
+                return utils_response_object.send_response_object_NOT_ACCEPTABLE("Too many face in the sample image")
+            print(len(face_locations))
+            for face_location in face_locations:
+                top, right, bottom, left = face_location
+                user_face_location= file[top:bottom, left:right]
+            saveFolder = getUserImgDir(userId, False)
+            if not os.path.exists(saveFolder):
+                os.mkdir(saveFolder)
+                cv2.imwrite(saveFolder+"0.jpg", user_face_location)
+            imagePaths= os.listdir(saveFolder)
+            cv2.imwrite(saveFolder+str(int(imagePaths[-1].split(".jpg")[0]) +1)+".jpg", user_face_location)
+            return utils_response_object.send_response_object_CREATED("Upload sample image success")
     except Exception as e:
         print(e)
-        return utils_response_object.send_response_object_ERROR(config.MSG_UPLOAD_IMAGE_FAIL)
+        return utils_response_object.send_response_object_NOT_ACCEPTABLE(config.MSG_UPLOAD_IMAGE_FAIL)
 
 
 def save_changes(data):

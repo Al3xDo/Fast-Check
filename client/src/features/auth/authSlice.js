@@ -71,7 +71,7 @@ export const AuToken = createAsyncThunk(
             const response = await axios.post('http://localhost:3001/auth/checkToken', {}, config)
             return response;
         } catch (error) {
-            return thunkAPI.rejectWithValue({ error: error.message });
+            return thunkAPI.rejectWithValue({ error: error.response.data.message });
         }
     }
 )

@@ -4,7 +4,6 @@ import { useRef, useCallback, useState } from "react";
 import { callApi } from "../../utils/apiCaller";
 import { toastError, toastSuccess } from "../../utils/toastNotify";
 import { useSelector } from "react-redux";
-import { useDispatch } from "react-redux";
 import { selectAuth } from "../auth/authSlice";
 import { Redirect } from "react-router";
 const videoConstraints = {
@@ -27,16 +26,11 @@ const WebcamCapture = (props) => {
             }
             callApi(`par/check_attendance`, "POST", data, authState.token)
                 .then(res => {
-                    if (res.status === 200) {
-                        toastError(res.data.message)
-                    }
-                    else {
-                        toastSuccess(res.data.message);
-                        setRedirectToHome(true)
-                    }
+                    toastSuccess(res.data.message)
+                    // setRedirectToHome(true)
                 })
                 .catch(err => {
-                    toastError(err.message);
+                    toastError(err.response.data.message);
                 })
         },
         [webcamRef]

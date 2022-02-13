@@ -120,6 +120,7 @@ def create_encoding_sample_list(saveFolder,image_names):
 def compare_2_face(uploadedImage, sample_encoding_list):
     uploaded_encoding= face_recognition.face_encodings(uploadedImage)[0]
     result= face_recognition.compare_faces(sample_encoding_list, uploaded_encoding)
+    print(result)
     return result[0]
 def checkAttendance(uploadedImage, userId,attendanceStatusId):
     currentTime= datetime.datetime.now().time()
@@ -135,8 +136,10 @@ def checkAttendance(uploadedImage, userId,attendanceStatusId):
 
             saveFolder= getUserImgDir(userId,False)
             if not (os.path.exists(saveFolder)):
-                return utils_response_object.send_response_object_SUCCESS("you have not uploaded your sample image")
+                return utils_response_object.send_response_object_NOT_ACCEPTABLE("you have not uploaded your sample image")
             image_names= os.listdir(saveFolder)
+            if (image_names == []):
+                return utils_response_object.send_response_object_NOT_ACCEPTABLE("you havew not uploaded your sample image")
             encodingSampleImgs= create_encoding_sample_list(saveFolder,image_names)
             if compare_2_face(uploadedImage, encodingSampleImgs):
                 attendance_status.isPresent= True
