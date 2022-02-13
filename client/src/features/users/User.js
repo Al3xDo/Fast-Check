@@ -63,7 +63,7 @@ export const User = (props) => {
         fetchUser()
     }
     return (
-        <div className="user-board columns">
+        <div className="user-board columns" style={{ justifyContent: "space-between" }}>
             <div className="columns">
                 <div className="avatar">
                     {user && (
@@ -89,7 +89,7 @@ export const User = (props) => {
                             <input className="input is-normal is-hovered"
                                 onChange={(e) => setName(e.target.value)}
                             />
-                            <div className="box-footer mt-20">
+                            <div className="box-footer mt-10">
                                 <div className="level-right">
                                     <button className="button is-primary level-item"
                                         onClick={onSubmitEdit}
@@ -121,11 +121,13 @@ export const User = (props) => {
                                 </label>
                             </div>
                             {fileUpload.name && (
-                                <button className="button is-primary"
-                                    onClick={onUploadAvatar}
-                                >
-                                    Upload file
-                                </button>
+                                <div className="level-right">
+                                    <button className="button is-primary mt-10 level-right"
+                                        onClick={onUploadAvatar}
+                                    >
+                                        Upload file
+                                    </button>
+                                </div>
                             )}
                         </div>
                     ) : (
@@ -139,6 +141,7 @@ export const User = (props) => {
                     <button className="button is-primary"
                         onClick={() => setOpenUploadSampleImageModal("is-active")}
                     >
+                        <i class="fa-solid fa-camera-retro"></i>
                         Upload sample image
                     </button>
                     <UploadSampleImage
@@ -148,8 +151,8 @@ export const User = (props) => {
                 </div>
 
             </div>
-            <div className="columns w-800">
-                <div className="information ml-200" >
+            <div className="columns">
+                <div className="information" >
                     {/* <div className="buttons">
                         <button
                             className="button is-info mgr-10"

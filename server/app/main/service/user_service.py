@@ -71,8 +71,7 @@ def get_a_user(userId):
 
 def update_a_user(data,userId):
     # try:
-    print(data)
-    updateUser = User.query.filter_by(id=userId).update(data)
+    User.query.filter_by(id=userId).update(data)
     db.session.commit()
     return  utils_response_object.send_response_object_SUCCESS(config.MSG_UPDATE_USER_SUCCESS)
     # except:
@@ -81,7 +80,7 @@ def update_a_user(data,userId):
 
 def delete_a_user(userId):
     try:
-        deleteUser = User.query.filter_by(id=userId).delete()
+        User.query.filter_by(id=userId).delete()
         db.session.commit()
         return utils_response_object.send_response_object_SUCCESS(config.MSG_DELTED_USER_SUCCESS)
     except:
@@ -96,7 +95,9 @@ def allowed_file(filename):
 def upload_image(userId, file, isAvatar=True):
     try:
         user = User.query.filter_by(id=userId).first()
-            # filename = secure_filename(file.filename)
+        filename = secure_filename(file.filename)
+        if not allowed_file(filename):
+            return utils_response_object.send_response_object_NOT_ACCEPTABLE("Only support png, jpg, jpeg file type, please upload again with correct filetype")
         if isAvatar:
             saveDir = getUserImgDir(userId)
             # save to the filesystem

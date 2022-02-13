@@ -120,7 +120,6 @@ def create_encoding_sample_list(saveFolder,image_names):
 def compare_2_face(uploadedImage, sample_encoding_list):
     uploaded_encoding= face_recognition.face_encodings(uploadedImage)[0]
     result= face_recognition.compare_faces(sample_encoding_list, uploaded_encoding)
-    print(result)
     return result[0]
 def checkAttendance(uploadedImage, userId,attendanceStatusId):
     currentTime= datetime.datetime.now().time()
