@@ -61,7 +61,7 @@ export const User = (props) => {
                         style={{ width: "100%" }}
                         onClick={() => setShowEditForm(true)}
                     >
-                        <span class="icon mr-1">
+                        <span className="icon mr-1">
                             <ion-icon name="create-outline"></ion-icon>
                         </span>
                         Edit User

@@ -13,8 +13,6 @@ import { useDebounce } from '../../hook/useDebounce';
 import { JoinRoomModal } from './JoinRoomModal';
 import { InviteModal } from "./InviteModal"
 import socketIOClient from "socket.io-client"
-import { Socket } from 'socket.io-client';
-import io from "socket.io-client"
 import { AttendaceModal } from './AttendanceModal';
 const HOST = "http://localhost:3001"
 // const socket = Socket(HOST, { transports: ['websocket', "polling"] })
@@ -37,7 +35,6 @@ export const Home = () => {
     const socketRef = useRef();
     const [currentRoomCheckId, setCurrentRoomCheckId] = useState("")
     const [attendanceHistoryId, setAttendanceHistoryId] = useState("")
-    const [attendanceIds, setAttendanceIds] = useState([])
     const [sort, setSort] = useState({
         type: 0,
         by: ""
@@ -101,16 +98,10 @@ export const Home = () => {
                 setRooms(res.data)
             })
             .catch(e => {
-                toastError(e.message)
-            })
-    }
-    function fetchAttendanceIds() {
-        callApi("par/get_attendance", "GET", {}, authState.token)
-            .then(res => {
-                setAttendanceIds(res.data)
-            })
-            .catch(e => {
-                toastError(e.message)
+                if (e.response.status === 401) {
+                    toastError(e.response.data.message)
+                }
+                toastError(e.response.data.message)
             })
     }
     useEffect(() => {
@@ -312,7 +303,6 @@ export const Home = () => {
     const check = (roomPublicId, attendanceHistoryId) => {
         socketRef.current.emit("check", { roomId: roomPublicId, isAdmin: true, attendanceHistoryId: attendanceHistoryId })
     }
-
     return (
         <>
             <div className="course-button">

@@ -1,8 +1,11 @@
 import { Link } from "react-router-dom"
 import catLogo from "../asset/image/cat.png"
+import { logOut } from "../features/auth/authSlice"
+import { useDispatch } from "react-redux"
 const Header = (props) => {
-    const Logout = () => {
-        localStorage.removeItem("cat-check-token")
+    const dispatch = useDispatch()
+    const onLogOut = () => {
+        dispatch(logOut)
     }
     return (
         <nav className="navbar is-light mb-30" role="navigation" aria-label="main navigation">
@@ -20,7 +23,7 @@ const Header = (props) => {
                 <div className="navbar-item">
                     <Link to="/login">
                         <button className="button is-primary"
-                            onClick={Logout}
+                            onClick={onLogOut}
                         >
                             Log out
                         </button>

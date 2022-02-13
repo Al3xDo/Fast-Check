@@ -11,5 +11,6 @@ RUN pip install cmake
 RUN pip install -r requirements.txt
 RUN apt-get update && apt-get install -y python3-opencv
 RUN pip install opencv-python
-# run server
+
+
 CMD python manage.py run

@@ -37,12 +37,20 @@
   }
 }
 
-.bordered{
+.bordered {
   border: 5px solid red;
 }
-.bordered-b{
+.bordered-b {
   border: 5px solid blue;
 }
-.bordered-g{
+.bordered-g {
   border: 5px solid green;
+}
+.ui-overlay-c {
+  background: red;
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
 }

@@ -87,7 +87,6 @@ def get_a_room(userId,id):
         return response_object, 404
 
 def delete_a_room(userId, id):
-    response_object={}
     # try:
     # check if user is admin
     userRight= db.session.query(Participant).filter_by(userId= userId, roomId= id).first()

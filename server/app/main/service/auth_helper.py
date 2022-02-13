@@ -24,7 +24,7 @@ class Auth:
                     config.STATUS: config.STATUS_FAIL,
                     config.MESSAGE: config.MSG_INFO_NOT_MATCH
                 }
-                return response_object, config.STATUS_CODE_ERROR
+                return response_object, config.STATUS_CODE_NOT_FOUND
 
         except Exception as e:
             response_object = {
