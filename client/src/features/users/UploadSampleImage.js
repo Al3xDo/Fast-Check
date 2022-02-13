@@ -2,7 +2,7 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import { useRef, useCallback } from 'react';
 import { toastError, toastSuccess } from '../../utils/toastNotify';
-import { callApi } from '../../utils/apiCaller';
+import { callApi, callApiUploadImage } from '../../utils/apiCaller';
 import { selectAuth } from '../auth/authSlice';
 import Webcam from "react-webcam"
 const videoConstraints = {
@@ -17,10 +17,9 @@ const UploadSampleImage = (props) => {
         () => {
             const imageSrc = webcamRef.current.getScreenshot();
             // console.log(imageSrc)
-            var data = {
-                "image": imageSrc,
-            }
-            callApi(`user/uploadSample`, "POST", data, authState.token)
+            const formData = new FormData()
+            formData.append("image", imageSrc);
+            callApiUploadImage(`user/uploadSample`, "POST", formData, authState.token)
                 .then(res => {
                     toastSuccess(res.data.message)
                 })

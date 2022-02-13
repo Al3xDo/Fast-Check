@@ -100,7 +100,8 @@ def upload_image(userId, file, isAvatar=True):
         if isAvatar:
             saveDir = getUserImgDir(userId)
             # save to the filesystem
-            cv2.imwrite(saveDir, file)
+            # cv2.imwrite(saveDir, file)
+            file.save(saveDir)
             user.hasAvatar = True
             db.session.commit()
             return utils_response_object.send_response_object_ACCEPTED(config.MSG_UPLOAD_IMAGE_SUCCESS)
@@ -116,9 +117,9 @@ def upload_image(userId, file, isAvatar=True):
             saveFolder = getUserImgDir(userId, False)
             if not os.path.exists(saveFolder):
                 os.mkdir(saveFolder)
-                cv2.imwrite(saveFolder+"0.jpg", user_face_location)
+                file.save(saveFolder+"0.jpg", user_face_location)
             imagePaths= os.listdir(saveFolder)
-            cv2.imwrite(saveFolder+str(int(imagePaths[-1].split(".jpg")[0]) +1)+".jpg", user_face_location)
+            file.save(saveFolder+str(int(imagePaths[-1].split(".jpg")[0]) +1)+".jpg", user_face_location)
             return utils_response_object.send_response_object_CREATED("Upload sample image success")
     except Exception as e:
         print(e)

@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react"
 import Calendar from "../../components/Calendar"
-import { callApi } from "../../utils/apiCaller";
+import { callApi, callApiUploadImage } from "../../utils/apiCaller";
 import { useSelector } from "react-redux";
 import { selectAuth } from "../auth/authSlice";
 import "./style.css"
@@ -12,6 +12,10 @@ export const User = (props) => {
     const [name, setName] = useState("")
     const [openUploadSampleImageModal, setOpenUploadSampleImageModal] = useState("")
     const [showEditForm, setShowEditForm] = useState(false)
+    const [fileUpload, setFileUpload] = useState({
+        name: "",
+        file: ""
+    })
     function fetchUser() {
         callApi("user/", "GET", {}, authState.token)
             .then((res) => {
@@ -46,6 +50,17 @@ export const User = (props) => {
     const onSubmitEdit = () => {
         setShowEditForm(false)
         onEdit()
+    }
+    const onUploadAvatar = () => {
+        const formData = new FormData();
+        formData.append("image", fileUpload.file);
+        callApiUploadImage("user/uploadAvatar", "POST", formData, authState.token)
+            .then((res) =>
+                toastSuccess(res.data.message))
+            .catch((err) => {
+                toastError(err.response.data.message)
+            })
+        fetchUser()
     }
     return (
         <div className="user-board columns">
@@ -84,6 +99,34 @@ export const User = (props) => {
                                     > Cancel</button>
                                 </div>
                             </div>
+                            <div className="file has-name mt-10"
+                                onChange={(e) => setFileUpload({
+                                    name: e.target.files[0].name,
+                                    file: e.target.files[0]
+                                })}
+                            >
+                                <label className="file-label">
+                                    <input className="file-input" type="file" name="resume" />
+                                    <span className="file-cta">
+                                        <span className="file-icon">
+                                            <ion-icon name="cloud-upload-outline"></ion-icon>
+                                        </span>
+                                        <span className="file-label">
+                                            Choose a file…
+                                        </span>
+                                    </span>
+                                    <span className="file-name">
+                                        {fileUpload.name}
+                                    </span>
+                                </label>
+                            </div>
+                            {fileUpload.name && (
+                                <button className="button is-primary"
+                                    onClick={onUploadAvatar}
+                                >
+                                    Upload file
+                                </button>
+                            )}
                         </div>
                     ) : (
                         user && (
