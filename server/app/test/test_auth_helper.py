@@ -1,5 +1,6 @@
 import unittest
 import datetime
+import logging
 
 from app.main import db
 from app.main.model.user import User
@@ -7,29 +8,9 @@ from app.test.base import BaseTestCase
 import uuid
 import unittest
 import json
+import sys
 from app.main.service import config
-
-def register_user(self):
-    return self.client.post(
-        '/user/signup',
-        data=json.dumps(dict(
-            email='example@gmail.com',
-            password='123456'
-        )),
-        content_type='application/json'
-    )
-
-
-def login_user(self):
-    return self.client.post(
-        '/auth/login',
-        data=json.dumps(dict(
-            email='example@gmail.com',
-            password='123456'
-        )),
-        content_type='application/json'
-    )
-
+from utils import register_user, login_user
 
 class TestAuthBlueprint(BaseTestCase):
 
@@ -65,8 +46,10 @@ class TestAuthBlueprint(BaseTestCase):
                 )
             )
             data = json.loads(response.data.decode())
-            self.assertTrue(data['status'] == 'success')
-            self.assertEqual(response.status_code, 200)
+            self.assertTrue(data['status'] == config.STATUS_SUCCESS)
+            self.assertEqual(response.status_code, config.STATUS_CODE_SUCCESS)
 
 if __name__ == '__main__':
+    logging.basicConfig( stream=sys.stderr )
+    logging.getLogger( "SomeTest.testSomething" ).setLevel( logging.DEBUG )
     unittest.main()

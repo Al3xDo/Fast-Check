@@ -132,7 +132,6 @@ def checkAttendance(uploadedImage, userId,attendanceStatusId):
         return utils_response_object.send_response_object_SUCCESS(config.MSG_ALREADY_HAVE_CHECKED_ATTENDANCE)
     else:
         if attendance_history.timeStart <= currentTime <= attendance_history.timeEnd:
-
             saveFolder= getUserImgDir(userId,False)
             if not (os.path.exists(saveFolder)):
                 return utils_response_object.send_response_object_NOT_ACCEPTABLE("you have not uploaded your sample image")

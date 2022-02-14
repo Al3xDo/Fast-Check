@@ -141,8 +141,12 @@ export const User = (props) => {
                     <button className="button is-primary"
                         onClick={() => setOpenUploadSampleImageModal("is-active")}
                     >
-                        <i class="fa-solid fa-camera-retro"></i>
-                        Upload sample image
+                        <span className="icon is-medium">
+                            <ion-icon name="camera"></ion-icon>
+                        </span>
+                        <span>
+                            Upload sample image
+                        </span>
                     </button>
                     <UploadSampleImage
                         open={openUploadSampleImageModal}
