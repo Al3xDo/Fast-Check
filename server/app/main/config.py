@@ -1,12 +1,15 @@
 import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 class Config(object):
     DEBUG = False
     TESTING = False
-    SECRET_KEY = os.environ.get("SECRET_KEY")
-    SQLALCHEMY_NAME=os.environ.get("DB_NAME")
-    SQLALCHEMY_PASSWORD=os.environ.get("DB_PASSWORD")
-    SQLALCHEMY_HOST=os.environ.get("DB_HOST")
+    SECRET_KEY = os.getenv('SECRET_KEY')
+    SQLALCHEMY_NAME=os.getenv('DB_NAME')
+    SQLALCHEMY_PASSWORD=os.getenv('DB_PASSWORD')
+    SQLALCHEMY_HOST=os.getenv('DB_HOST')
 class ProductionConfig(Config):
     SQLALCHEMY_ECHO = False
     SQLALCHEMY_TRACK_MODIFICATIONS = True
