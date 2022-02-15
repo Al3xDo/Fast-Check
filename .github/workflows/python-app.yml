@@ -64,7 +64,7 @@ jobs:
     - name: Test with unittest
       working-directory: ./server
       run: |
-        mysql -h 127.0.0.1 --port 3306 -u root -p ${{ secrets.DB_PASSWORD }} -e 'CREATE DATABASE IF NOT EXISTS fast_check_test;'
+        mysql -h 127.0.0.1 --port 3306 -u root -e 'CREATE DATABASE IF NOT EXISTS fast_check_test;'
         touch .env
         echo SECRET_KEY=${{ secrets.SECRET_KEY }} >> .env
         echo DB_NAME=${{ secrets.DB_NAME }} >> .env
