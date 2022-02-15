@@ -9,8 +9,8 @@ from app.main.model import room
 from app.main.model import blacklist
 from app.main.model import participants
 from app import blueprint
-from app.main.socketio.socketio import socketio
-import app.main.socketio.notification
+# from app.main.socketio.socketio import socketio
+# import app.main.socketio.notification
 app= create_app("dev")
 app.register_blueprint(blueprint)
 app.app_context().push()
