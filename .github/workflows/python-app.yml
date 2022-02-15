@@ -51,6 +51,7 @@ jobs:
         mysql version: '8.0'
         mysql database: 'fast_check_test'
         mysql root password: ${{ secrets.DB_PASSWORD }}
+        run: mysql -h 127.0.0.1 --port 3306 -u root - ${{ secrets.DB_PASSWORD }} -e 'CREATE DATABASE IF NOT EXISTS fast_check_test;'
     - name: Test with unittest
       working-directory: ./server
       run: |
