@@ -3,7 +3,7 @@ import unittest
 
 from flask_migrate import Migrate, MigrateCommand
 from flask_script import Manager
-from app.main import create_app,db, socketio
+from app.main import create_app,db
 from app.main.model import user
 from app.main.model import room
 from app.main.model import blacklist
@@ -17,11 +17,12 @@ app.app_context().push()
 manager = Manager(app)
 migrate = Migrate().init_app(app, db)
 manager.add_command('db', MigrateCommand)
-socketio.init_app(app, cors_allowed_origins="*")
+# socketio.init_app(app, cors_allowed_origins="*")
 
 @manager.command
 def run():
-    socketio.run(app, port=3001)
+    app.run(port=3001)
+    # socketio.run(app, port=3001)
 @manager.command
 def test():
     """Runs the unit tests."""
