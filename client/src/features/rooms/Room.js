@@ -1,6 +1,5 @@
 import React, { useEffect } from 'react';
-import { useMemo } from 'react';
-import { toastInfo, toastSuccess } from '../../utils/toastNotify';
+import { toastInfo } from '../../utils/toastNotify';
 import "./room.css"
 import { Link } from 'react-router-dom';
 
@@ -33,7 +32,7 @@ export const Room = (props) => {
                 <div className="column is-9">
                     <h1 className="title">{roomName}</h1>
                 </div>
-                {isAdmin && (
+                {isAdmin !== 0 && (
                     <div className="column">
                         <ion-icon name="ellipsis-vertical-outline"
                             onClick={() => onOpenEditModal(id)}
@@ -63,7 +62,7 @@ export const Room = (props) => {
             </div>
             <div className="course-icon">
                 <div className="columns mgb-small">
-                    {isAdmin && (
+                    {isAdmin !== 0 && (
                         <div className="column">
                             <button className="button"
                                 onClick={() => props.onOpenInviteModal(publicId)}

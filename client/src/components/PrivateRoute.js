@@ -1,9 +1,8 @@
 import React, { useEffect } from 'react'
 import { Route, Redirect } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
-import { selectAuth, load } from '../features/auth/authSlice'
-import { LogIn } from '../features/auth'
-import { BrowserRouter, Switch } from 'react-router-dom'
+import { selectAuth } from '../features/auth/authSlice'
+import { load } from '../features/auth/authSlice'
 // A wrapper for <Route> that redirects to the login
 // screen if you're not yet authenticated or if auth is not
 // yet loaded
@@ -12,6 +11,7 @@ export const PrivateRoute = ({ children, ...rest }) => {
     const dispatch = useDispatch()
     useEffect(() => {
         if (authState.loading !== "loaded") {
+            // dispatch(AuToken)
             dispatch(load())
         }
     }, []);
@@ -29,7 +29,6 @@ export const PrivateRoute = ({ children, ...rest }) => {
                         }}
                     />
                 )
-                // children
             }
         />
     )

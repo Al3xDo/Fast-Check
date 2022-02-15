@@ -31,3 +31,18 @@ export function callApi(endpoint, method = 'GET', body, token = null) {
         data: body
     })
 }
+export function callApiUploadImage(endpoint, method = 'GET', body, token = null) {
+    return axios({
+        method: method,
+        url: `${API_ENDPOINT}/${endpoint}`,
+        headers: {
+            Authorization: `Bearer ${token}`,
+            // 'Access-Control-Allow-Origin': '*',
+            'Content-Type': 'multipart/form-data',
+            // 'Content-Type': 'application/json',
+            // "Access-Control-Allow-Methods": "GET, POST, PUT, PATCH, POST, DELETE, OPTIONS",
+            // "Access-Control-Allow-Headers": "Origin, Content-Type, X-Auth-Token"
+        },
+        data: body
+    })
+}

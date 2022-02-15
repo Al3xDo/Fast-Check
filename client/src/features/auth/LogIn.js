@@ -5,25 +5,29 @@ import { toastError } from "../../utils/toastNotify";
 import { selectAuth, logIn } from "./authSlice";
 import { useLocation } from "react-router";
 import "./style.css"
+import { callApi } from "../../utils/apiCaller";
 export const LogIn = (props) => {
     const authState = useSelector(selectAuth)
     const dispatch = useDispatch()
     const [email, setEmail] = useState("")
     const location = useLocation()
     const [password, setPassword] = useState("")
-    const handleSubmit = () => {
+    const handleSubmit = async () => {
         const user = {
             email: email,
             password: password
         }
-        try {
-            dispatch(logIn(user))
-        }
-        catch (e) {
-            toastError(e.message)
-        }
+        // try {
+        //     dispatch(logIn(user))
+        // }
+        // catch (e) {
+        //     console.log("error", e)
+        // }
+        dispatch(logIn(user))
+        // console.log(result)
     }
-    if (authState.loading === "loaded") return <Redirect to={location.state.from.pathname} />
+    if (authState.loading === "error") toastError(authState.error)
+    if (authState.loading === "loaded") return <Redirect to={location.state ? location.state.from.pathname : "/"} />
     return (
         <form className="my-form" >
             <div className="box">

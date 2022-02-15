@@ -3,7 +3,7 @@ from ..service.blacklist_service import save_token
 from sqlalchemy.orm import exc
 from app.main.service import config
 
-
+from app.main.util import utils_response_object
 class Auth:
     @staticmethod
     def login_user(data):
@@ -24,7 +24,7 @@ class Auth:
                     config.STATUS: config.STATUS_FAIL,
                     config.MESSAGE: config.MSG_INFO_NOT_MATCH
                 }
-                return response_object, config.STATUS_CODE_ERROR
+                return response_object, config.STATUS_CODE_NOT_FOUND
 
         except Exception as e:
             response_object = {
@@ -41,21 +41,13 @@ class Auth:
             auth_token = ''
         if auth_token:
             resp = User.decode_auth_token(auth_token)
-            if not isinstance(resp, str):
+            if resp.count("-") >0:
                 # mark the token as blacklisted
                 return save_token(token=auth_token)
             else:
-                response_object = {
-                    config.STATUS: config.STATUS_FAIL,
-                    config.MESSAGE: resp
-                }
-                return response_object, config.STATUS_CODE_ERROR
+                return utils_response_object.send_response_object_NOT_ACCEPTABLE(resp)
         else:
-            response_object = {
-                config.STATUS: config.STATUS_FAIL,
-                config.MESSAGE: config.MSG_NOT_VALID_TOKEN
-            }
-            return response_object, config.STATUS_CODE_FORBIDEN
+            return utils_response_object.send_response_object_NOT_ACCEPTABLE(config.MSG_NOT_VALID_TOKEN)
 
     @staticmethod
     def get_logged_in_user(new_request):
@@ -67,23 +59,12 @@ class Auth:
             user = User.query.filter_by(id=resp).first()
             # check if resp is token
             if user:
-                response_object = {
-                    config.STATUS: config.STATUS_SUCCESS,
-                }
-                return response_object, config.STATUS_CODE_SUCCESS
+                return utils_response_object.send_response_object_SUCCESS("")
                 # except exc.NoResultFound as e:
                 #     response_object= {
                 #         config.STATUS: config.STATUS_FAIL,
                 #         config.MESSAGE: config.MSG_USER_NOT_FOUND
                 #     }
-            response_object = {
-                config.STATUS: config.STATUS_FAIL,
-                config.MESSAGE: str(resp)
-            }
-            return response_object, config.STATUS_CODE_ERROR
+            return utils_response_object.send_response_object_NOT_ACCEPTABLE(config.MSG_USER_NOT_FOUND)
         else:
-            response_object = {
-                config.STATUS: config.STATUS_FAIL,
-                config.MESSAGE: config.MSG_NOT_VALID_TOKEN
-            }
-            return response_object, config.STATUS_CODE_ERROR
+            return utils_response_object.send_response_object_NOT_ACCEPTABLE(config.MSG_NOT_VALID_TOKEN)

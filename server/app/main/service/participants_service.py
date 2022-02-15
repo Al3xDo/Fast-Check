@@ -132,11 +132,12 @@ def checkAttendance(uploadedImage, userId,attendanceStatusId):
         return utils_response_object.send_response_object_SUCCESS(config.MSG_ALREADY_HAVE_CHECKED_ATTENDANCE)
     else:
         if attendance_history.timeStart <= currentTime <= attendance_history.timeEnd:
-
             saveFolder= getUserImgDir(userId,False)
             if not (os.path.exists(saveFolder)):
-                return utils_response_object.send_response_object_SUCCESS("you have not uploaded your sample image")
+                return utils_response_object.send_response_object_NOT_ACCEPTABLE("you have not uploaded your sample image")
             image_names= os.listdir(saveFolder)
+            if (image_names == []):
+                return utils_response_object.send_response_object_NOT_ACCEPTABLE("you havew not uploaded your sample image")
             encodingSampleImgs= create_encoding_sample_list(saveFolder,image_names)
             if compare_2_face(uploadedImage, encodingSampleImgs):
                 attendance_status.isPresent= True

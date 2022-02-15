@@ -1,9 +1,7 @@
 import WebcamCapture from "./WebcamCapture"
 import "./style.css"
-import { useState, useEffect } from "react";
 import { useLocation } from "react-router";
-export function Check(props) {
-    const [attendanceStatusId, setAttendanceStatusId] = useState("")
+export function Check() {
     const location = useLocation()
     return (
         <>

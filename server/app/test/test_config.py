@@ -17,7 +17,7 @@ class TestDevelopmentConfig(TestCase):
         self.assertTrue(app.config['DEBUG'] is True)
         self.assertFalse(current_app is None)
         self.assertTrue(
-            app.config['SQLALCHEMY_DATABASE_URI'] == "mysql+pymysql://root:admin@localhost/cat_check"
+            app.config['SQLALCHEMY_DATABASE_URI'] == f"mysql+pymysql://{app.config['SQLALCHEMY_NAME']}:{app.config['SQLALCHEMY_PASSWORD']}@{app.config['SQLALCHEMY_HOST']}/fast_check"
         )
 
 
@@ -30,7 +30,7 @@ class TestTestingConfig(TestCase):
         # self.assertFalse(app.config['SECRET_KEY'] is 'my_precious')
         self.assertTrue(app.config['DEBUG'])
         self.assertTrue(
-            app.config['SQLALCHEMY_DATABASE_URI'] == "mysql+pymysql://root:admin@localhost/cat_check_test"
+            app.config['SQLALCHEMY_DATABASE_URI'] == f"mysql+pymysql://{app.config['SQLALCHEMY_NAME']}:{app.config['SQLALCHEMY_PASSWORD']}@{app.config['SQLALCHEMY_HOST']}/fast_check_test"
         )
 
 
@@ -41,9 +41,7 @@ class TestProductionConfig(TestCase):
 
     def test_app_is_production(self):
         self.assertTrue(app.config['DEBUG'] is False)
-        self.assertTrue(
-            app.config['SQLALCHEMY_DATABASE_URI'] == "mysql+pymysql://root:admin@localhost/cat_check"
-        )
+        app.config['SQLALCHEMY_DATABASE_URI'] == f"mysql+pymysql://{app.config['SQLALCHEMY_NAME']}:{app.config['SQLALCHEMY_PASSWORD']}@{app.config['SQLALCHEMY_HOST']}/fast_check"
 
 
 if __name__ == '__main__':

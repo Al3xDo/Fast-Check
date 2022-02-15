@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSelector, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
+import { toastError } from "../../utils/toastNotify";
 
 export const signUp = createAsyncThunk(
     'auth/signUp',
@@ -33,7 +34,44 @@ export const logIn = createAsyncThunk(
             const response = await axios.post('http://localhost:3001/auth/login', user, config)
             return response;
         } catch (error) {
+            toastError(error.response.data.message)
+            return thunkAPI.rejectWithValue(error.response.data.message);
+        }
+    }
+)
+export const logOut = createAsyncThunk(
+    'auth/login',
+    async (user, thunkAPI) => {
+        try {
+            let config = {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': "*/*",
+                    'Access-Control-Allow-Origin': '*',
+                }
+            }
+            const response = await axios.post('http://localhost:3001/auth/logout', user, config)
+            return response;
+        } catch (error) {
             return thunkAPI.rejectWithValue({ error: error.message });
+        }
+    }
+)
+export const AuToken = createAsyncThunk(
+    'auth/auToken',
+    async (thunkAPI) => {
+        try {
+            let config = {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': "*/*",
+                    'Access-Control-Allow-Origin': '*',
+                }
+            }
+            const response = await axios.post('http://localhost:3001/auth/checkToken', {}, config)
+            return response;
+        } catch (error) {
+            return thunkAPI.rejectWithValue({ error: error.response.data.message });
         }
     }
 )
@@ -78,6 +116,21 @@ export const authSlice = createSlice({
             })
             .addCase(logIn.rejected, (state, action) => {
                 // console.log(action)
+                state.loading = "error";
+                // console.log(action)
+                state.error = action.payload
+            });
+        builder.addCase(AuToken.pending, (state) => {
+            state.token = window.localStorage.getItem("token");
+            state.loading = "loading"
+        })
+            .addCase(AuToken.fulfilled, (state, { payload }) => {
+                state.loading = "loaded"
+            })
+            .addCase(AuToken.rejected, (state, action) => {
+                // console.log(action)
+                window.localStorage.removeItem("token");
+                state.token = ""
                 state.loading = "error";
                 state.error = action.error
             })
