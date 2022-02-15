@@ -1,7 +1,7 @@
 import React from 'react';
 import "./style.css"
 import { Room } from './Room';
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { toastError, toastSuccess } from '../../utils/toastNotify';
 import { selectAuth } from '../auth/authSlice';
@@ -12,9 +12,9 @@ import { WarningModal } from "./WarningModal"
 import { useDebounce } from '../../hook/useDebounce';
 import { JoinRoomModal } from './JoinRoomModal';
 import { InviteModal } from "./InviteModal"
-import socketIOClient from "socket.io-client"
+// import socketIOClient from "socket.io-client"
 import { AttendaceModal } from './AttendanceModal';
-const HOST = "http://localhost:3001"
+// const HOST = "http://localhost:3001"
 // const socket = Socket(HOST, { transports: ['websocket', "polling"] })
 // const socket = io(HOST, )
 export const Home = () => {
@@ -32,28 +32,25 @@ export const Home = () => {
     const [openAttendanceModal, setOpenAttendanceModal] = useState("")
     const [publicId, setPublicId] = useState("")
     const [type, setType] = useState("delete")
-    const socketRef = useRef();
-    const [currentRoomCheckId, setCurrentRoomCheckId] = useState("")
-    const [attendanceHistoryId, setAttendanceHistoryId] = useState("")
     const [sort, setSort] = useState({
         type: 0,
         by: ""
     })
-    useEffect(() => {
-        socketRef.current = socketIOClient.connect(HOST, { transports: ['websocket', 'polling', 'flashsocket'] })
+    // useEffect(() => {
+    //     socketRef.current = socketIOClient.connect(HOST, { transports: ['websocket', 'polling', 'flashsocket'] })
 
-        socketRef.current.on('check', data => {
-            setCurrentRoomCheckId(data.roomId)
-            setAttendanceHistoryId(data.attendanceHistoryId)
-        })
-        //   socketRef.current.on('sendDataServer', dataGot => {
-        //     setMess(oldMsgs => [...oldMsgs, dataGot.data])
-        //   }) // mỗi khi có tin nhắn thì mess sẽ được render thêm 
+    //     socketRef.current.on('check', data => {
+    //         setCurrentRoomCheckId(data.roomId)
+    //         setAttendanceHistoryId(data.attendanceHistoryId)
+    //     })
+    //     //   socketRef.current.on('sendDataServer', dataGot => {
+    //     //     setMess(oldMsgs => [...oldMsgs, dataGot.data])
+    //     //   }) // mỗi khi có tin nhắn thì mess sẽ được render thêm 
 
-        return () => {
-            socketRef.current.disconnect();
-        };
-    }, []);
+    //     return () => {
+    //         socketRef.current.disconnect();
+    //     };
+    // }, []);
     const onSort = (choice) => {
         switch (parseInt(choice)) {
             case 1:
@@ -174,15 +171,6 @@ export const Home = () => {
                 toastError(err.message)
             })
     }
-    const onCheckAttendanceCall = (data) => {
-        callApi(`par/check_attendance/${publicId}`, "POST", data, authState.token)
-            .then(res => {
-                toastSuccess(res.data.message)
-            })
-            .catch(err => {
-                toastError(err.message)
-            })
-    }
     const onOpenEditModal = (id) => {
         setOpenEdit("is-active")
         const temp = rooms.filter(room => room.id === id)[0]
@@ -281,15 +269,6 @@ export const Home = () => {
         setOpenAttendanceModal("is-active")
         setPublicId(id)
     }
-    const onCloseAttendaceModal = (timeStart, timeEnd) => {
-        setOpenAttendanceModal("")
-        const data = {
-            timeStart: timeStart,
-            timeEnd: timeEnd
-        }
-        // console.log(data)
-        // onCreateAttendance(data)
-    }
     const onCheckAttendance = () => {
         setOpenAttendanceModal("")
         // const data = {
@@ -298,10 +277,10 @@ export const Home = () => {
         // onCheckAttendanceCall(data)
     }
     const subcribeRoom = (roomPublicId) => {
-        socketRef.current.emit("check", { roomId: roomPublicId, isAdmin: false })
+        // socketRef.current.emit("check", { roomId: roomPublicId, isAdmin: false })
     }
     const check = (roomPublicId, attendanceHistoryId) => {
-        socketRef.current.emit("check", { roomId: roomPublicId, isAdmin: true, attendanceHistoryId: attendanceHistoryId })
+        // socketRef.current.emit("check", { roomId: roomPublicId, isAdmin: true, attendanceHistoryId: attendanceHistoryId })
     }
     return (
         <>

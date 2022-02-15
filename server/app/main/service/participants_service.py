@@ -15,8 +15,7 @@ import datetime
 from app.main.service import config
 from app.main.model.room import Room
 from app.main.model.user import User
-from app.main.util.preprocess_datetime import getCurrentDate, preprocessTime
-from app.main.util.preprocess_datetime import getCurrentTime
+from app.main.util.preprocess_datetime import getCurrentDateTime, combineTimeAndCurrentDate
 import uuid
 import face_recognition
 
@@ -62,19 +61,15 @@ def join_a_room(userId, publicId):
         print(type(e))
         return utils_response_object.send_response_object_INTERNAL_ERROR()
 
-
-def checkAttendance(userId):
-    pass
 def createAttendance(userId,publicId,data):
     roomId=convertPublicIdToRoomId(publicId)
-    timeStart=data['timeStart']
-    timeEnd=data['timeEnd']
+    date_time_start=combineTimeAndCurrentDate(data['timeStart'])
+    date_time_end=combineTimeAndCurrentDate(data['timeEnd'])
     checker= Participant.query.filter_by(roomId= roomId, userId=userId).first()
     # if is admin -> create attendance history for all participants in room
     try:
         if checker.isAdmin:
-            date= getCurrentDate()
-            attendance_history=AttendanceHistory(roomId,date,timeStart, timeEnd)
+            attendance_history=AttendanceHistory(roomId,date_time_start, date_time_end)
             save_changes(attendance_history)
             participant_list= Participant.query.filter_by(roomId=roomId).all()
             for participant in participant_list:
@@ -87,29 +82,6 @@ def createAttendance(userId,publicId,data):
         print(e)
         return utils_response_object.send_response_object_INTERNAL_ERROR()
 
-# def model_predict_res(imageA, email):
-#     imgA= detect_face(imageA)
-#     imgB= get_face_image(email)
-#     inputObj= {
-#         "input_31": preprocess_image(imgA),
-#         "input_32": preprocess_image(imgB)
-#     }
-#     response = tfserving_request(inputObj)
-#     if response.status_code ==200:
-#         response_data= json.loads(response.text)['predictions'][0][0]
-#         response_object= {
-#             config.STATUS: config.STATUS_SUCCESS,
-#         }
-#         if response_data == 0:
-#             response_object[config.MESSAGE]= "the same"
-#         else:
-#             response_object[config.MESSAGE]= "not the same"
-#         return response_object, config.STATUS_CODE_SUCCESS
-#     else:
-#         response_object= {
-#             config.STATUS: config.STATUS_FAIL,
-#         }
-#         return response_object, config.STATUS_CODE_ERROR
 def create_encoding_sample_list(saveFolder,image_names):
     encoding_list=[]
     for i in image_names:
@@ -122,7 +94,7 @@ def compare_2_face(uploadedImage, sample_encoding_list):
     result= face_recognition.compare_faces(sample_encoding_list, uploaded_encoding)
     return result[0]
 def checkAttendance(uploadedImage, userId,attendanceStatusId):
-    currentTime= datetime.datetime.now().time()
+    current_date_time= datetime.datetime.now()
     attendance_status= AttendanceStatus.query.filter_by(id=attendanceStatusId).first()
     if not attendance_status:
         return utils_response_object.send_response_object_ERROR(config.MSG_ROOM_NOT_EXISTS + " or " + config.MSG_ROOM_PUBLIC_ID_IS_NOT_VALID)
@@ -131,7 +103,7 @@ def checkAttendance(uploadedImage, userId,attendanceStatusId):
     if attendance_status.isPresent:
         return utils_response_object.send_response_object_SUCCESS(config.MSG_ALREADY_HAVE_CHECKED_ATTENDANCE)
     else:
-        if attendance_history.timeStart <= currentTime <= attendance_history.timeEnd:
+        if attendance_history.timeStart <= current_date_time <= attendance_history.timeEnd:
             saveFolder= getUserImgDir(userId,False)
             if not (os.path.exists(saveFolder)):
                 return utils_response_object.send_response_object_NOT_ACCEPTABLE("you have not uploaded your sample image")

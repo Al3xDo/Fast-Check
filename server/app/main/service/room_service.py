@@ -9,9 +9,11 @@ from sqlalchemy import exc as sexc
 from app.main.service import config
 from app.main.util import utils_response_object
 from sqlalchemy import between
-from app.main.util.preprocess_datetime import getCurrentTime
+from app.main.util.preprocess_datetime import getCurrentDateTime
 from sqlalchemy import join
 from sqlalchemy import text
+
+
 # need a writing log service to tracking the error
 
 
@@ -50,13 +52,14 @@ def serialize_room(room, isAdmin=None,AttendanceId=None):
         pass
     return roomDict
 def get_all_room(userId):
-    currentTime= getCurrentTime()
+    current_date_time= getCurrentDateTime()
+    print(current_date_time)
     query= db.engine.execute(text('''
         SELECT room.*, attendanceIds.statusId, participants.isAdmin, attendanceIds.isPresent
         FROM room
         LEFT JOIN (SELECT roomId, attendance_status.id AS statusId, attendance_status.isPresent
 				FROM attendance_history, attendance_status
-				WHERE (CAST(:currentTime AS TIME) BETWEEN timeStart AND timeEnd)
+				WHERE :current_date_time BETWEEN timeStart AND timeEnd
 				AND attendance_history.id = attendance_status.attendanceHistoryId
 				AND attendance_status.userId = :userId
 				) AS attendanceIds
@@ -64,14 +67,13 @@ def get_all_room(userId):
         LEFT JOIN participants
         ON participants.roomId = room.id
         WHERE participants.userId=:userId
-        '''),{'userId': userId, 'currentTime': currentTime})
+        '''),{'userId': userId, 'current_date_time': current_date_time})
     item, joinedRooms = {}, []
     for row in query:
         for column, value in row.items():
             # build up the dictionary
             item = {**item, **{column: value}}
         joinedRooms.append(item)
-    currentTime=getCurrentTime()
     return joinedRooms
 
 

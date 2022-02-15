@@ -40,16 +40,14 @@ class AttendanceHistory(db.Model):
     id = db.Column(db.String(150), primary_key=True, nullable=False)
     roomId = db.Column(db.String(150), db.ForeignKey(
         'room.id'), nullable=False)
-    date= db.Column(db.Text)
-    timeStart= db.Column(db.Time)
-    timeEnd= db.Column(db.Time)
+    timeStart= db.Column(db.DateTime)
+    timeEnd= db.Column(db.DateTime)
     room = db.relationship(
         'Room', backref=db.backref('room_attendance', lazy=True))
     
 
-    def __init__(self,roomId, date, timeStart, timeEnd):
+    def __init__(self,roomId, timeStart, timeEnd):
         self.id = str(uuid.uuid4())
         self.roomId= roomId
-        self.date= date 
         self.timeStart= timeStart
         self.timeEnd= timeEnd
