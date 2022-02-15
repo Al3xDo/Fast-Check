@@ -20,7 +20,6 @@ jobs:
       working-directory: /server
     - name: Install dependencies
       run: |
-        cd /server/
         python -m pip install --upgrade pip
         pip install flake8
         pip install -r requirements.txt
