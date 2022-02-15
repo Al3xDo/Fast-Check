@@ -21,7 +21,7 @@ jobs:
       with:
         python-version: "3.7"
     - name: Make envfile
-      uses: actions/checkout@v2
+      uses: SpicyPizza/create-envfile@v1
       with:
         envkey_SECRET_KEY: ${{ secrets.SECRET_KEY }}
         envkey_DB_NAME: ${{ secrets.DB_NAME }}
