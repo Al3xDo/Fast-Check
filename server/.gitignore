@@ -34,7 +34,7 @@ venv
 build
 
 # py
-config.py
+# app/main/config.py
 
 #folder
 filesystem/
