@@ -3,7 +3,7 @@ from flask_restplus import Resource
 
 
 from ..util.dto import RoomDto
-from ..service.room_service import get_a_room, get_all_room, save_new_room, update_a_room, delete_a_room
+from ..service.room_service import  create_room_report, get_a_room, get_all_room, save_new_room, update_a_room, delete_a_room
 from ..util.decorators import token_required
 from ..util.utils import get_JWT_identity
 from ..service.participants_service import join_a_room, out_a_room
@@ -15,6 +15,7 @@ ROOM_ENDPOINT="/room"
 CREATE_ROOM_ENDPOINT="/create"
 OUT_ROOM_ENDPOINT="/out"
 JOIN_ROOM_ENDPOINT="/join"
+CREATE_REPORT_ENDPOINT="/report"
 
 
 
@@ -94,3 +95,11 @@ class Room(Resource):
     def get(self, id):
         userId= get_JWT_identity(request)
         return join_a_room(userId, id)
+
+@api.route(CREATE_REPORT_ENDPOINT+'/<id>')
+class Room(Resource):
+    @api.doc('create report for room')
+    @token_required
+    def get(self, id):
+        # userId= get_JWT_identity(request)
+        return create_room_report(id)

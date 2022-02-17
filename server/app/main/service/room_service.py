@@ -1,3 +1,4 @@
+import json
 import uuid
 import datetime
 from app.main import db
@@ -12,6 +13,7 @@ from sqlalchemy import between
 from app.main.util.preprocess_datetime import getCurrentDateTime
 from sqlalchemy import join
 from sqlalchemy import text
+from flask import jsonify
 
 
 # need a writing log service to tracking the error
@@ -127,6 +129,28 @@ def convertPublicIdToRoomId(publicId):
         return room.id
     except:
         return None
+
+def create_room_report(public_id):
+    room_id= convertPublicIdToRoomId(public_id)
+    query=db.session.query(Room.participantNumber, Room.roomName,AttendanceHistory.timeEnd, AttendanceHistory.timeStart).filter_by(id = room_id).join(AttendanceHistory).filter(AttendanceHistory.roomId == Room.id).all()
+    result=[]
+    # for column, value in query.items():
+    #     # build up the dictionary
+    #     item = {**item, **{column: value}}
+    # result.append(item)
+    print(result)
+    for i in query:
+        item={
+            'participantNumber': i[0],
+            'roomName': i[1],
+            'timeStart': str(i[2]),
+            'timeEnd': str(i[3])
+        }
+        result.append(item)
+    print(result)
+    return result, config.STATUS_CODE_SUCCESS
+def create_attendance_status_report(public_id):
+    pass
 def save_changes(room, participant):
     db.session.add(room)
     db.session.add(participant)

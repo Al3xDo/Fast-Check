@@ -2,8 +2,11 @@ import { Link } from "react-router-dom"
 import catLogo from "../asset/image/cat.png"
 import { logOut } from "../features/auth/authSlice"
 import { useDispatch } from "react-redux"
+import { selectAuth } from "../features/auth/authSlice"
+import { useSelector } from "react-redux"
 const Header = (props) => {
     const dispatch = useDispatch()
+    const authState = useSelector(selectAuth)
     const onLogOut = () => {
         dispatch(logOut)
     }

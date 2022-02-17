@@ -21,7 +21,7 @@ export const SignUp = () => {
         }
 
     }
-    if (authState.loading === "loaded") return <Redirect to="/" />
+    if (authState.loading === "loaded") return <Redirect to="/login" />
     return (
         <form className="my-form" >
             <div className="box">

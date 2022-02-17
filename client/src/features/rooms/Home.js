@@ -213,18 +213,20 @@ export const Home = () => {
         var result = null;
         if (rooms.length > 0) {
             result = rooms.map((room, index) => {
-                return (<Room
-                    key={index}
-                    room={room}
-                    onDelete={onDelete}
-                    onOpenWarningModal={onOpenWarningModal}
-                    onOpenEditModal={onOpenEditModal}
-                    onOpenInviteModal={onOpenInviteModal}
-                    onOpenAttendanceModal={onOpenAttendanceModal}
-                    onCheckAttendace={onCheckAttendance}
-                    subcribeRoom={subcribeRoom}
-                    check={check}
-                />)
+                return (
+                    <Room
+                        key={index}
+                        room={room}
+                        onDelete={onDelete}
+                        onOpenWarningModal={onOpenWarningModal}
+                        onOpenEditModal={onOpenEditModal}
+                        onOpenInviteModal={onOpenInviteModal}
+                        onOpenAttendanceModal={onOpenAttendanceModal}
+                        onCheckAttendace={onCheckAttendance}
+                        subcribeRoom={subcribeRoom}
+                        check={check}
+                    />
+                )
             })
         }
         return result
