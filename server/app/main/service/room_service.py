@@ -138,7 +138,6 @@ def create_room_report(public_id):
     #     # build up the dictionary
     #     item = {**item, **{column: value}}
     # result.append(item)
-    print(result)
     for i in query:
         item={
             'participantNumber': i[0],
@@ -147,7 +146,6 @@ def create_room_report(public_id):
             'timeEnd': str(i[3])
         }
         result.append(item)
-    print(result)
     return result, config.STATUS_CODE_SUCCESS
 def create_attendance_status_report(public_id):
     pass
