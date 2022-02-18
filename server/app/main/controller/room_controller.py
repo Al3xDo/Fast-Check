@@ -101,5 +101,5 @@ class Room(Resource):
     @api.doc('create report for room')
     @token_required
     def get(self, id):
-        # userId= get_JWT_identity(request)
-        return create_room_report(id)
+        user_id= get_JWT_identity(request)
+        return create_room_report(id, user_id)

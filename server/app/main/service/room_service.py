@@ -9,12 +9,8 @@ from sqlalchemy.orm import exc
 from sqlalchemy import exc as sexc
 from app.main.service import config
 from app.main.util import utils_response_object
-from sqlalchemy import between
 from app.main.util.preprocess_datetime import getCurrentDateTime
-from sqlalchemy import join
-from sqlalchemy import text
-from flask import jsonify
-
+from sqlalchemy import text, func, desc
 
 # need a writing log service to tracking the error
 
@@ -32,13 +28,14 @@ def save_new_room(data, userId):
         return utils_response_object.send_response_object_CREATED(config.MSG_CREATE_ROOM_SUCCESS)
     else:
         return utils_response_object.send_response_object_INTERNAL_ERROR()
-def serialize_room(room, isAdmin=None,AttendanceId=None):
+def serialize_room(room, admin_name,isAdmin=None,AttendanceId=None):
     roomDict={
         "id": room.id,
         "roomName": room.roomName,
         "isAdmin": True if isAdmin ==1 else False,
         "publicId": room.publicId,
-        "AttendanceId": AttendanceId
+        "AttendanceId": AttendanceId,
+        "adminName":admin_name
     }
     try:
         roomDict["dateSchedule"] = room.dateSchedule
@@ -55,7 +52,6 @@ def serialize_room(room, isAdmin=None,AttendanceId=None):
     return roomDict
 def get_all_room(userId):
     current_date_time= getCurrentDateTime()
-    print(current_date_time)
     query= db.engine.execute(text('''
         SELECT room.*, attendanceIds.statusId, participants.isAdmin, attendanceIds.isPresent
         FROM room
@@ -79,20 +75,19 @@ def get_all_room(userId):
     return joinedRooms
 
 
-def get_a_room(userId,id):
+def get_a_room(userId,public_id):
     try:
-        query= db.session.query(Room).join(Participant).filter(Participant.userId == userId, Participant.roomId == str(id)).first()
-        return serialize_room(query)
+        room_id= convertPublicIdToRoomId(public_id)
+        query= db.session.query(Room, Participant.isAdmin).join(Participant).filter(Participant.userId == userId, Participant.roomId == room_id).first()
+        admin_name=get_room_admin_email(room_id)
+        return serialize_room(query[0], admin_name,query[1])
     except exc.NoResultFound:
-        response_object={
-            config.STATUS: config.STATUS_FAIL,
-            config.MESSAGE: config.MSG_ROOM_NOT_EXISTS
-        }
-        return response_object, 404
+        return utils_response_object.send_response_object_NOT_ACCEPTABLE(config.MSG_ROOM_NOT_EXISTS)
 
 def delete_a_room(userId, id):
     # try:
     # check if user is admin
+    # need add transaction
     userRight= db.session.query(Participant).filter_by(userId= userId, roomId= id).first()
     if userRight.isAdmin ==1:
         try:
@@ -129,23 +124,42 @@ def convertPublicIdToRoomId(publicId):
         return room.id
     except:
         return None
-
-def create_room_report(public_id):
+def get_room_admin_email(room_id):
+    admin_name= db.session.query(User.email).join(Participant).filter(Participant.userId == User.id, Participant.roomId== room_id, Participant.isAdmin==1).first()
+    return admin_name
+def check_user_is_room_admin(room_id, user_id):
+    is_admin= db.session.query(Participant.isAdmin).filter(Participant.roomId== room_id, Participant.userId==user_id).first()
+    return is_admin[0]
+def create_room_report(public_id, user_id):
     room_id= convertPublicIdToRoomId(public_id)
-    query=db.session.query(Room.participantNumber, Room.roomName,AttendanceHistory.timeEnd, AttendanceHistory.timeStart).filter_by(id = room_id).join(AttendanceHistory).filter(AttendanceHistory.roomId == Room.id).all()
     result=[]
-    # for column, value in query.items():
-    #     # build up the dictionary
-    #     item = {**item, **{column: value}}
-    # result.append(item)
-    for i in query:
-        item={
-            'participantNumber': i[0],
-            'roomName': i[1],
-            'timeStart': str(i[2]),
-            'timeEnd': str(i[3])
-        }
-        result.append(item)
+    if (check_user_is_room_admin(room_id, user_id)):
+        query=db.session.query(
+        AttendanceHistory.timeStart, AttendanceHistory.timeEnd,
+        func.count(AttendanceStatus.isPresent == 1)
+        ).filter(AttendanceHistory.id == AttendanceStatus.attendanceHistoryId,
+        AttendanceHistory.roomId== room_id).group_by(AttendanceHistory.id).order_by(desc(AttendanceHistory.timeStart)).all()
+        for i in query:
+            item={
+                'timeStart': str(i[0]),
+                'timeEnd': str(i[1]),
+                'checkedParticipantNumber': str(i[2])
+            }
+            result.append(item)
+    else:
+        query=db.session.query(
+        AttendanceHistory.timeStart, AttendanceHistory.timeEnd,
+        AttendanceStatus.isPresent
+        ).filter(AttendanceHistory.id == AttendanceStatus.attendanceHistoryId,
+        AttendanceHistory.roomId== room_id, AttendanceStatus.userId == user_id).all()
+        for i in query:
+            item={
+                'timeStart': str(i[0]),
+                'timeEnd': str(i[1]),
+                'isPresent': True if i[2] == 1 else False
+            }
+            print(item)
+            result.append(item)
     return result, config.STATUS_CODE_SUCCESS
 def create_attendance_status_report(public_id):
     pass

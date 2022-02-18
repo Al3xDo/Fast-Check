@@ -60,7 +60,7 @@ export const Room = (props) => {
                 {/* <h2>Time: {timeEnd} - {timeStart}</h2> */}
                 {/* <h2>Class size: 52</h2> */}
             </div>
-            <Link to={`room/${publicId}`}>
+            <Link to={`/room/${publicId}`}>
                 <button className='button is-primary'>
                     create report
                 </button>

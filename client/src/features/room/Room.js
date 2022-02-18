@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { useLocation } from 'react-router';
 import { callApi } from '../../utils/apiCaller';
 import { selectAuth } from '../auth/authSlice';
 import { useSelector } from 'react-redux';
@@ -7,27 +6,21 @@ import { toastError } from '../../utils/toastNotify';
 import { useParams } from 'react-router';
 export const Room = () => {
     const authState = useSelector(selectAuth)
-    const [room, setRoom] = useState({
-        name: "Lập trình",
-        participantNumber: 3,
-        timeSchedule: "15:30",
-        dateSchedule: "every 3 week",
-        code: "123",
-        password: "123"
-    })
+    const [room, setRoom] = useState({})
     const [attendanceHistory, setAttendanceHistory] = useState([])
+    const [hoverRowIndex, setHoverRowIndex] = useState(-1)
     const params = useParams()
-    // console.log(id)
-    // function fetchRoom() {
-    //     callApi(`rooms/room/${id}`, 'GET', {}, authState.token)
-    //         .then((res) => {
-    //             setRoom(res.data)
-    //         })
-    //         .catch((err) => {
-    //             toastError(err.response.data.message)
-    //         })
-    // }
+    function fetchRoom() {
+        callApi(`room/${params.id}`, 'GET', {}, authState.token)
+            .then((res) => {
+                setRoom(res.data)
+            })
+            .catch((err) => {
+                toastError(err.response.data.message)
+            })
+    }
     useEffect(() => {
+        fetchRoom()
         getRoomReport()
     }, []);
     function getRoomReport() {
@@ -39,25 +32,60 @@ export const Room = () => {
                 toastError(err.message)
             })
     }
+    function changeBackground(index) {
+        setHoverRowIndex(index)
+        // e.target.classList.add("is-selected")
+    }
+    function removeBackground() {
+        setHoverRowIndex(-1)
+    }
+    const currentDate = new Date().toISOString().slice(0, 19).replace('T', ' ')
+    const selectTag = (currentDate, timeStart, timeEnd) => {
+        const rawTimeStart = timeStart
+        const rawTimeEnd = timeEnd
+        if (rawTimeStart <= currentDate <= rawTimeEnd) {
+            return (
+                <td><span className='tag is-info is-large'>Checking</span></td>
+            )
+        }
+        else if (currentDate < rawTimeStart) {
+            return (
+                <td><span className='tag is-info is-large'>Wating</span></td>
+            )
+        }
+        else if (currentDate > rawTimeEnd) {
+            return (
+                <td><span className='tag is-success is-large'>Completed</span></td>
+            )
+        }
+    }
     return (
         <div>
             <div className="text-centered">
-                <h1 className='is-size-1 has-text-centered'>{room.name}</h1>
+                <h1 className='is-size-1 has-text-centered'>{room.roomName}</h1>
             </div>
-            <div className="columns mt-20 m-auto">
-                <div className="column">
-                    <h2>Admin: </h2>
-                    <h2>Participant Number: {room.participantNumber}</h2>
-                </div>
-                <div className="column">
-                    <h2>Time Schedule: {room.timeSchedule} </h2>
-                    <h2>Date Interval: {room.dateSchedule}</h2>
-                </div>
-                <div className="column">
-                    <h2>Code: {room.code} </h2>
-                    <h2>Password: {room.password}</h2>
+            <div className="mt-20">
+                <div className="column is-10 m-auto">
+                    <div className="columns">
+                        <div className="column is-4 m-auto">
+                            <h2>Admin: <span className='tag is-info is-small'>{room.adminName}</span></h2>
+                            <h2>Participant Number: <span className='tag is-info is-small'>{room.participantNumber}</span></h2>
+                        </div>
+                        <div className="column is-3 m-auto">
+                            <h2>Time Schedule: {room.timeSchedule || <span className='tag is-light is-small'> Undefined</span>} </h2>
+                            <h2>Date Interval: {room.dateSchedule || <span className='tag is-light is-small'> Undefined</span>}</h2>
+                        </div>
+                        {room.isAdmin && (
+                            <div className="column is-3 m-auto">
+                                <h2>Code: {room.code || <span className='tag is-light is-small'> Undefined</span>} </h2>
+                                <h2>Password: {room.password || <span className='tag is-light is-small'> Undefined</span>}</h2>
+                            </div>
+                        )}
+
+                    </div>
                 </div>
             </div>
+
             {/* statistics */}
             {/* <table className='table mt-20 mb-10 is-bordered' style={{ margin: "auto" }}>
                 <thead>
@@ -84,40 +112,73 @@ export const Room = () => {
                     </tr>
                 </tbody>
             </table> */}
-            <table className='table mt-20 mb-10 is-bordered' style={{ margin: "auto" }}>
-                <thead>
-                    <tr>
-
-                        <th title='Index'>Index</th>
-                        <th title='Room name'>Room name</th>
-                        <th title='Time start'>Time Start</th>
-                        <th title='Time End'>Time End</th>
-                        <th title='NoP'>Participant Number</th>
-                        <th title='NoCP'>checked Participant</th>
-                        <th title='RoCP'>Ratio</th>
-                        <th title='NoUP'>Unchecked Participant</th>
-                        <th title='RoUP'>Ratio</th>
-                        <th title='status'>Status</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {attendanceHistory.map((history, index) => {
-                        return (
-                            <tr key={index}>
-                                <td>{index}</td>
-                                <td>{history.roomName}</td>
-                                <td>{history.timeStart}</td>
-                                <td>{history.timeEnd}</td>
-                                <td>{history.participantNumber}</td>
-                                <td>2</td>
-                                <td>0.75</td>
-                                <td>1</td>
-                                <td>0.25</td>
-                                <td>Completed</td>
+            <table className='table is-bordered has-text-centered' style={{ margin: "2rem auto 5rem auto" }}>
+                {room.isAdmin ? (
+                    <>
+                        <thead>
+                            <tr>
+                                <th title='Index'>Index</th>
+                                <th title='Time start'>Time Start</th>
+                                <th title='Time End'>Time End</th>
+                                <th title='NoCP'>checked Participant</th>
+                                <th title='RoCP'>Ratio</th>
+                                <th title='NoUP'>Unchecked Participant</th>
+                                <th title='RoUP'>Ratio</th>
+                                <th title='status'>Status</th>
                             </tr>
-                        )
-                    })}
-                </tbody>
+                        </thead>
+                        <tbody>
+                            {attendanceHistory.map((history, index) => {
+                                return (
+                                    <tr key={index + 1}
+                                        onMouseOver={() => changeBackground(index)}
+                                        onMouseLeave={removeBackground}
+                                        className={hoverRowIndex === index ? "is-selected" : ""}
+                                    >
+                                        <td>{index + 1}</td>
+                                        <td>{history.timeStart}</td>
+                                        <td>{history.timeEnd}</td>
+                                        <td >{history.checkedParticipantNumber}</td>
+                                        <td>{history.checkedParticipantNumber * 100 / room.participantNumber}% </td>
+                                        <td>{room.participantNumber - history.checkedParticipantNumber}</td>
+                                        <td>{(room.participantNumber - history.checkedParticipantNumber) * 100 / room.participantNumber}%</td>
+                                        {selectTag(currentDate, history.timeStart, history.timeEnd)}
+                                    </tr>
+                                )
+                            })}
+                        </tbody>
+                    </>
+
+                ) : (
+                    <>
+                        <thead>
+                            <tr>
+                                <th title='Index'>Index</th>
+                                <th title='Time start'>Time Start</th>
+                                <th title='Time End'>Time End</th>
+                                <th title='Is Present'>Is Present </th>
+                                <th title='Room Status'>Room Status </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {attendanceHistory.map((history, index) => {
+                                return (
+                                    <tr key={index + 1}
+                                        onMouseOver={() => changeBackground(index)}
+                                        onMouseLeave={removeBackground}
+                                    >
+                                        <td>{index + 1}</td>
+                                        <td>{history.timeStart}</td>
+                                        <td >{history.timeEnd}</td>
+                                        <td>{history.isPresent ? <span className='tag is-success is-large'>Checked</span> : <span className='tag is-error is-large'>Not Checked</span>}</td>
+                                        <td><span className='tag is-success is-large'>Completed</span></td>
+                                    </tr>
+                                )
+                            })}
+                        </tbody>
+                    </>
+
+                )}
             </table>
 
         </div>
