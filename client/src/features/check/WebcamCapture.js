@@ -27,7 +27,7 @@ const WebcamCapture = (props) => {
             callApi(`par/check_attendance`, "POST", data, authState.token)
                 .then(res => {
                     toastSuccess(res.data.message)
-                    // setRedirectToHome(true)
+                    setRedirectToHome(true)
                 })
                 .catch(err => {
                     toastError(err.response.data.message);

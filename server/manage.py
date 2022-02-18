@@ -21,7 +21,7 @@ manager.add_command('db', MigrateCommand)
 
 @manager.command
 def run():
-    app.run(port=3001)
+    app.run(port=3001,threaded=True)
     # socketio.run(app, port=3001)
 @manager.command
 def test():

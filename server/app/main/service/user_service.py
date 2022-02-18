@@ -111,7 +111,6 @@ def upload_image(userId, file, isAvatar=True):
             user_face_location= None
             if len(face_locations) >1:
                 return utils_response_object.send_response_object_NOT_ACCEPTABLE("Too many face in the sample image")
-            print(len(face_locations))
             for face_location in face_locations:
                 top, right, bottom, left = face_location
                 user_face_location= file[top:bottom, left:right]

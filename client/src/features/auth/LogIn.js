@@ -12,7 +12,7 @@ export const LogIn = (props) => {
     const [email, setEmail] = useState("")
     const location = useLocation()
     const [password, setPassword] = useState("")
-    const handleSubmit = async () => {
+    const handleSubmit = () => {
         const user = {
             email: email,
             password: password

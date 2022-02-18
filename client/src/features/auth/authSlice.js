@@ -40,7 +40,7 @@ export const logIn = createAsyncThunk(
     }
 )
 export const logOut = createAsyncThunk(
-    'auth/login',
+    'auth/logout',
     async (user, thunkAPI) => {
         try {
             let config = {
@@ -53,7 +53,7 @@ export const logOut = createAsyncThunk(
             const response = await axios.post('http://localhost:3001/auth/logout', user, config)
             return response;
         } catch (error) {
-            return thunkAPI.rejectWithValue({ error: error.message });
+            return thunkAPI.rejectWithValue({ error: error.response.data.message });
         }
     }
 )
@@ -134,6 +134,11 @@ export const authSlice = createSlice({
                 state.loading = "error";
                 state.error = action.error
             })
+        builder.addCase(logOut.fulfilled, (state, { payload }) => {
+            window.localStorage.removeItem("token");
+            state.loading = "idle"
+            state.token = ""
+        })
     }
 })
 export const { load } = authSlice.actions
