@@ -10,6 +10,7 @@ export const Room = () => {
     const [attendanceHistory, setAttendanceHistory] = useState([])
     const [hoverRowIndex, setHoverRowIndex] = useState(-1)
     const params = useParams()
+    const [togglePassword, setTogglePassword] = useState(false)
     function fetchRoom() {
         callApi(`room/${params.id}`, 'GET', {}, authState.token)
             .then((res) => {
@@ -76,9 +77,24 @@ export const Room = () => {
                             <h2>Date Interval: {room.dateSchedule || <span className='tag is-light is-small'> Undefined</span>}</h2>
                         </div>
                         {room.isAdmin && (
-                            <div className="column is-3 m-auto">
-                                <h2>Code: {room.code || <span className='tag is-light is-small'> Undefined</span>} </h2>
-                                <h2>Password: {room.password || <span className='tag is-light is-small'> Undefined</span>}</h2>
+                            <div className="column is-3 m-auto is-justify-content-space-around">
+                                {togglePassword ? (
+                                    <>
+                                        <h2 className="is-inline">Password: {room.password || <span className='tag is-light is-small'> Undefined</span>}</h2>
+                                        <button
+                                            onClick={() => setTogglePassword(!togglePassword)}
+                                            className='button is-primary is-small'><span className='icon'><ion-icon name="eye-off-outline"></ion-icon></span></button>
+                                    </>
+                                ) : (
+                                    <>
+                                        <h2 className="is-inline">Password: {room.password || <span className='tag is-light is-small'>
+                                            {[...Array(10)].map((x, i) =>
+                                                <span style={{ fontSize: "1rem" }}>&#8226;</span>)}</span>}</h2>
+                                        <button
+                                            onClick={() => setTogglePassword(!togglePassword)}
+                                            className='button is-primary is-small'><span className='icon'><ion-icon name="eye-outline"></ion-icon></span></button>
+                                    </>
+                                )}
                             </div>
                         )}
 
