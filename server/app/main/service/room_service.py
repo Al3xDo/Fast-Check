@@ -12,6 +12,9 @@ from app.main.util import utils_response_object
 from app.main.util.preprocess_datetime import getCurrentDateTime
 from sqlalchemy import text, func, desc
 
+from app.main.service.user_service import getUserImgDir
+from app.main.util.utils import get_response_image
+
 # need a writing log service to tracking the error
 
 
@@ -158,10 +161,27 @@ def create_room_report(public_id, user_id):
                 'timeEnd': str(i[1]),
                 'isPresent': True if i[2] == 1 else False
             }
-            print(item)
             result.append(item)
     return result, config.STATUS_CODE_SUCCESS
-def create_attendance_status_report(public_id):
+def create_attendance_status_report(attendance_history_id, user_id):
+    is_admin= db.session.query(Participant.isAdmin).filter(
+        Participant.userId == user_id, AttendanceHistory.id == attendance_history_id, AttendanceHistory.roomId == Participant.roomId
+    ).first()
+    if (not is_admin[0]):
+        return utils_response_object.send_response_object_NOT_ACCEPTABLE(config.MSG_USER_DONT_HAVE_RIGHT)
+    result=[]
+    query= db.session.query(User.email, User.name, AttendanceStatus.isPresent, User.id).filter(AttendanceStatus.userId == User.id,
+    AttendanceStatus.attendanceHistoryId == attendance_history_id).all()
+    result=[]
+    for i in query:
+        item={
+            'email': str(i[0]),
+            'name': str(i[1]),
+            'isPresent': True if i[2] == 1 else False,
+        }
+        result.append(item)
+    return result, config.STATUS_CODE_SUCCESS
+def get_attendance_status_detail(attendance_status_id, user_id):
     pass
 def save_changes(room, participant):
     db.session.add(room)
