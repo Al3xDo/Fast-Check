@@ -145,6 +145,9 @@ export const Room = () => {
                         </thead>
                         <tbody>
                             {attendanceHistory.map((history, index) => {
+                                {/* exclude the admin */ }
+                                const participantNumber = room.participantNumber - 1
+                                const checkedParticipantNumber = history.checkedParticipantNumber - 1
                                 return (
                                     <tr key={index + 1}
                                         onMouseOver={() => changeBackground(index)}
@@ -154,10 +157,10 @@ export const Room = () => {
                                         <td>{index + 1}</td>
                                         <td>{history.timeStart}</td>
                                         <td>{history.timeEnd}</td>
-                                        <td >{history.checkedParticipantNumber}</td>
-                                        <td>{history.checkedParticipantNumber * 100 / room.participantNumber}% </td>
-                                        <td>{room.participantNumber - history.checkedParticipantNumber}</td>
-                                        <td>{(room.participantNumber - history.checkedParticipantNumber) * 100 / room.participantNumber}%</td>
+                                        <td >{checkedParticipantNumber}</td>
+                                        <td>{checkedParticipantNumber * 100 / participantNumber}% </td>
+                                        <td>{participantNumber - checkedParticipantNumber}</td>
+                                        <td>{(participantNumber - checkedParticipantNumber) * 100 / participantNumber}%</td>
                                         {selectTag(currentDate, history.timeStart, history.timeEnd)}
                                     </tr>
                                 )
@@ -187,7 +190,7 @@ export const Room = () => {
                                         <td>{history.timeStart}</td>
                                         <td >{history.timeEnd}</td>
                                         <td>{history.isPresent ? <span className='tag is-success is-large'>Checked</span> : <span className='tag is-error is-large'>Not Checked</span>}</td>
-                                        <td><span className='tag is-success is-large'>Completed</span></td>
+                                        {selectTag(currentDate, history.timeStart, history.timeEnd)}
                                     </tr>
                                 )
                             })}

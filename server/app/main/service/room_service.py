@@ -136,9 +136,9 @@ def create_room_report(public_id, user_id):
     if (check_user_is_room_admin(room_id, user_id)):
         query=db.session.query(
         AttendanceHistory.timeStart, AttendanceHistory.timeEnd,
-        func.count(AttendanceStatus.isPresent == 1)
+        func.count(AttendanceStatus.isPresent)
         ).filter(AttendanceHistory.id == AttendanceStatus.attendanceHistoryId,
-        AttendanceHistory.roomId== room_id).group_by(AttendanceHistory.id).order_by(desc(AttendanceHistory.timeStart)).all()
+        AttendanceHistory.roomId== room_id, AttendanceStatus.isPresent ==1).group_by(AttendanceHistory.id).order_by(desc(AttendanceHistory.timeStart)).all()
         for i in query:
             item={
                 'timeStart': str(i[0]),
@@ -151,7 +151,7 @@ def create_room_report(public_id, user_id):
         AttendanceHistory.timeStart, AttendanceHistory.timeEnd,
         AttendanceStatus.isPresent
         ).filter(AttendanceHistory.id == AttendanceStatus.attendanceHistoryId,
-        AttendanceHistory.roomId== room_id, AttendanceStatus.userId == user_id).all()
+        AttendanceHistory.roomId== room_id, AttendanceStatus.userId == user_id).order_by(desc(AttendanceHistory.timeStart)).all()
         for i in query:
             item={
                 'timeStart': str(i[0]),
