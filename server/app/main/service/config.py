@@ -71,7 +71,7 @@ MSG_CREATE_ATTENDANCE_HISTORY_FAIL= 'Fail to create attendace checking'
 MSG_ALREADY_HAVE_CHECKED_ATTENDANCE= 'You have already checked attendance'
 MSG_CHECKED_ATTENDACE_SUCESSFULLY= 'You have checked attendance sucessfully'
 MSG_TIME_CHECKED_ATTENDACE_OVER_SUCESSFULLY= 'Time for checking attendace is over'
-
+MSG_TOO_MUCH_SAMPLE_IMAGE="Too much sample image (>6), you should delete previous sample image before upload"
 # ERROR
 MSG_JSON_NOT_VALIDATE = "'json is not validate'"
 MSG_UPDATE_ROOM_FAILD = "updated room faild"

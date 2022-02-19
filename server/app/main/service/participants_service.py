@@ -15,7 +15,7 @@ import datetime
 from app.main.service import config
 from app.main.model.room import Room
 from app.main.model.user import User
-from app.main.util.preprocess_datetime import getCurrentDateTime, combineTimeAndCurrentDate
+from app.main.util.preprocess_datetime import getCurrentDateTime, combineTimeAndCurrentDate, getCurrentTime
 import uuid
 import face_recognition
 
@@ -39,6 +39,7 @@ def out_a_room(userId, publicId):
     except exc1.SQLAlchemyError as e:
         print(type(e))
         return utils_response_object.send_response_object_INTERNAL_ERROR()
+
 def join_a_room(userId, publicId):
     roomId= convertPublicIdToRoomId(publicId)
     if not roomId:
@@ -58,7 +59,6 @@ def join_a_room(userId, publicId):
         else:
             return utils_response_object.send_response_object_ERROR(config.MSG_ALREADY_JOINED_IN)
     except exc1.SQLAlchemyError as e:
-        print(type(e))
         return utils_response_object.send_response_object_INTERNAL_ERROR()
 
 def createAttendance(userId,publicId,data):
@@ -89,12 +89,15 @@ def create_encoding_sample_list(saveFolder,image_names):
         sample_encoding= face_recognition.face_encodings(sample_image)[0]
         encoding_list.append(sample_encoding)
     return encoding_list
+    
 def compare_2_face(uploadedImage, sample_encoding_list):
     uploaded_encoding= face_recognition.face_encodings(uploadedImage)[0]
     result= face_recognition.compare_faces(sample_encoding_list, uploaded_encoding)
     return result[0]
+
 def checkAttendance(uploadedImage, userId,attendanceStatusId):
     current_date_time= datetime.datetime.now()
+    current_time= getCurrentTime()
     attendance_status= AttendanceStatus.query.filter_by(id=attendanceStatusId).first()
     if not attendance_status:
         return utils_response_object.send_response_object_ERROR(config.MSG_ROOM_NOT_EXISTS + " or " + config.MSG_ROOM_PUBLIC_ID_IS_NOT_VALID)
@@ -113,6 +116,7 @@ def checkAttendance(uploadedImage, userId,attendanceStatusId):
             encodingSampleImgs= create_encoding_sample_list(saveFolder,image_names)
             if compare_2_face(uploadedImage, encodingSampleImgs):
                 attendance_status.isPresent= True
+                attendance_status.checkedTime= current_time
                 save_changes(attendance_status)
                 return utils_response_object.send_response_object_CREATED(config.MSG_CHECKED_ATTENDACE_SUCESSFULLY)
             else:

@@ -93,5 +93,9 @@ class User(Resource):
         # image = re.sub('^data:image/.+;base64,', '', data['image'])
         # image = np.fromstring(base64.b64decode(image), np.uint8)
         # img = cv2.imdecode(image, cv2.IMREAD_COLOR)
-        file= request.files.get("image")
-        return upload_image(userId, file, isAvatar=False)
+        file = re.sub('^data:image/.+;base64,', '', request.form['image'])
+        image = np.fromstring(base64.b64decode(file), np.uint8)
+        img = cv2.imdecode(image, cv2.IMREAD_COLOR)
+        # file= request.form['image']
+        # print(request.data)
+        return upload_image(userId, img, isAvatar=False)
