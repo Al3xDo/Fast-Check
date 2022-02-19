@@ -117,14 +117,14 @@ def upload_image(userId, file, isAvatar=True):
             face_locations= face_recognition.face_locations(file)
             user_face_location= None
             if len(face_locations) >1:
-                return utils_response_object.send_response_object_NOT_ACCEPTABLE("Too many face in the sample image")
+                return utils_response_object.send_response_object_NOT_ACCEPTABLE(config.MSG_TOO_MUCH_SAMPLE_IMAGE)
             for face_location in face_locations:
                 top, right, bottom, left = face_location
                 user_face_location= file[top:bottom, left:right]
             saveFolder = getUserImgDir(userId, False)
             title= save_datetime_title()
             cv2.imwrite(saveFolder+title+".jpg", user_face_location)
-            return utils_response_object.send_response_object_CREATED("Upload sample image success")
+            return utils_response_object.send_response_object_CREATED(config.MSG_UPLOAD_SAMPLE_IMAGE_SUCCESS)
     except Exception as e:
         print(e)
         return utils_response_object.send_response_object_NOT_ACCEPTABLE(config.MSG_UPLOAD_IMAGE_FAIL)

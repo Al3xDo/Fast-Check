@@ -4,6 +4,11 @@ MIN_PASSWORD_LENGTH = 8
 
 ACCESS_TOKEN_EXPIRES_DAYS = 7
 
+FILESYSTEM_PATH="./app/filesystem/"
+FACE_IMAGES_PATH="user_face_images/"
+IMAGES_PATH="images/"
+AVATAR_PATH="user_avatar/"
+ATTENDANCE_STATUS_PATH="attendance_status/"
 
 STATUS_FAIL = "fail"
 STATUS_SUCCESS = "success"
@@ -58,6 +63,8 @@ MSG_USER_ALREADY_EXIST = 'User already exists. Please Log in.',
 MSG_USER_VERIFICATION_SUCCESS= "verification success"
 MSG_USER_VERIFICATION_FAIL= "verification fail"
 MSG_USER_CANT_DETECT_FACE= "can't detect face"
+MSG_UPLOAD_SAMPLE_IMAGE_SUCCESS= "Upload sample image success"
+MSG_TOO_MUCH_FACE_IN_SAMPLE_IMAGE="Too many face in the sample image"
 # AUTH HELPER
 MSG_LOGGED_IN_SUCCESS = "Sucessfully logged in"
 MSG_INFO_NOT_MATCH = 'email or password does not match.'
@@ -72,6 +79,8 @@ MSG_ALREADY_HAVE_CHECKED_ATTENDANCE= 'You have already checked attendance'
 MSG_CHECKED_ATTENDACE_SUCESSFULLY= 'You have checked attendance sucessfully'
 MSG_TIME_CHECKED_ATTENDACE_OVER_SUCESSFULLY= 'Time for checking attendace is over'
 MSG_TOO_MUCH_SAMPLE_IMAGE="Too much sample image (>6), you should delete previous sample image before upload"
+MSG_NOT_UPLOAD_SAMPLE_IMAGE="you have not uploaded your sample image"
+MSG_NOT_UPLOAD_SAMPLE_IMAGE_2=""
 # ERROR
 MSG_JSON_NOT_VALIDATE = "'json is not validate'"
 MSG_UPDATE_ROOM_FAILD = "updated room faild"

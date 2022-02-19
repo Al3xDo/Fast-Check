@@ -4,7 +4,7 @@ from flask_restplus import Resource
 from ..util.dto import ParticipantDto
 from ..util.decorators import token_required
 from ..util.utils import get_JWT_identity
-from ..service.participants_service import join_a_room, out_a_room, createAttendance, checkAttendance
+from ..service.participants_service import join_a_room, out_a_room, createAttendance, checkAttendance,create_attendance_status_report, create_room_report
 import re
 import base64
 import numpy as np
@@ -13,7 +13,8 @@ OUT_ROOM_ENDPOINT="/out"
 JOIN_ROOM_ENDPOINT="/join"
 CREATE_ATTENDANCE_ENDPOINT="/create_attendance"
 CHECK_ATTENDANCE_ENDPOINT="/check_attendance"
-
+CREATE_REPORT_ENDPOINT="/report"
+CREATE_STATUS_REPORT_ENDPOINT="/report_status"
 
 api = ParticipantDto.api
 # _room = RoomDto.room
@@ -55,3 +56,19 @@ class Room(Resource):
         img = cv2.imdecode(image, cv2.IMREAD_COLOR)
         attendanceStatusId= data['attendanceStatusId']
         return checkAttendance(img, userId,attendanceStatusId)
+
+@api.route(CREATE_REPORT_ENDPOINT+'/<id>')
+class Room(Resource):
+    @api.doc('create report for room')
+    @token_required
+    def get(self, id):
+        user_id= get_JWT_identity(request)
+        return create_room_report(id, user_id)
+
+@api.route(CREATE_STATUS_REPORT_ENDPOINT+'/<attendanceHistoryId>')
+class Room(Resource):
+    @api.doc('create status report for room')
+    @token_required
+    def get(self, attendanceHistoryId):
+        user_id= get_JWT_identity(request)
+        return create_attendance_status_report(attendanceHistoryId, user_id)

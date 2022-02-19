@@ -10,7 +10,7 @@ from sqlalchemy import exc as sexc
 from app.main.service import config
 from app.main.util import utils_response_object
 from app.main.util.preprocess_datetime import getCurrentDateTime
-from sqlalchemy import text, desc, func
+from sqlalchemy import text
 
 # need a writing log service to tracking the error
 
@@ -130,66 +130,65 @@ def get_room_admin_email(room_id):
     admin_name= db.session.query(User.email).join(Participant).filter(Participant.userId == User.id, Participant.roomId== room_id, Participant.isAdmin==1).first()
     return admin_name
 
-def check_user_is_room_admin(room_id, user_id):
-    is_admin= db.session.query(Participant.isAdmin).filter(Participant.roomId== room_id, Participant.userId==user_id).first()
-    return is_admin[0]
-
-def create_room_report(public_id, user_id):
-    room_id= convertPublicIdToRoomId(public_id)
-    result=[]
-    if (check_user_is_room_admin(room_id, user_id)):
-        query=db.session.query(
-        AttendanceHistory.timeStart, AttendanceHistory.timeEnd,
-        func.count(AttendanceStatus.isPresent)
-        ).filter(AttendanceHistory.id == AttendanceStatus.attendanceHistoryId,
-        AttendanceHistory.roomId== room_id, AttendanceStatus.isPresent ==1).group_by(AttendanceHistory.id).order_by(desc(AttendanceHistory.timeStart)).all()
-        for i in query:
-            item={
-                'timeStart': str(i[0]),
-                'timeEnd': str(i[1]),
-                'checkedParticipantNumber': str(i[2])
-            }
-            result.append(item)
-    else:
-        query=db.session.query(
-        AttendanceHistory.timeStart, AttendanceHistory.timeEnd,
-        AttendanceStatus.isPresent, AttendanceStatus.checkedTime
-        ).filter(AttendanceHistory.id == AttendanceStatus.attendanceHistoryId,
-        AttendanceHistory.roomId== room_id, AttendanceStatus.userId == user_id).order_by(desc(AttendanceHistory.timeStart)).all()
-        for i in query:
-            item={
-                'timeStart': str(i[0]),
-                'timeEnd': str(i[1]),
-                'isPresent': True if i[2] == 1 else False,
-                'checkedTime': str(i[3])
-            }
-            result.append(item)
-    return result, config.STATUS_CODE_SUCCESS
-def create_attendance_status_report(attendance_history_id, user_id):
-    is_admin= db.session.query(Participant.isAdmin).filter(
-        Participant.userId == user_id, AttendanceHistory.id == attendance_history_id, AttendanceHistory.roomId == Participant.roomId
-    ).first()
-    if (not is_admin[0]):
-        return utils_response_object.send_response_object_NOT_ACCEPTABLE(config.MSG_USER_DONT_HAVE_RIGHT)
-    result=[]
-    query= db.session.query(User.email, User.name, AttendanceStatus.isPresent, AttendanceStatus.checkedTime).filter(AttendanceStatus.userId == User.id,
-    AttendanceStatus.attendanceHistoryId == attendance_history_id).all()
-    result=[]
-    for i in query:
-        item={
-            'email': str(i[0]),
-            'name': str(i[1]),
-            'isPresent': True if i[2] == 1 else False,
-            'checkedTime': str(i[3])
-        }
-        result.append(item)
-    return result, config.STATUS_CODE_SUCCESS
-def get_attendance_status_detail(attendance_status_id, user_id):
-    query=db.session.query(AttendanceStatus).filter(AttendanceStatus.userId == user_id, AttendanceStatus.id== attendance_status_id).first()
-    if not query:
-        return utils_response_object.send_response_object_NOT_ACCEPTABLE(config.MSG_USER_DONT_HAVE_RIGHT)
-    # find sample image
-    # find log image
+# def create_room_report(public_id, user_id):
+#     room_id= convertPublicIdToRoomId(public_id)
+#     result=[]
+#     if (check_user_is_room_admin(room_id, user_id)):
+#         query=db.session.query(
+#         AttendanceHistory.timeStart, AttendanceHistory.timeEnd,
+#         func.count(AttendanceStatus.isPresent)
+#         ).filter(AttendanceHistory.id == AttendanceStatus.attendanceHistoryId,
+#         AttendanceHistory.roomId== room_id, AttendanceStatus.isPresent ==1).group_by(AttendanceHistory.id).order_by(desc(AttendanceHistory.timeStart)).all()
+#         for i in query:
+#             item={
+#                 'timeStart': str(i[0]),
+#                 'timeEnd': str(i[1]),
+#                 'checkedParticipantNumber': str(i[2])
+#             }
+#             result.append(item)
+#     else:
+#         query=db.session.query(
+#         AttendanceHistory.timeStart, AttendanceHistory.timeEnd,
+#         AttendanceStatus.isPresent, AttendanceStatus.checkedTime, AttendanceStatus.id
+#         ).filter(AttendanceHistory.id == AttendanceStatus.attendanceHistoryId,
+#         AttendanceHistory.roomId== room_id, AttendanceStatus.userId == user_id).order_by(desc(AttendanceHistory.timeStart)).all()
+#         for i in query:
+#             image_title= get_attendance_status_image_name(user_id, i[4])
+#             encoded_image= get_response_image(image_title)
+#             item={
+#                 'timeStart': str(i[0]),
+#                 'timeEnd': str(i[1]),
+#                 'isPresent': True if i[2] == 1 else False,
+#                 'checkedTime': str(i[3]),
+#                 'encodedImage': encoded_image
+#             }
+#             result.append(item)
+#     return result, config.STATUS_CODE_SUCCESS
+# def create_attendance_status_report(attendance_history_id, user_id):
+#     is_admin= db.session.query(Participant.isAdmin).filter(
+#         Participant.userId == user_id, AttendanceHistory.id == attendance_history_id, AttendanceHistory.roomId == Participant.roomId
+#     ).first()
+#     if (not is_admin[0]):
+#         return utils_response_object.send_response_object_NOT_ACCEPTABLE(config.MSG_USER_DONT_HAVE_RIGHT)
+#     result=[]
+#     query= db.session.query(User.email, User.name, AttendanceStatus.isPresent, AttendanceStatus.checkedTime).filter(AttendanceStatus.userId == User.id,
+#     AttendanceStatus.attendanceHistoryId == attendance_history_id).all()
+#     result=[]
+#     for i in query:
+#         item={
+#             'email': str(i[0]),
+#             'name': str(i[1]),
+#             'isPresent': True if i[2] == 1 else False,
+#             'checkedTime': str(i[3])
+#         }
+#         result.append(item)
+#     return result, config.STATUS_CODE_SUCCESS
+# def get_attendance_status_detail(attendance_status_id, user_id):
+#     query=db.session.query(AttendanceStatus).filter(AttendanceStatus.userId == user_id, AttendanceStatus.id== attendance_status_id).first()
+#     if not query:
+#         return utils_response_object.send_response_object_NOT_ACCEPTABLE(config.MSG_USER_DONT_HAVE_RIGHT)
+#     # find sample image
+#     # find log image
 
 def save_changes(room, participant):
     db.session.add(room)
