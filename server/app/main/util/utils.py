@@ -77,9 +77,17 @@ def detect_face(image):
 
 
 def get_response_image(imageDir):
-    img = Image.open(imageDir, mode='r')
-    img_byte_arr = io.BytesIO()
-    img.save(img_byte_arr, format='PNG')
-    my_encoded_img = base64.encodebytes(
-        img_byte_arr.getvalue()).decode('ascii')
-    return my_encoded_img
+    try:
+        img = Image.open(imageDir, mode='r')
+        img_byte_arr = io.BytesIO()
+        img.save(img_byte_arr, format='PNG')
+        my_encoded_img = base64.encodebytes(
+            img_byte_arr.getvalue()).decode('ascii')
+        return my_encoded_img
+    except:
+        img = Image.open("./app/filesystem/attendance_status/not_exist.jpg", mode='r')
+        img_byte_arr = io.BytesIO()
+        img.save(img_byte_arr, format='PNG')
+        my_encoded_img = base64.encodebytes(
+            img_byte_arr.getvalue()).decode('ascii')
+        return my_encoded_img

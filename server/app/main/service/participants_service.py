@@ -1,5 +1,7 @@
+from array import array
 from lib2to3.pgen2.token import AT
 import os
+from unittest import result
 
 import cv2
 from app.main import db
@@ -15,11 +17,14 @@ import datetime
 from app.main.service import config
 from app.main.model.room import Room
 from app.main.model.user import User
-from app.main.util.preprocess_datetime import getCurrentDateTime, combineTimeAndCurrentDate
+from app.main.util.preprocess_datetime import combineTimeAndCurrentDate, getCurrentTime
+from sqlalchemy import desc, func
+from app.main.util.utils import get_response_image
 import uuid
 import face_recognition
 
 from app.main.service.user_service import getUserImgDir
+
 def out_a_room(userId, publicId):
     roomId= convertPublicIdToRoomId(publicId)
     if not roomId:
@@ -39,6 +44,7 @@ def out_a_room(userId, publicId):
     except exc1.SQLAlchemyError as e:
         print(type(e))
         return utils_response_object.send_response_object_INTERNAL_ERROR()
+
 def join_a_room(userId, publicId):
     roomId= convertPublicIdToRoomId(publicId)
     if not roomId:
@@ -58,7 +64,6 @@ def join_a_room(userId, publicId):
         else:
             return utils_response_object.send_response_object_ERROR(config.MSG_ALREADY_JOINED_IN)
     except exc1.SQLAlchemyError as e:
-        print(type(e))
         return utils_response_object.send_response_object_INTERNAL_ERROR()
 
 def createAttendance(userId,publicId,data):
@@ -70,6 +75,7 @@ def createAttendance(userId,publicId,data):
     try:
         if checker.isAdmin:
             attendance_history=AttendanceHistory(roomId,date_time_start, date_time_end)
+            create_attendance_status_folder_if_not_exist(attendance_history.id)
             save_changes(attendance_history)
             participant_list= Participant.query.filter_by(roomId=roomId).all()
             for participant in participant_list:
@@ -82,6 +88,14 @@ def createAttendance(userId,publicId,data):
         print(e)
         return utils_response_object.send_response_object_INTERNAL_ERROR()
 
+def get_attendance_status_image_name(user_id:str, attendance_history_id:str) -> str:
+    img_dir = config.FILESYSTEM_PATH+config.ATTENDANCE_STATUS_PATH+str(attendance_history_id)+"/" + user_id+".jpg" 
+    return img_dir
+def create_attendance_status_folder_if_not_exist(attendance_history_id: str) -> None:
+    path=config.FILESYSTEM_PATH+config.ATTENDANCE_STATUS_PATH+str(attendance_history_id)+"/"
+    if not (os.path.exists(path)):
+        os.mkdir(path)
+
 def create_encoding_sample_list(saveFolder,image_names):
     encoding_list=[]
     for i in image_names:
@@ -89,12 +103,15 @@ def create_encoding_sample_list(saveFolder,image_names):
         sample_encoding= face_recognition.face_encodings(sample_image)[0]
         encoding_list.append(sample_encoding)
     return encoding_list
+    
 def compare_2_face(uploadedImage, sample_encoding_list):
     uploaded_encoding= face_recognition.face_encodings(uploadedImage)[0]
     result= face_recognition.compare_faces(sample_encoding_list, uploaded_encoding)
     return result[0]
-def checkAttendance(uploadedImage, userId,attendanceStatusId):
+
+def checkAttendance(uploadedImage:array, userId:str,attendanceStatusId:str):
     current_date_time= datetime.datetime.now()
+    current_time= getCurrentTime()
     attendance_status= AttendanceStatus.query.filter_by(id=attendanceStatusId).first()
     if not attendance_status:
         return utils_response_object.send_response_object_ERROR(config.MSG_ROOM_NOT_EXISTS + " or " + config.MSG_ROOM_PUBLIC_ID_IS_NOT_VALID)
@@ -106,22 +123,96 @@ def checkAttendance(uploadedImage, userId,attendanceStatusId):
         if attendance_history.timeStart <= current_date_time <= attendance_history.timeEnd:
             saveFolder= getUserImgDir(userId,False)
             if not (os.path.exists(saveFolder)):
-                return utils_response_object.send_response_object_NOT_ACCEPTABLE("you have not uploaded your sample image")
+                return utils_response_object.send_response_object_NOT_ACCEPTABLE(config.MSG_NOT_UPLOAD_SAMPLE_IMAGE)
             image_names= os.listdir(saveFolder)
-            if (image_names == []):
-                return utils_response_object.send_response_object_NOT_ACCEPTABLE("you havew not uploaded your sample image")
             encodingSampleImgs= create_encoding_sample_list(saveFolder,image_names)
             if compare_2_face(uploadedImage, encodingSampleImgs):
+                image_name= get_attendance_status_image_name(userId, attendance_history.id)
+                cv2.imwrite(image_name,uploadedImage)
                 attendance_status.isPresent= True
+                attendance_status.checkedTime= current_time
                 save_changes(attendance_status)
                 return utils_response_object.send_response_object_CREATED(config.MSG_CHECKED_ATTENDACE_SUCESSFULLY)
             else:
-                return utils_response_object.send_response_object_ACCEPTED("your image does not match with sample image")
+                return utils_response_object.send_response_object_ACCEPTED(config.MSG_USER_CANT_DETECT_FACE)
         else:
             return utils_response_object.send_response_object_ERROR(config.MSG_TIME_CHECKED_ATTENDACE_OVER_SUCESSFULLY)
-    # except Exception as e:
-    #     print(e)
-    #     return utils_response_object.send_response_object_INTERNAL_ERROR()
+
+def check_user_is_room_admin(room_id, user_id):
+    is_admin= db.session.query(Participant.isAdmin).filter(Participant.roomId== room_id, Participant.userId==user_id).first()
+    return is_admin[0]
+
+def create_room_report(public_id, user_id):
+    room_id= convertPublicIdToRoomId(public_id)
+    result=[]
+    if (check_user_is_room_admin(room_id, user_id)):
+        query=db.session.query(
+        AttendanceHistory.timeStart, AttendanceHistory.timeEnd,
+        func.count(AttendanceStatus.isPresent), AttendanceHistory.id
+        ).filter(AttendanceHistory.id == AttendanceStatus.attendanceHistoryId,
+        AttendanceHistory.roomId== room_id, AttendanceStatus.isPresent ==1).group_by(AttendanceHistory.id).order_by(desc(AttendanceHistory.timeStart)).all()
+        for i in query:
+            item={
+                'timeStart': str(i[0]),
+                'timeEnd': str(i[1]),
+                'checkedParticipantNumber': str(i[2]),
+                'historyId': str(i[3])
+            }
+            result.append(item)
+    else:
+        query=db.session.query(
+        AttendanceHistory.timeStart, AttendanceHistory.timeEnd,
+        AttendanceStatus.isPresent, AttendanceStatus.checkedTime, AttendanceStatus.id
+        ).filter(AttendanceHistory.id == AttendanceStatus.attendanceHistoryId,
+        AttendanceHistory.roomId== room_id, AttendanceStatus.userId == user_id).order_by(desc(AttendanceHistory.timeStart)).all()
+        for i in query:
+            image_title= get_attendance_status_image_name(user_id, i[4])
+            encoded_image= get_response_image(image_title)
+            item={
+                'timeStart': str(i[0]),
+                'timeEnd': str(i[1]),
+                'isPresent': True if i[2] == 1 else False,
+                'checkedTime': str(i[3]),
+                'encodedImage': encoded_image
+            }
+            result.append(item)
+    return result, config.STATUS_CODE_SUCCESS
+
+def create_attendance_status_report(attendance_history_id, user_id):
+    is_admin= db.session.query(Participant.isAdmin).filter(
+        Participant.userId == user_id, AttendanceHistory.id == attendance_history_id, AttendanceHistory.roomId == Participant.roomId
+    ).first()
+    if (not is_admin[0]):
+        return utils_response_object.send_response_object_NOT_ACCEPTABLE(config.MSG_USER_DONT_HAVE_RIGHT)
+    result=[]
+    query= db.session.query(User.email, User.name, AttendanceStatus.isPresent, AttendanceStatus.checkedTime, User.id).filter(
+    AttendanceStatus.attendanceHistoryId == attendance_history_id, User.id== AttendanceStatus.userId,
+    AttendanceHistory.id == attendance_history_id, User.id != user_id).all()
+    result=[]
+    for i in query:
+        # print(i)
+        image_title= get_attendance_status_image_name(i[4],attendance_history_id)
+        encoded_image= get_response_image(image_title)
+        sample_folder= getUserImgDir(i[4],False)
+        sample_image= os.listdir(sample_folder)[0]
+        encoded_sample_image= get_response_image(os.path.join(sample_folder,sample_image))
+        item={
+            'userEmail': str(i[0]),
+            'userName': str(i[1]),
+            'isPresent': True if i[2] == 1 else False,
+            'checkedTime': str(i[3]),
+            'encodedImage': encoded_image,
+            'encodedSampleImage': encoded_sample_image,
+        }
+        result.append(item)
+    return result, config.STATUS_CODE_SUCCESS
+def get_attendance_status_detail(attendance_status_id, user_id):
+    query=db.session.query(AttendanceStatus).filter(AttendanceStatus.userId == user_id, AttendanceStatus.id== attendance_status_id).first()
+    if not query:
+        return utils_response_object.send_response_object_NOT_ACCEPTABLE(config.MSG_USER_DONT_HAVE_RIGHT)
+    # find log image
+    
+
 def save_changes(data):
     db.session.add(data)
     db.session.commit()

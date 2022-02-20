@@ -9,6 +9,18 @@ from app.main.model import room
 from app.main.model import blacklist
 from app.main.model import participants
 from app import blueprint
+import os
+from app.main.service import config
+
+def create_folder_if_not_exist(path):
+    if (not os.path.exists(path)):
+        os.mkdir(path)
+create_folder_if_not_exist(config.FILESYSTEM_PATH)
+for path in [config.FACE_IMAGES_PATH, 
+            config.IMAGES_PATH, 
+            config.AVATAR_PATH, 
+            config.ATTENDANCE_STATUS_PATH]:
+    create_folder_if_not_exist(os.path.join(os.getcwd(),config.FILESYSTEM_PATH,path))
 # from app.main.socketio.socketio import socketio
 # import app.main.socketio.notification
 app= create_app("dev")
@@ -18,7 +30,7 @@ manager = Manager(app)
 migrate = Migrate().init_app(app, db)
 manager.add_command('db', MigrateCommand)
 # socketio.init_app(app, cors_allowed_origins="*")
-
+# create filesystem folder
 @manager.command
 def run():
     app.run(port=3001,threaded=True)

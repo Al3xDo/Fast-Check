@@ -9,6 +9,7 @@ import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { PrivateRoute } from "./components/PrivateRoute";
 import { LogIn, SignUp } from "./features/auth";
+import { PageLoading } from "./features/Loading/PageLoading";
 const showContentMenus = (routes) => {
   var result = null;
   if (routes.length > 0) {
@@ -23,7 +24,10 @@ const showContentMenus = (routes) => {
           exact={route.exact}
         >
           <Header />
-          {route.main()}
+          <div className="container">
+
+            {route.main()}
+          </div>
           <Footer />
         </PrivateRoute>
       )
@@ -34,21 +38,20 @@ const showContentMenus = (routes) => {
 const App = () => {
   return (
     <Provider store={store}>
+      <PageLoading />
       <Router>
-        <div className="container">
-          <BrowserRouter>
-            <Switch>
-              <Route path="/login" exact={true}>
-                <LogIn />
-              </Route>
-              <Route path="/signup" exact={true}>
-                <SignUp />
-              </Route>
-              {showContentMenus(routes)}
-            </Switch>
-          </BrowserRouter>
-          <ToastContainer />
-        </div>
+        <BrowserRouter>
+          <Switch>
+            <Route path="/login" exact={true}>
+              <LogIn />
+            </Route>
+            <Route path="/signup" exact={true}>
+              <SignUp />
+            </Route>
+            {showContentMenus(routes)}
+          </Switch>
+        </BrowserRouter>
+        <ToastContainer />
       </Router>
     </Provider>
   );

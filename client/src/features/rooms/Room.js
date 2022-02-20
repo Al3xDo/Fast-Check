@@ -27,46 +27,64 @@ export const Room = (props) => {
         return false
     }
     return (
-        <div className="course box level block" style={{ width: "350px", height: "217px" }}>
-            <div className="title-div columns" style={{ paddingRight: "1rem" }}>
+        <div className="course box level block" style={{ width: "370px", height: "217px" }}>
+            <div className="title-div columns" style={{ paddingRight: "1.1rem" }}>
                 <div className="column is-9">
                     <h1 className="title">{roomName}</h1>
                 </div>
                 {isAdmin !== 0 && (
                     <div className="column">
-                        <ion-icon name="ellipsis-vertical-outline"
-                            onClick={() => onOpenEditModal(id)}
-                        ></ion-icon>
+                        <button className='button is-small' onClick={() => onOpenEditModal(id)}>
+                            <span className='icon' title='Edit Room'>
+                                <ion-icon name="ellipsis-vertical-outline"
+                                    style={{ pointerEvents: "none" }}
+                                ></ion-icon>
+                            </span>
+                        </button>
                     </div>
                 )}
                 {isAdmin ? (
                     <div className="column">
-                        <ion-icon name="trash-outline"
-                            onClick={() => onOpenWarningModal(id)}
-                        ></ion-icon>
+                        <button className='button is-small' onClick={() => onOpenWarningModal(id)}>
+                            <span className='icon' title='Delete Room'>
+                                <ion-icon name="trash-outline"
+                                    style={{ pointerEvents: "none" }}
+                                ></ion-icon>
+                            </span>
+                        </button>
                     </div>
                 ) : (
                     <div className="column is-1">
-                        <ion-icon name="log-out-outline"
-                            onClick={() => onOpenWarningModal(publicId, "out")}
-                        ></ion-icon>
+                        <button className='button is-small' onClick={() => onOpenWarningModal(publicId, "out")}>
+                            <span className='icon' title='Out Room'>
+                                <ion-icon name="log-out-outline"
+                                    style={{ pointerEvents: "none" }}
+                                ></ion-icon>
+                            </span>
+                        </button>
+
                     </div>
                 )}
 
             </div>
 
             <div className="course-description">
-                <h2>Sĩ số: {participantNumber}</h2>
+                <h2>Number: {participantNumber}</h2>
                 {/* <h2>Time: {timeEnd} - {timeStart}</h2> */}
                 {/* <h2>Class size: 52</h2> */}
             </div>
-            <Link to={`/room/${publicId}`}>
-                <button className='button is-primary'>
-                    create report
-                </button>
-            </Link>
+
             <div className="course-icon">
                 <div className="columns mgb-small">
+                    <div className="column">
+                        <Link to={`/room/${publicId}`}>
+                            <button className='button'>
+                                <span className="icon" title="See Report">
+                                    <ion-icon name="document-text-outline" style={{ fontSize: "20px", pointerEvents: "none" }}></ion-icon>
+                                </span>
+                            </button>
+                        </Link>
+                    </div>
                     {isAdmin !== 0 && (
                         <div className="column">
                             <button className="button"
@@ -84,13 +102,13 @@ export const Room = (props) => {
                                 <button className="button is-primary level-right"
                                     disabled
                                 >
-                                    Đang điểm danh
+                                    Checking Attendance
                                 </button>
                             ) : (
                                 <button className="button is-primary level-right"
                                     onClick={() => props.onOpenAttendanceModal(publicId)}
                                 >
-                                    Thực hiện điểm danh
+                                    Open Attendance Check
                                 </button>
                             )
                         ) : (
@@ -100,7 +118,7 @@ export const Room = (props) => {
                                     disabled={!openButton(statusId, isPresent)}
                                     onClick={props.onCheckAttendance}
                                 >
-                                    Điểm danh
+                                    Check Attendance
                                 </button>
                             </Link>
                         )

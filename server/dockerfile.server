@@ -6,11 +6,16 @@ WORKDIR /usr/src/app
 
 ADD . /usr/src/app
 
+COPY . .
 RUN pip install --upgrade pip
-RUN pip install cmake
+# RUN pip install cmake
 RUN pip install -r requirements.txt
 RUN apt-get update && apt-get install -y python3-opencv
-RUN pip install opencv-python
+# RUN apt-get install -y python3-opencv
 
 
-CMD python manage.py run
+# RUN chmod u+x ./usr/src/app/entrypoint.sh
+# ENTRYPOINT ["./usr/src/appentrypoint.sh"]
+# CMD ["python manage.py db migrate"]
+# CMD ["python manage.py db upgrade"]
+# RUN  python manage.py db upgrade

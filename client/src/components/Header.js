@@ -8,7 +8,7 @@ const Header = (props) => {
     const dispatch = useDispatch()
     const authState = useSelector(selectAuth)
     const onLogOut = () => {
-        dispatch(logOut)
+        dispatch(logOut(authState.token))
     }
     return (
         <nav className="navbar is-light mb-30" role="navigation" aria-label="main navigation">
@@ -19,7 +19,7 @@ const Header = (props) => {
             </div>
             <div className="navbar-menu">
                 <a href="/" className="navbar-item">
-                    Khóa học của tôi
+                    My Rooms
                 </a>
             </div>
             <div className="navbar-end">

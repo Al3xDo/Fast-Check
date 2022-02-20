@@ -4,7 +4,8 @@ import { selectAuth } from '../auth/authSlice';
 import { useSelector } from 'react-redux';
 import { toastError } from '../../utils/toastNotify';
 import { useParams } from 'react-router';
-export const Room = () => {
+import { Link } from 'react-router-dom';
+export const RoomReport = () => {
     const authState = useSelector(selectAuth)
     const [room, setRoom] = useState({})
     const [attendanceHistory, setAttendanceHistory] = useState([])
@@ -25,7 +26,7 @@ export const Room = () => {
         getRoomReport()
     }, []);
     function getRoomReport() {
-        callApi(`room/report/${params.id}`, 'GET', {}, authState.token)
+        callApi(`par/report/${params.id}`, 'GET', {}, authState.token)
             .then((res) => {
                 setAttendanceHistory(res.data)
             })
@@ -40,11 +41,18 @@ export const Room = () => {
     function removeBackground() {
         setHoverRowIndex(-1)
     }
-    const currentDate = new Date().toISOString().slice(0, 19).replace('T', ' ')
+    // const currentDate = new Date().toISOString().slice(0, 19).replace('T', ' ')
+    const currentDate = new Date().getTime()
+    const convertJsonDatetimeToJS = (datetime) => {
+        return new Date(Date.parse(datetime.replace(/-/g, '/'))).getTime();
+    }
     const selectTag = (currentDate, timeStart, timeEnd) => {
-        const rawTimeStart = timeStart
-        const rawTimeEnd = timeEnd
-        if (rawTimeStart <= currentDate <= rawTimeEnd) {
+        console.log(timeEnd)
+        console.log("current", new Date().getTime())
+        // console.log(start)
+        const rawTimeStart = convertJsonDatetimeToJS(timeStart)
+        const rawTimeEnd = convertJsonDatetimeToJS(timeEnd)
+        if (rawTimeStart <= currentDate && currentDate <= rawTimeEnd) {
             return (
                 <td><span className='tag is-info is-large'>Checking</span></td>
             )
@@ -89,7 +97,7 @@ export const Room = () => {
                                     <>
                                         <h2 className="is-inline">Password: {room.password || <span className='tag is-light is-small'>
                                             {[...Array(10)].map((x, i) =>
-                                                <span style={{ fontSize: "1rem" }}>&#8226;</span>)}</span>}</h2>
+                                                <span key={i} style={{ fontSize: "1rem" }}>&#8226;</span>)}</span>}</h2>
                                         <button
                                             onClick={() => setTogglePassword(!togglePassword)}
                                             className='button is-primary is-small'><span className='icon'><ion-icon name="eye-outline"></ion-icon></span></button>
@@ -141,6 +149,7 @@ export const Room = () => {
                                 <th title='NoUP'>Unchecked Participant</th>
                                 <th title='RoUP'>Ratio</th>
                                 <th title='status'>Status</th>
+                                <th title='status'>Detail</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -149,6 +158,7 @@ export const Room = () => {
                                 const participantNumber = room.participantNumber - 1
                                 const checkedParticipantNumber = history.checkedParticipantNumber - 1
                                 return (
+
                                     <tr key={index + 1}
                                         onMouseOver={() => changeBackground(index)}
                                         onMouseLeave={removeBackground}
@@ -162,7 +172,13 @@ export const Room = () => {
                                         <td>{participantNumber - checkedParticipantNumber}</td>
                                         <td>{(participantNumber - checkedParticipantNumber) * 100 / participantNumber}%</td>
                                         {selectTag(currentDate, history.timeStart, history.timeEnd)}
+                                        <td>
+                                            <Link to={`history/${history.historyId}`}>
+                                                View
+                                            </Link>
+                                        </td>
                                     </tr>
+
                                 )
                             })}
                         </tbody>
@@ -175,6 +191,7 @@ export const Room = () => {
                                 <th title='Index'>Index</th>
                                 <th title='Time start'>Time Start</th>
                                 <th title='Time End'>Time End</th>
+                                <th title='Checked Image'>Checked Image </th>
                                 <th title='Is Present'>Is Present </th>
                                 <th title='Room Status'>Room Status </th>
                             </tr>
@@ -189,7 +206,13 @@ export const Room = () => {
                                         <td>{index + 1}</td>
                                         <td>{history.timeStart}</td>
                                         <td >{history.timeEnd}</td>
-                                        <td>{history.isPresent ? <span className='tag is-success is-large'>Checked</span> : <span className='tag is-error is-large'>Not Checked</span>}</td>
+                                        <td><img
+                                            className="image"
+                                            style={{ width: "200px" }}
+                                            src={`data:image/jpeg;base64,${history.encodedImage}`}
+                                            alt="user-avatar"
+                                        /></td>
+                                        <td>{history.isPresent ? <span className='tag is-success is-large'>Checked</span> : <span className='tag is-danger is-large'>Not Checked</span>}</td>
                                         {selectTag(currentDate, history.timeStart, history.timeEnd)}
                                     </tr>
                                 )

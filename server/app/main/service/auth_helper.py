@@ -1,6 +1,6 @@
 from app.main.model.user import User
+from app.main.util.utils_response_object import send_response_object_SUCCESS
 from ..service.blacklist_service import save_token
-from sqlalchemy.orm import exc
 from app.main.service import config
 
 from app.main.util import utils_response_object
@@ -34,11 +34,9 @@ class Auth:
             return response_object, config.MSG_INTERNAL_ERROR
 
     @staticmethod
-    def logout_user(data):
-        if data:
-            auth_token = data.split(" ")[1]
-        else:
-            auth_token = ''
+    def logout_user(new_request):
+        data = new_request.headers.get('Authorization')
+        auth_token = str.replace(str(data), 'Bearer ', '')
         if auth_token:
             resp = User.decode_auth_token(auth_token)
             if resp.count("-") >0:
@@ -68,3 +66,6 @@ class Auth:
             return utils_response_object.send_response_object_NOT_ACCEPTABLE(config.MSG_USER_NOT_FOUND)
         else:
             return utils_response_object.send_response_object_NOT_ACCEPTABLE(config.MSG_NOT_VALID_TOKEN)
+    # def log_out_user():
+        # return save_token(token=auth_token)
+        # return send_response_object_SUCCESS(config.MSG_LOG_OUT_SUCCESSFULLY)

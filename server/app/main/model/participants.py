@@ -29,7 +29,7 @@ class AttendanceStatus(db.Model):
     attendanceHistoryId= db.Column(db.String(150),db.ForeignKey(
         'attendance_history.id'), nullable=False)
     isPresent = db.Column(db.SmallInteger())
-    CheckedTime = db.Column(db.Time())
+    checkedTime = db.Column(db.Time())
     AttendanceHistory = db.relationship(
         'AttendanceHistory', backref=db.backref('attendance_history', lazy=True))
     # user = db.relationship(

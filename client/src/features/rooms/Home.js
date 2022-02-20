@@ -12,6 +12,8 @@ import { WarningModal } from "./WarningModal"
 import { useDebounce } from '../../hook/useDebounce';
 import { JoinRoomModal } from './JoinRoomModal';
 import { InviteModal } from "./InviteModal"
+import { useDispatch } from 'react-redux';
+import { setLoading } from '../Loading/loadingSlice';
 // import socketIOClient from "socket.io-client"
 import { AttendaceModal } from './AttendanceModal';
 // const HOST = "http://localhost:3001"
@@ -19,6 +21,7 @@ import { AttendaceModal } from './AttendanceModal';
 // const socket = io(HOST, )
 export const Home = () => {
     const authState = useSelector(selectAuth)
+    const dispatch = useDispatch()
     const [rooms, setRooms] = useState([])
     const [open, setOpen] = useState("")
     const [openEdit, setOpenEdit] = useState("")
@@ -100,6 +103,7 @@ export const Home = () => {
                 }
                 toastError(e.response.data.message)
             })
+
     }
     useEffect(() => {
         fetchRooms()

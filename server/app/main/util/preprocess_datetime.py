@@ -16,4 +16,6 @@ def compare2DateTime():
     pass
 def preprocessTime(time):
     preprocesedTime = datetime.datetime.strptime(time, "%H:%M:%S")
-    return preprocesedTime   
+    return preprocesedTime
+def save_datetime_title():
+    return datetime.datetime.now().strftime("%Y-%m-%d %H-%M-%S")
