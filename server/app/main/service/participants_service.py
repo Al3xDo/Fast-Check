@@ -1,5 +1,7 @@
+from array import array
 from lib2to3.pgen2.token import AT
 import os
+from unittest import result
 
 import cv2
 from app.main import db
@@ -107,7 +109,7 @@ def compare_2_face(uploadedImage, sample_encoding_list):
     result= face_recognition.compare_faces(sample_encoding_list, uploaded_encoding)
     return result[0]
 
-def checkAttendance(uploadedImage:str, userId:str,attendanceStatusId:str):
+def checkAttendance(uploadedImage:array, userId:str,attendanceStatusId:str):
     current_date_time= datetime.datetime.now()
     current_time= getCurrentTime()
     attendance_status= AttendanceStatus.query.filter_by(id=attendanceStatusId).first()

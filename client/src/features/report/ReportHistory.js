@@ -61,13 +61,11 @@ export const ReportHistory = () => {
                     <tbody>
                         {attendanceHistory.map((history, index) => {
                             return (
-
-
                                 <tr key={index + 1}
                                 >
                                     <td>{index + 1}</td>
-                                    <td>{history.userEmail}</td>
-                                    <td >{history.userName}</td>
+                                    <td><span className='tag is-info '>{history.userEmail}</span></td>
+                                    <td><span className='tag is-info'>{history.userName}</span></td>
                                     <td><img
                                         className="image"
                                         style={{ width: "200px" }}
@@ -80,7 +78,7 @@ export const ReportHistory = () => {
                                         src={`data:image/jpeg;base64,${history.encodedSampleImage}`}
                                         alt="user-avatar"
                                     /></td>
-                                    <td>{history.isPresent ? <span className='tag is-success is-large'>Checked</span> : <span className='tag is-error is-large'>Not Checked</span>}</td>
+                                    <td>{history.isPresent ? <span className='tag is-success is-large'>Checked</span> : <span className='tag is-danger is-large'>Not Checked</span>}</td>
                                 </tr>
                             )
                         })}

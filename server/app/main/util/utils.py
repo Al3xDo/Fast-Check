@@ -85,7 +85,7 @@ def get_response_image(imageDir):
             img_byte_arr.getvalue()).decode('ascii')
         return my_encoded_img
     except:
-        img = Image.open("C:/WebLearning/Fast-Check/server/app/filesystem/attendance_status/not_exist.jpg", mode='r')
+        img = Image.open("./app/filesystem/attendance_status/not_exist.jpg", mode='r')
         img_byte_arr = io.BytesIO()
         img.save(img_byte_arr, format='PNG')
         my_encoded_img = base64.encodebytes(

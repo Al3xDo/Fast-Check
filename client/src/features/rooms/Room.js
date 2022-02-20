@@ -27,7 +27,7 @@ export const Room = (props) => {
         return false
     }
     return (
-        <div className="course box level block" style={{ width: "350px", height: "217px" }}>
+        <div className="course box level block" style={{ width: "370px", height: "217px" }}>
             <div className="title-div columns" style={{ paddingRight: "1.1rem" }}>
                 <div className="column is-9">
                     <h1 className="title">{roomName}</h1>
@@ -69,7 +69,7 @@ export const Room = (props) => {
             </div>
 
             <div className="course-description">
-                <h2>Sĩ số: {participantNumber}</h2>
+                <h2>Number: {participantNumber}</h2>
                 {/* <h2>Time: {timeEnd} - {timeStart}</h2> */}
                 {/* <h2>Class size: 52</h2> */}
             </div>
@@ -102,13 +102,13 @@ export const Room = (props) => {
                                 <button className="button is-primary level-right"
                                     disabled
                                 >
-                                    Đang điểm danh
+                                    Checking Attendance
                                 </button>
                             ) : (
                                 <button className="button is-primary level-right"
                                     onClick={() => props.onOpenAttendanceModal(publicId)}
                                 >
-                                    Thực hiện điểm danh
+                                    Open Attendance Check
                                 </button>
                             )
                         ) : (
@@ -118,7 +118,7 @@ export const Room = (props) => {
                                     disabled={!openButton(statusId, isPresent)}
                                     onClick={props.onCheckAttendance}
                                 >
-                                    Điểm danh
+                                    Check Attendance
                                 </button>
                             </Link>
                         )

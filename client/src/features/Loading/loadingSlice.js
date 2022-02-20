@@ -1,22 +1,20 @@
-import { createSelector, createSlice } from "@reduxjs/toolkit";
+import { createSlice } from "@reduxjs/toolkit";
 
 export const loadingSlice = createSlice({
     name: "loading",
     initialState: {
         load: false,
-        error: "",
     },
     reducers: {
-        set: (state, status) => {
-            state.loading = status
+        setLoading: (state, { payload }) => {
+            // setTimeout(() => {
+            //     state.load = payload
+            // }, 1000)
+            state.load = payload
         },
     },
 })
-export const { set } = loadingSlice.actions
-export const selectLoading = createSelector(
-    (state) => ({
-        loading: state.loading.load,
-    }), (state) => state
-)
+export const { setLoading } = loadingSlice.actions
+export const selectLoading = (state) => state.load
 
 export default loadingSlice.reducer

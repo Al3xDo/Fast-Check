@@ -41,16 +41,17 @@ export const logIn = createAsyncThunk(
 )
 export const logOut = createAsyncThunk(
     'auth/logout',
-    async (user, thunkAPI) => {
+    async (token, thunkAPI) => {
         try {
             let config = {
                 headers: {
                     'Content-Type': 'application/json',
                     'Accept': "*/*",
                     'Access-Control-Allow-Origin': '*',
+                    Authorization: `Bearer ${token}`
                 }
             }
-            const response = await axios.post('http://localhost:3001/auth/logout', user, config)
+            const response = await axios.post('http://localhost:3001/auth/logout', {}, config)
             return response;
         } catch (error) {
             return thunkAPI.rejectWithValue({ error: error.response.data.message });
@@ -59,13 +60,15 @@ export const logOut = createAsyncThunk(
 )
 export const AuToken = createAsyncThunk(
     'auth/auToken',
-    async (thunkAPI) => {
+    async (token, thunkAPI) => {
         try {
+
             let config = {
                 headers: {
                     'Content-Type': 'application/json',
                     'Accept': "*/*",
                     'Access-Control-Allow-Origin': '*',
+                    Authorization: `Bearer ${token}`
                 }
             }
             const response = await axios.post('http://localhost:3001/auth/checkToken', {}, config)
@@ -121,7 +124,7 @@ export const authSlice = createSlice({
                 state.error = action.payload
             });
         builder.addCase(AuToken.pending, (state) => {
-            state.token = window.localStorage.getItem("token");
+            // state.token = window.localStorage.getItem("token");
             state.loading = "loading"
         })
             .addCase(AuToken.fulfilled, (state, { payload }) => {
@@ -138,6 +141,9 @@ export const authSlice = createSlice({
             window.localStorage.removeItem("token");
             state.loading = "idle"
             state.token = ""
+        }).addCase(logOut.rejected, (state, action) => {
+            state.error = action.error
+            toastError(action.error)
         })
     }
 })

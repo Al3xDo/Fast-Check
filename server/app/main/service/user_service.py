@@ -4,17 +4,14 @@ import uuid
 from app.main.util.preprocess_datetime import save_datetime_title
 
 from werkzeug.utils import secure_filename
-
 from app.main import db
 from app.main.model.user import User
-from app.main.model.participants import AttendanceStatus
-from sqlalchemy import exc
 from app.main.service import config
 from app.main.util import utils_response_object
-import numpy as np
-from ..util.utils import preprocess_email, preprocess_image, detect_face, get_face_image, get_response_image
+from ..util.utils import get_response_image
 import cv2
 import face_recognition
+
 FILESYSTEM_PATH="./app/filesystem/"
 FACE_IMAGES_PATH="user_face_images/"
 IMAGES_PATH="images/"
@@ -99,11 +96,12 @@ def upload_image(userId, file, isAvatar=True):
         user = User.query.filter_by(id=userId).first()
         if isAvatar:
             filename = secure_filename(file.filename)
+            # print(file)
             if not allowed_file(filename):
                 return utils_response_object.send_response_object_NOT_ACCEPTABLE(config.MSG_FILETYPE_IS_NOT_ALLOWED)
             saveDir = getUserImgDir(userId)
             # save to the filesystem
-            cv2.imwrite(saveDir, file)
+            file.save(saveDir)
             user.hasAvatar = True
             db.session.commit()
             return utils_response_object.send_response_object_ACCEPTED(config.MSG_UPLOAD_IMAGE_SUCCESS)
@@ -115,6 +113,7 @@ def upload_image(userId, file, isAvatar=True):
             if image_num >=5:
                 return utils_response_object.send_response_object_NOT_ACCEPTABLE(config.MSG_TOO_MUCH_SAMPLE_IMAGE)
             face_locations= face_recognition.face_locations(file)
+            # face_locations=[]
             user_face_location= None
             if len(face_locations) >1:
                 return utils_response_object.send_response_object_NOT_ACCEPTABLE(config.MSG_TOO_MUCH_SAMPLE_IMAGE)

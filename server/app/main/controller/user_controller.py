@@ -71,16 +71,9 @@ class User(Resource):
         # image = re.sub('^data:image/.+;base64,', '', data['image'])
         # image = np.fromstring(base64.b64decode(image), np.uint8)
         # img = cv2.imdecode(image, cv2.IMREAD_COLOR)
-        file= request.files.get("image")
+        file= request.files["image"]
+        print(file)
         return upload_image(userId, file)
-
-
-@api.route(CHECK_TOKEN)
-class User(Resource):
-    @api.doc('check the user token for private route')
-    @token_required
-    def get(self):
-        return {}, 200
 
 
 @api.route(UPLOAD_SAMPLE)

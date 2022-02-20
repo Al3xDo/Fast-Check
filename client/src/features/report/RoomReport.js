@@ -41,12 +41,18 @@ export const RoomReport = () => {
     function removeBackground() {
         setHoverRowIndex(-1)
     }
-    const currentDate = new Date().toISOString().slice(0, 19).replace('T', ' ')
+    // const currentDate = new Date().toISOString().slice(0, 19).replace('T', ' ')
+    const currentDate = new Date().getTime()
+    const convertJsonDatetimeToJS = (datetime) => {
+        return new Date(Date.parse(datetime.replace(/-/g, '/'))).getTime();
+    }
     const selectTag = (currentDate, timeStart, timeEnd) => {
-        const rawTimeStart = timeStart
-        // console.log(rawTimeStart.getTime())
-        const rawTimeEnd = timeEnd
-        if (rawTimeStart <= currentDate <= rawTimeEnd) {
+        console.log(timeEnd)
+        console.log("current", new Date().getTime())
+        // console.log(start)
+        const rawTimeStart = convertJsonDatetimeToJS(timeStart)
+        const rawTimeEnd = convertJsonDatetimeToJS(timeEnd)
+        if (rawTimeStart <= currentDate && currentDate <= rawTimeEnd) {
             return (
                 <td><span className='tag is-info is-large'>Checking</span></td>
             )
@@ -206,7 +212,7 @@ export const RoomReport = () => {
                                             src={`data:image/jpeg;base64,${history.encodedImage}`}
                                             alt="user-avatar"
                                         /></td>
-                                        <td>{history.isPresent ? <span className='tag is-success is-large'>Checked</span> : <span className='tag is-error is-large'>Not Checked</span>}</td>
+                                        <td>{history.isPresent ? <span className='tag is-success is-large'>Checked</span> : <span className='tag is-danger is-large'>Not Checked</span>}</td>
                                         {selectTag(currentDate, history.timeStart, history.timeEnd)}
                                     </tr>
                                 )

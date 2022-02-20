@@ -3,11 +3,10 @@ from flask_restplus import Resource
 
 from app.main.service.auth_helper import Auth
 from ..util.dto import AuthDto
-
-
+from ..util.decorators import token_required
 LOGIN_ENDPOINT="/login"
 LOGOUT_ENDPOINT= "/logout"
-
+CHECK_TOKEN="/checkToken"
 api = AuthDto.api
 user_auth = AuthDto.user_auth
 
@@ -33,5 +32,12 @@ class LogoutAPI(Resource):
     @api.doc('logout a user')
     def post(self):
         # get auth token
-        auth_header = request.headers.get('Authorization')
-        return Auth.logout_user(data=auth_header)
+        return Auth.logout_user(request)
+        # return Auth.log_out_user()
+
+@api.route(CHECK_TOKEN)
+class User(Resource):
+    @api.doc('check the user token for private route')
+    @token_required
+    def get(self):
+        return {}, 200

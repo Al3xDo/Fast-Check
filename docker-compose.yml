@@ -1,29 +1,22 @@
-version: "2.1"
+version: "3"
+networks:
+  mynet:
+    driver: bridge
 services:
-  server:
-    container_name: fast-check-api
-    build:
-      context: ./server
-      dockerfile: dockerfile.server
-    depends_on:
-      db:
-        condition: service_healthy
-    ports:
-      - "3001:3001"
-    # command: >
-    #   sh -c "python ./server/manage.py db migrate &&
-    #          python ./server/manage.py db upgrade &&
-    #          python ./server/manage.py run"
-    image: flask-api
   db:
     image: mysql:8.0.28
     healthcheck:
       test: "exit 0"
+    restart: always
     ports:
       - "3306:3306"
     environment:
-      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
-      MYSQL_DATABASE: fast_check_test
+      MYSQL_ROOT_PASSWORD: 'root'
+      MYSQL_DATABASE: 'fast_check'
+      # MYSQL_HOST: '0.0.0.0'
+    networks:
+      - mynet
+      # MYSQL_HOST: 'localhost'
     # volumes:
     #   - /var/lib/mysql
   client:
@@ -33,5 +26,34 @@ services:
       context: ./client
       dockerfile: dockerfile.client
     image: fast-check-client
+    command: >
+            npm start
+    # links:
+      # - server
+    networks:
+      - mynet
+    depends_on:
+      - server
     ports:
       - "3000:3000"
+  server:
+    container_name: fast-check-api-no-dlib
+    restart: always
+    build:
+      context: ./server
+      dockerfile: dockerfile.server
+    image: fast-check-api-no-dlib
+    # links:
+      # -db
+    depends_on:
+      - db
+        # condition: service_healthy
+    ports:
+      - "3001:3001"
+    # command: python manage.py db upgrade
+    command: >
+      sh -c "python manage.py db migrate &&
+             python manage.py db upgrade &&
+             python manage.py run"
+    networks:
+      - mynet

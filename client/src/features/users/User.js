@@ -1,13 +1,15 @@
 import { useState, useEffect } from "react"
 import Calendar from "../../components/Calendar"
 import { callApi, callApiUploadImage } from "../../utils/apiCaller";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { selectAuth } from "../auth/authSlice";
 import "./style.css"
 import { toastError, toastSuccess } from "../../utils/toastNotify";
 import UploadSampleImage from "./UploadSampleImage";
+import { setLoading } from "../Loading/loadingSlice";
 export const User = (props) => {
     const authState = useSelector(selectAuth)
+    const dispatch = useDispatch()
     const [user, setUser] = useState(null)
     const [name, setName] = useState("")
     const [openUploadSampleImageModal, setOpenUploadSampleImageModal] = useState("")
@@ -17,6 +19,7 @@ export const User = (props) => {
         file: ""
     })
     function fetchUser() {
+        dispatch(setLoading(true))
         callApi("user/", "GET", {}, authState.token)
             .then((res) => {
                 setUser(res.data)
@@ -24,6 +27,7 @@ export const User = (props) => {
             .catch((err) => {
                 toastError(err.message)
             })
+        dispatch(setLoading(false))
     }
     useEffect(() => {
         fetchUser()
