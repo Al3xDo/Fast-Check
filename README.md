@@ -17,11 +17,11 @@
 *** for contributors-url, forks-url, etc. This is an optional, concise syntax you may use.
 *** https://www.markdownguide.org/basic-syntax/#reference-style-links
 -->
-
+<!-- 
 [![Contributors][contributors-shield]][contributors-url]
 [![Forks][forks-shield]][forks-url]
 [![Stargazers][stars-shield]][stars-url]
-[![Issues][issues-shield]][issues-url]
+[![Issues][issues-shield]][issues-url] -->
 [![MIT License][license-shield]][license-url]
 [![LinkedIn][linkedin-shield]][linkedin-url]
 
@@ -78,12 +78,17 @@
 
 ## About The Project
 
-[![Product Name Screen Shot][product-screenshot]](https://example.com)
+[![Product Name Screen Shot][product-screenshot]](https://github.com/Al3xDo/Fast-Check/blob/develop/ReadMe/LogIn.png)
 
-The Fast-Check project will allow the user to\
+[![Product Name Screen Shot][product-screenshot2]](https://github.com/Al3xDo/Fast-Check/blob/develop/ReadMe/Home.png)
+
+[![Product Name Screen Shot][product-screenshot3]](https://github.com/Al3xDo/Fast-Check/blob/develop/ReadMe/User.png)
+
+The Fast-Check project will allow the user to
 
 - Create and Manage room
-- Check members attendance through their webcam\
+- Create user
+- Check members attendance through their webcam
 
 I hope this project will help speeding up the checking attendance process
 
@@ -242,4 +247,6 @@ Use this space to list resources you find helpful and would like to give credit 
 [license-url]: https://github.com/Al3xDo/Fast-Check/blob/master/LICENSE.txt
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
 [linkedin-url]: https://www.linkedin.com/in/huy-do-2000/
-[product-screenshot]: images/screenshot.png
+[product-screenshot]: https://github.com/Al3xDo/Fast-Check/blob/develop/ReadMe/LogIn.png
+[product-screenshot2]: https://github.com/Al3xDo/Fast-Check/blob/develop/ReadMe/Home.png
+[product-screenshot3]: https://github.com/Al3xDo/Fast-Check/blob/develop/ReadMe/User.png
