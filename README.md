@@ -123,12 +123,13 @@ I hope this project will help speeding up the checking attendance process
    ```
 2. Install NPM packages
    ```sh
-   cd ./client
+   cd /client
    npm install
    ```
 3. Install python packages
    ```sh
-   cd ../server
+   cd .. # Go to the root of the repo
+   cd /server
    pip install -r requirements.txt
    ```
 
@@ -146,7 +147,7 @@ I hope this project will help speeding up the checking attendance process
 
 ## Usage
 You need to open 2 terminal, one for client and one for server
-For running production app, set environment varible API_ENV=prod
+For running production app, set environment varible** API_ENV=prod**
 1. Run the client (first terminal)
    ```sh
    cd client
