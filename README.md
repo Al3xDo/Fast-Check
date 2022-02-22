@@ -243,8 +243,8 @@ Use this space to list resources you find helpful and would like to give credit 
 [stars-url]: https://github.com/Al3xDo/Fast-Check/stargazers
 [issues-shield]: https://img.shields.io/github/issues/Al3xDo/Fast-Check.svg?style=for-the-badge
 [issues-url]: https://github.com/Al3xDo/Fast-Check/issues
-[license-shield]: https://img.shields.io/github/license/Al3xDo/Fast-Check.svg
-[license-url]: https://github.com/Al3xDo/Fast-Check/blob/master/LICENSE.md
+[license-shield]: https://img.shields.io/github/license/Al3xDo/Fast-Check.svg?style=for-the-badge
+[license-url]: https://github.com/Al3xDo/Fast-Check/blob/main/LICENSE.txt
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
 [linkedin-url]: https://www.linkedin.com/in/huy-do-2000/
 [product-screenshot]: https://github.com/Al3xDo/Fast-Check/blob/develop/ReadMe/LogIn.png
