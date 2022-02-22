@@ -96,8 +96,6 @@ I hope this project will help speeding up the checking attendance process
 
 ### Built With
 
-This section should list any major frameworks/libraries used to bootstrap your project. Leave any add-ons/plugins for the acknowledgements section. Here are a few examples.
-
 <div align="center">  
 <img style="margin: 10px" src="https://profilinator.rishav.dev/skills-assets/react-original-wordmark.svg" alt="React" height="50" />  
 <img style="margin: 10px" src="https://profilinator.rishav.dev/skills-assets/mysql-original-wordmark.svg" alt="MySQL" height="50" />  
@@ -110,12 +108,7 @@ This section should list any major frameworks/libraries used to bootstrap your p
 
 ## Getting Started
 
-This is an example of how you may give instructions on setting up your project locally.
-To get a local copy up and running follow these simple example steps.
-
 ### Prerequisites
-
-This is an example of how to list things you need to use the software and how to install them.
 
 - npm
   ```sh
@@ -123,8 +116,6 @@ This is an example of how to list things you need to use the software and how to
   ```
 
 ### Installation
-
-\_Below is an example of how you can instruct your audience on installing and setting up your app.
 
 1. Clone the repo
    ```sh
@@ -135,7 +126,7 @@ This is an example of how to list things you need to use the software and how to
    cd ./client
    npm install
    ```
-3. Install NPM packages
+3. Install python packages
    ```sh
    cd ../server
    pip install -r requirements.txt
@@ -145,13 +136,7 @@ This is an example of how to list things you need to use the software and how to
 
 ### Installation with Docker
 
-\_Below is an example of how you can instruct your audience on installing and setting up your app.
-
-1. Build images
-   ```sh
-   docker-compose build
-   ```
-2. Run services
+1. Build and run
    ```sh
    docker-compose up
    ```
@@ -160,10 +145,31 @@ This is an example of how to list things you need to use the software and how to
 <!-- USAGE EXAMPLES -->
 
 ## Usage
-
-Use this space to show useful examples of how a project can be used. Additional screenshots, code examples and demos work well in this space. You may also link to more resources.
-
-_For more examples, please refer to the [Documentation](https://example.com)_
+You need to open 2 terminal, one for client and one for server
+For running production app, set environment varible API_ENV=prod
+1. Run the client (first terminal)
+   ```sh
+   cd client
+   npm start
+   ```
+2. Run server (second terminal)
+   ```sh
+   cd server
+   python manage.py run
+   ```
+   for the first run, you need to initiliaze the database first
+   ```sh
+   python manage.py db init
+   python manage.py db migrate
+   python manage.py db upgrade
+   ```
+   then you can run server by
+   ```sh
+   python manage.py run
+   ```
+Access http://localhost:3000/ to see the webpage
+   <p align="right">(<a href="#top">back to top</a>)</p>
+<!-- _For more examples, please refer to the [Documentation](https://example.com)_ -->
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
@@ -172,11 +178,15 @@ _For more examples, please refer to the [Documentation](https://example.com)_
 ## Roadmap
 
 - [x] Allow User to upload their sample image
+- [ ] Allow User to see their sample image
+- [ ] Add 'login by google' feature
+- [ ] Add fake detect or liveliness detection
+- [ ] Add 'kick participant' feature
+- [ ] Add 'Admin Dashboard'
 - [ ] Speed up performance
-- [ ] Add Changelog
 - [ ] Multi-language Support
   - [ ] VietNamese
-  - [ ] English
+  - [x] English
 
 See the [open issues](https://github.com/othneildrew/Best-README-Template/issues) for a full list of proposed features (and known issues).
 
@@ -218,8 +228,6 @@ Project Link: [https://github.com/Al3xDo/Fast-Check/](https://github.com/Al3xDo/
 <!-- ACKNOWLEDGMENTS -->
 
 ## Acknowledgments
-
-Use this space to list resources you find helpful and would like to give credit to. I've included a few of my favorites to kick things off!
 
 - [https://mit-license.org/](https://choosealicense.com)
 - [GitHub Emoji Cheat Sheet](https://www.webpagefx.com/tools/emoji-cheat-sheet)
