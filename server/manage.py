@@ -21,20 +21,19 @@ for path in [config.FACE_IMAGES_PATH,
             config.AVATAR_PATH, 
             config.ATTENDANCE_STATUS_PATH]:
     create_folder_if_not_exist(os.path.join(os.getcwd(),config.FILESYSTEM_PATH,path))
-# from app.main.socketio.socketio import socketio
-# import app.main.socketio.notification
-app= create_app("dev")
+
+
+app= create_app(os.getenv("API_ENV") or "dev")
 app.register_blueprint(blueprint)
 app.app_context().push()
 manager = Manager(app)
 migrate = Migrate().init_app(app, db)
 manager.add_command('db', MigrateCommand)
-# socketio.init_app(app, cors_allowed_origins="*")
-# create filesystem folder
+
+
 @manager.command
 def run():
     app.run(host='0.0.0.0',port=3001,threaded=True)
-    # socketio.run(app, port=3001)
 @manager.command
 def test():
     """Runs the unit tests."""

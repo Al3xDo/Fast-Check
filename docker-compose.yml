@@ -20,6 +20,8 @@ services:
     build:
       context: ./server
       dockerfile: dockerfile.server
+    environment:
+      - API_ENV: 'prod'
     image: fast-check-api-no-dlib
     volumes:
       - ./server:/backend
@@ -39,7 +41,7 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: 'root'
       MYSQL_ROOT_USER: 'root'
-      MYSQL_DATABASE: 'fast_check_test'
+      MYSQL_DATABASE: 'fast_check_prod'
       # MYSQL_HOST: '0.0.0.0'
     ports:
       - "32000:3306"
