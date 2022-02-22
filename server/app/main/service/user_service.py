@@ -10,7 +10,7 @@ from app.main.service import config
 from app.main.util import utils_response_object
 from ..util.utils import get_response_image
 import cv2
-import face_recognition
+# import face_recognition
 
 FILESYSTEM_PATH="./app/filesystem/"
 FACE_IMAGES_PATH="user_face_images/"
@@ -112,7 +112,8 @@ def upload_image(userId, file, isAvatar=True):
             image_num= len(os.listdir(saveFolder))
             if image_num >=5:
                 return utils_response_object.send_response_object_NOT_ACCEPTABLE(config.MSG_TOO_MUCH_SAMPLE_IMAGE)
-            face_locations= face_recognition.face_locations(file)
+            # face_locations= face_recognition.face_locations(file)
+            face_locations=[]
             # face_locations=[]
             user_face_location= None
             if len(face_locations) >1:

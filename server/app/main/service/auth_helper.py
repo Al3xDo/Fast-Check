@@ -1,5 +1,4 @@
 from app.main.model.user import User
-from app.main.util.utils_response_object import send_response_object_SUCCESS
 from ..service.blacklist_service import save_token
 from app.main.service import config
 

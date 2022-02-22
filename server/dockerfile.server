@@ -1,21 +1,17 @@
 FROM python:3.7.11
 
-RUN mkdir -p /usr/src/app
-
-WORKDIR /usr/src/app
-
-ADD . /usr/src/app
-
-COPY . .
+EXPOSE 3001
+WORKDIR /app
+COPY requirements.txt /app
 RUN pip install --upgrade pip
 # RUN pip install cmake
 RUN pip install -r requirements.txt
 RUN apt-get update && apt-get install -y python3-opencv
+COPY . .
 # RUN apt-get install -y python3-opencv
 
 
-# RUN chmod u+x ./usr/src/app/entrypoint.sh
+RUN chmod u+x ./setup.sh
+CMD ["./setup.sh"]
 # ENTRYPOINT ["./usr/src/appentrypoint.sh"]
-# CMD ["python manage.py db migrate"]
-# CMD ["python manage.py db upgrade"]
 # RUN  python manage.py db upgrade
