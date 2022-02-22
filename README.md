@@ -147,7 +147,7 @@ I hope this project will help speeding up the checking attendance process
 
 ## Usage
 You need to open 2 terminal, one for client and one for server
-For running production app, set environment varible** API_ENV=prod**
+For running production app, set environment varible **API_ENV=prod**
 1. Run the client (first terminal)
    ```sh
    cd client
