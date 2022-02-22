@@ -21,7 +21,7 @@ from app.main.util.preprocess_datetime import combineTimeAndCurrentDate, getCurr
 from sqlalchemy import desc, func
 from app.main.util.utils import get_response_image
 import uuid
-import face_recognition
+# import face_recognition
 
 from app.main.service.user_service import getUserImgDir
 
@@ -98,16 +98,17 @@ def create_attendance_status_folder_if_not_exist(attendance_history_id: str) -> 
 
 def create_encoding_sample_list(saveFolder,image_names):
     encoding_list=[]
-    for i in image_names:
-        sample_image= face_recognition.load_image_file(os.path.join(saveFolder,i))
-        sample_encoding= face_recognition.face_encodings(sample_image)[0]
-        encoding_list.append(sample_encoding)
+    # for i in image_names:
+    #     sample_image= face_recognition.load_image_file(os.path.join(saveFolder,i))
+    #     sample_encoding= face_recognition.face_encodings(sample_image)[0]
+    #     encoding_list.append(sample_encoding)
     return encoding_list
     
 def compare_2_face(uploadedImage, sample_encoding_list):
-    uploaded_encoding= face_recognition.face_encodings(uploadedImage)[0]
-    result= face_recognition.compare_faces(sample_encoding_list, uploaded_encoding)
-    return result[0]
+    # uploaded_encoding= face_recognition.face_encodings(uploadedImage)[0]
+    # result= face_recognition.compare_faces(sample_encoding_list, uploaded_encoding)
+    # return result[0]
+    return None
 
 def checkAttendance(uploadedImage:array, userId:str,attendanceStatusId:str):
     current_date_time= datetime.datetime.now()

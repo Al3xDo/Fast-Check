@@ -36,9 +36,6 @@ build
 # py
 app/main/config.py
 
-
 #folder
 filesystem/
-
-face_verification_models/
-serving command.txt
+migrations/

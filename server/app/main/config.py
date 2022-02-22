@@ -10,6 +10,7 @@ class Config(object):
     SQLALCHEMY_NAME=os.getenv('DB_NAME')
     SQLALCHEMY_PASSWORD=os.getenv('DB_PASSWORD')
     SQLALCHEMY_HOST=os.getenv('DB_HOST')
+    SQLALCHEMY_TEST_HOST=os.getenv('DB_TEST_HOST')
 class ProductionConfig(Config):
     SQLALCHEMY_ECHO = False
     SQLALCHEMY_TRACK_MODIFICATIONS = True
@@ -34,7 +35,7 @@ class TestingConfig(Config):
     FLASK_DEBUG=1
     SQLALCHEMY_ECHO = False
     SQLALCHEMY_TRACK_MODIFICATIONS = True
-    SQLALCHEMY_DATABASE_URI = f"mysql+pymysql://{Config.SQLALCHEMY_NAME}:{Config.SQLALCHEMY_PASSWORD}@{Config.SQLALCHEMY_HOST}/fast_check_test"
+    SQLALCHEMY_DATABASE_URI = f"mysql+pymysql://{Config.SQLALCHEMY_NAME}:{Config.SQLALCHEMY_PASSWORD}@{Config.SQLALCHEMY_TEST_HOST}/fast_check_test"
 
 config_by_name= dict(
     dev= DevelopmentConfig,

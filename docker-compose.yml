@@ -1,59 +1,45 @@
-version: "3"
-networks:
-  mynet:
-    driver: bridge
+version: "3.5"
 services:
-  db:
-    image: mysql:8.0.28
-    healthcheck:
-      test: "exit 0"
-    restart: always
-    ports:
-      - "3306:3306"
-    environment:
-      MYSQL_ROOT_PASSWORD: 'root'
-      MYSQL_DATABASE: 'fast_check'
-      # MYSQL_HOST: '0.0.0.0'
-    networks:
-      - mynet
-      # MYSQL_HOST: 'localhost'
-    # volumes:
-    #   - /var/lib/mysql
   client:
-    tty: true
     container_name: fast-check-client
     build:
       context: ./client
       dockerfile: dockerfile.client
     image: fast-check-client
+    volumes:
+      - ./client:/frontend
     command: >
             npm start
-    # links:
-      # - server
-    networks:
-      - mynet
     depends_on:
       - server
     ports:
       - "3000:3000"
   server:
     container_name: fast-check-api-no-dlib
-    restart: always
+    # restart: always
     build:
       context: ./server
       dockerfile: dockerfile.server
     image: fast-check-api-no-dlib
-    # links:
-      # -db
-    depends_on:
-      - db
-        # condition: service_healthy
+    volumes:
+      - ./server:/backend
+    links:
+      - mysql5_7
     ports:
       - "3001:3001"
     # command: python manage.py db upgrade
     command: >
-      sh -c "python manage.py db migrate &&
-             python manage.py db upgrade &&
-             python manage.py run"
-    networks:
-      - mynet
+      sh -c " 
+      python manage.py run"
+  mysql5_7:
+    image: mysql:5.7
+    restart: always
+    volumes:
+      - ./mysql5_7:/docker-entrypoint-initdb.d/:ro
+    environment:
+      MYSQL_ROOT_PASSWORD: 'root'
+      MYSQL_ROOT_USER: 'root'
+      MYSQL_DATABASE: 'fast_check_test'
+      # MYSQL_HOST: '0.0.0.0'
+    ports:
+      - "32000:3306"

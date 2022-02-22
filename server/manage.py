@@ -33,7 +33,7 @@ manager.add_command('db', MigrateCommand)
 # create filesystem folder
 @manager.command
 def run():
-    app.run(port=3001,threaded=True)
+    app.run(host='0.0.0.0',port=3001,threaded=True)
     # socketio.run(app, port=3001)
 @manager.command
 def test():
