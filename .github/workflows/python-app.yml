@@ -40,6 +40,8 @@ jobs:
           DB_PORT: ${{ secrets.DB_PORT }}
           DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
         run: |
+          chmod +x "$./setup.sh"
+          chmod +x "$./setup.py"
           ./setup.sh
           ./setup.py
       - name: Test with unittest
