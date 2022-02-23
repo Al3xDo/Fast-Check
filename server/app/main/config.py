@@ -27,7 +27,7 @@ class DevelopmentConfig(Config):
     SQLALCHEMY_ECHO = False
     SQLALCHEMY_TRACK_MODIFICATIONS = True
     # SQLALCHEMY_DATABASE_URI = f"mysql+pymysql://{Config.SQLALCHEMY_NAME}:{Config.SQLALCHEMY_PASSWORD}@{Config.SQLALCHEMY_HOST}/fast_check"
-    SQLALCHEMY_DATABASE_URI = f"mysql+pymysql://{Config.SQLALCHEMY_NAME}:{Config.SQLALCHEMY_PASSWORD}@127.0.0.1/fast_check"
+    SQLALCHEMY_DATABASE_URI = f"mysql+pymysql://root:root@127.0.0.1/fast_check"
 
 
 class TestingConfig(Config):
