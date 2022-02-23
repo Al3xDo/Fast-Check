@@ -36,7 +36,8 @@ jobs:
           pip install -r requirements.txt
       - name: init database
         working-directory: ./server
-        env: API_ENV="test"
+        env:
+          API_ENV: test
         run: |
           python manage.py db init
           python manage.py db migrate
