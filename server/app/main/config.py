@@ -26,8 +26,7 @@ class DevelopmentConfig(Config):
     # }
     SQLALCHEMY_ECHO = False
     SQLALCHEMY_TRACK_MODIFICATIONS = True
-    # SQLALCHEMY_DATABASE_URI = f"mysql+pymysql://{Config.SQLALCHEMY_NAME}:{Config.SQLALCHEMY_PASSWORD}@{Config.SQLALCHEMY_HOST}/fast_check"
-    SQLALCHEMY_DATABASE_URI = f"mysql+pymysql://root:root@127.0.0.1/fast_check"
+    SQLALCHEMY_DATABASE_URI = f"mysql+pymysql://{Config.SQLALCHEMY_NAME}:{Config.SQLALCHEMY_PASSWORD}@{Config.SQLALCHEMY_HOST}/fast_check"
 
 
 class TestingConfig(Config):
@@ -36,7 +35,8 @@ class TestingConfig(Config):
     FLASK_DEBUG=1
     SQLALCHEMY_ECHO = False
     SQLALCHEMY_TRACK_MODIFICATIONS = True
-    SQLALCHEMY_DATABASE_URI = f"mysql+pymysql://{Config.SQLALCHEMY_NAME}:{Config.SQLALCHEMY_PASSWORD}@{Config.SQLALCHEMY_TEST_HOST}/fast_check_test"
+    SQLALCHEMY_DATABASE_URI = f"mysql+pymysql://root:root@127.0.0.1/fast_check_test"
+    # SQLALCHEMY_DATABASE_URI = f"mysql+pymysql://{Config.SQLALCHEMY_NAME}:{Config.SQLALCHEMY_PASSWORD}@{Config.SQLALCHEMY_TEST_HOST}/fast_check_test"
 
 config_by_name= dict(
     dev= DevelopmentConfig,

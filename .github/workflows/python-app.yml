@@ -17,7 +17,7 @@ jobs:
         image: mysql:5.7
         env:
           MYSQL_ROOT_PASSWORD: ${{ secrets.DB_PASSWORD }}
-          MYSQL_DATABASE: fast_check
+          MYSQL_DATABASE: fast_check_test
         ports: ["3306:3306"]
         # options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
     steps:
@@ -40,6 +40,9 @@ jobs:
       - name: Test with unittest
         working-directory: ./server
         run: |
+          echo ${{ secrets.SECRET_KEY }}
+          echo ${{ secrets.DB_NAME }}
+          echo ${{ secrets.DB_HOST }}
           touch .env
           echo SECRET_KEY=${{ secrets.SECRET_KEY }} >> .env
           echo DB_NAME=${{ secrets.DB_NAME }} >> .env
