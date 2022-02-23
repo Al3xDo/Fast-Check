@@ -13,4 +13,5 @@ COPY . .
 
 RUN chmod u+x ./setup.sh
 CMD ["./setup.sh"]
+RUN chmod u+x ./setup.sh
 CMD ["python setup.py"]
