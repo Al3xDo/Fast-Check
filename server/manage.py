@@ -13,6 +13,7 @@ import os
 
 
 app= create_app(os.getenv("API_ENV") or "dev")
+print(os.getenv("API_ENV"))
 app.register_blueprint(blueprint)
 app.app_context().push()
 manager = Manager(app)

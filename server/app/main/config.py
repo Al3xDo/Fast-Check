@@ -46,9 +46,9 @@ class ActionTestingConfig(Config):
     FLASK_DEBUG=1
     SQLALCHEMY_ECHO = False
     SQLALCHEMY_TRACK_MODIFICATIONS = True
-    DB_NAME= os.environ.get("DB_NAME")
-    DB_HOST= os.environ.get("DB_HOST")
-    DB_PASSWORD= os.environ.get("DB_PASSWORD")
+    # DB_NAME= os.environ.get("DB_NAME")
+    # DB_HOST= os.environ.get("DB_HOST")
+    # DB_PASSWORD= os.environ.get("DB_PASSWORD")
     SQLALCHEMY_DATABASE_URI = f"mysql+pymysql://root:root@127.0.0.1/fast_check_test"
 
 class DockerProductionConfig(Config):
