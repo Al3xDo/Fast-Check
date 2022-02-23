@@ -14,7 +14,7 @@ class Config(object):
 class ProductionConfig(Config):
     SQLALCHEMY_ECHO = False
     SQLALCHEMY_TRACK_MODIFICATIONS = True
-    SQLALCHEMY_DATABASE_URI = f"mysql+pymysql://{Config.SQLALCHEMY_NAME}:{Config.SQLALCHEMY_PASSWORD}@{Config.DB_TEST_HOST}/fast_check_prod"
+    SQLALCHEMY_DATABASE_URI = f"mysql+pymysql://{Config.SQLALCHEMY_NAME}:{Config.SQLALCHEMY_PASSWORD}@{Config.SQLALCHEMY_TEST_HOST}/fast_check_prod"
     
 
 
