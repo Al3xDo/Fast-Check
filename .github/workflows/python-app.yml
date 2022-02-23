@@ -45,7 +45,8 @@ jobs:
           echo SECRET_KEY=${{ secrets.SECRET_KEY }} >> .env
           echo DB_NAME=${{ secrets.DB_NAME }} >> .env
           echo DB_HOST=${{ secrets.DB_HOST }} >> .env
-          echo DB_HOST=${{ secrets.DB_PORT }} >> .env
+          echo DB_PORT=${{ secrets.DB_PORT }} >> .env
+          echo DB_TEST_HOST=${{ secrets.DB_TEST_HOST }} >> .env
           echo DB_PASSWORD=${{ secrets.DB_PASSWORD }} >> .env
           cat .env
           python manage.py test
