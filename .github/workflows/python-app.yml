@@ -16,6 +16,9 @@ jobs:
       mysql:
         image: mysql:5.7
         env:
+          echo ${{ secrets.SECRET_KEY }}
+          echo ${{ secrets.DB_NAME }}
+          echo ${{ secrets.DB_HOST }}
           MYSQL_ROOT_PASSWORD: ${{ secrets.DB_PASSWORD }}
           MYSQL_DATABASE: fast_check_test
         ports: ["3306:3306"]
@@ -33,6 +36,7 @@ jobs:
           pip install -r requirements.txt
       - name: init database
         working-directory: ./server
+        env: API_ENV="test"
         run: |
           python manage.py db init
           python manage.py db migrate
@@ -40,9 +44,6 @@ jobs:
       - name: Test with unittest
         working-directory: ./server
         run: |
-          echo ${{ secrets.SECRET_KEY }}
-          echo ${{ secrets.DB_NAME }}
-          echo ${{ secrets.DB_HOST }}
           touch .env
           echo SECRET_KEY=${{ secrets.SECRET_KEY }} >> .env
           echo DB_NAME=${{ secrets.DB_NAME }} >> .env
