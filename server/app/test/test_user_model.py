@@ -11,6 +11,7 @@ from app.main.service import config
 import logging
 from app.main.util.utils import get_response_image
 from app.main.service.config import FILESYSTEM_PATH, IMAGES_PATH
+from app.main.service.config import DEFAULT_AVATAR_PATH
 from utils import create_get_token
 class TestUserModel(BaseTestCase):
     logger = logging.getLogger(__name__)
@@ -51,7 +52,7 @@ class TestUserModel(BaseTestCase):
             self.assertIn('name', data)
             self.assertIn('email', data)
             self.assertNotIn('password', data)
-            true_image_dir=FILESYSTEM_PATH +"/"+IMAGES_PATH+"default-image.jpg"
+            true_image_dir=DEFAULT_AVATAR_PATH
             true_image= get_response_image(true_image_dir)
             self.assertEqual(data['avatar'], true_image)
     def test_update_user(self):

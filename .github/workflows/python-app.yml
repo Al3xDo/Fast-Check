@@ -34,20 +34,18 @@ jobs:
       - name: init database
         working-directory: ./server
         env:
-          API_ENV: test
+          API_ENV: action_test
+          DB_NAME: ${{ secrets.DB_NAME }}
+          DB_HOST: ${{ secrets.DB_HOST }}
+          DB_PORT: ${{ secrets.DB_PORT }}
+          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
         run: |
-          python manage.py db init
-          python manage.py db migrate
-          python manage.py db upgrade
+          ./setup.sh
+          python setup.py
       - name: Test with unittest
         working-directory: ./server
         run: |
           touch .env
           echo SECRET_KEY=${{ secrets.SECRET_KEY }} >> .env
-          echo DB_NAME=${{ secrets.DB_NAME }} >> .env
-          echo DB_HOST=${{ secrets.DB_HOST }} >> .env
-          echo DB_PORT=${{ secrets.DB_PORT }} >> .env
-          echo DB_TEST_HOST=${{ secrets.DB_TEST_HOST }} >> .env
-          echo DB_PASSWORD=${{ secrets.DB_PASSWORD }} >> .env
           cat .env
           python manage.py test

@@ -11,11 +11,7 @@ from app.main.util import utils_response_object
 from ..util.utils import get_response_image
 import cv2
 # import face_recognition
-
-FILESYSTEM_PATH="./app/filesystem/"
-FACE_IMAGES_PATH="user_face_images/"
-IMAGES_PATH="images/"
-AVATAR_PATH="user_avatar/"
+from app.main.service.config import FILESYSTEM_PATH, FACE_IMAGES_PATH, DEFAULT_AVATAR_PATH, AVATAR_PATH
 def save_new_user(data):
     user = User.query.filter_by(email=data['email']).first()
     if not user:
@@ -62,7 +58,7 @@ def get_a_user(userId):
             encodedImg = get_response_image(imgDir)
             return serialize_user(user, encodedImg), config.STATUS_CODE_SUCCESS
         else:
-            imgDir=FILESYSTEM_PATH+"/"+IMAGES_PATH+"default-image.jpg"
+            imgDir=DEFAULT_AVATAR_PATH
             encodedImg= get_response_image(imgDir)
             return serialize_user(user, encodedImg), config.STATUS_CODE_SUCCESS
     return utils_response_object.write_response_object(config.STATUS_FAIL, config.MSG_USER_NOT_FOUND), config.STATUS_CODE_NOT_FOUND

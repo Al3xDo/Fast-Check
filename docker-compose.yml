@@ -21,7 +21,7 @@ services:
       context: ./server
       dockerfile: dockerfile.server
     environment:
-      - API_ENV: 'prod'
+      - API_ENV: 'docker_prod'
     image: fast-check-api-no-dlib
     volumes:
       - ./server:/backend

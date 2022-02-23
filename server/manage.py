@@ -10,17 +10,6 @@ from app.main.model import blacklist
 from app.main.model import participants
 from app import blueprint
 import os
-from app.main.service import config
-
-def create_folder_if_not_exist(path):
-    if (not os.path.exists(path)):
-        os.mkdir(path)
-create_folder_if_not_exist(config.FILESYSTEM_PATH)
-for path in [config.FACE_IMAGES_PATH, 
-            config.IMAGES_PATH, 
-            config.AVATAR_PATH, 
-            config.ATTENDANCE_STATUS_PATH]:
-    create_folder_if_not_exist(os.path.join(os.getcwd(),config.FILESYSTEM_PATH,path))
 
 
 app= create_app(os.getenv("API_ENV") or "dev")

@@ -13,5 +13,4 @@ COPY . .
 
 RUN chmod u+x ./setup.sh
 CMD ["./setup.sh"]
-# ENTRYPOINT ["./usr/src/appentrypoint.sh"]
-# RUN  python manage.py db upgrade
+CMD ["python setup.py"]
