@@ -43,7 +43,7 @@ jobs:
           chmod +x "./setup.sh"
           chmod +x "./setup.py"
           ./setup.sh
-          ./setup.py
+          python ./setup.py
       - name: Test with unittest
         working-directory: ./server
         run: |

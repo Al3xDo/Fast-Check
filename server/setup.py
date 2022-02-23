@@ -1,5 +1,5 @@
 import os
-from server.app.main.service.config import *
+from app.main.service.config import *
 
 PATHS= [FILESYSTEM_PATH, AVATAR_PATH, ATTENDANCE_STATUS_PATH,FACE_IMAGES_PATH, IMAGES_PATH ]
 def create_folder_if_not_exist(path):
