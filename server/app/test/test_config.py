@@ -6,15 +6,6 @@ from flask_testing import TestCase
 
 from manage import app
 
-load_dotenv()
-DEBUG = False
-TESTING = False
-SECRET_KEY = os.getenv('SECRET_KEY')
-DB_NAME=os.getenv('DB_NAME')
-DB_PASSWORD=os.getenv('DB_PASSWORD')
-DB_HOST=os.getenv('DB_HOST')
-DB_HOST_TEST_HOST=os.getenv('DB_TEST_HOST')
-DB_DOCKER_HOST=os.getenv('DB_DOCKER_HOST')
 class TestDevelopmentConfig(TestCase):
     def create_app(self):
         app.config.from_object('app.main.config.DevelopmentConfig')

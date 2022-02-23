@@ -38,7 +38,7 @@ class TestingConfig(Config):
     FLASK_DEBUG=1
     SQLALCHEMY_ECHO = False
     SQLALCHEMY_TRACK_MODIFICATIONS = True
-    SQLALCHEMY_DATABASE_URI = f"mysql+pymysql://{Config.DB_NAME}:{Config.DB_PASSWORD}@{Config.DB_HOST}/fast_check_test"
+    SQLALCHEMY_DATABASE_URI = f"mysql+pymysql://root:root@127.0.0.1/fast_check_test"
 
 class ActionTestingConfig(Config):
     TESTING = True
