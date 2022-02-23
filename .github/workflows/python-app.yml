@@ -41,7 +41,7 @@ jobs:
           DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
         run: |
           ./setup.sh
-          python setup.py
+          ./setup.py
       - name: Test with unittest
         working-directory: ./server
         run: |
