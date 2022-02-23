@@ -11,14 +11,6 @@ class TestDevelopmentConfig(TestCase):
         app.config.from_object('app.main.config.DevelopmentConfig')
         return app
 
-    def test_app_is_development(self):
-        # self.assertFalse(app.config['SECRET_KEY'] is 'my_precious')
-        self.assertTrue(app.config['DEBUG'] is True)
-        self.assertFalse(current_app is None)
-        self.assertTrue(
-            app.config['SQLALCHEMY_DATABASE_URI'] == f"mysql+pymysql://{app.config['SQLALCHEMY_NAME']}:{app.config['SQLALCHEMY_PASSWORD']}@{app.config['SQLALCHEMY_HOST']}/fast_check"
-        )
-
 
 class TestTestingConfig(TestCase):
     def create_app(self):
