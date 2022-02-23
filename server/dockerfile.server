@@ -10,8 +10,5 @@ RUN apt-get update && apt-get install -y python3-opencv
 COPY . .
 # RUN apt-get install -y python3-opencv
 
-
-RUN chmod u+x ./setup.sh
-CMD ["./setup.sh"]
-RUN chmod u+x ./setup.sh
+RUN chmod u+x ./setup.py
 CMD ["python setup.py"]
