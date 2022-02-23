@@ -46,6 +46,8 @@ jobs:
           python ./setup.py
       - name: Test with unittest
         working-directory: ./server
+        env:
+          API_ENV: action_test
         run: |
           touch .env
           echo SECRET_KEY=${{ secrets.SECRET_KEY }} >> .env
