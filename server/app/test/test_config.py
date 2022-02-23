@@ -29,9 +29,9 @@ class TestTestingConfig(TestCase):
     def test_app_is_testing(self):
         # self.assertFalse(app.config['SECRET_KEY'] is 'my_precious')
         self.assertTrue(app.config['DEBUG'])
-        self.assertTrue(
-            app.config['SQLALCHEMY_DATABASE_URI'] == f"mysql+pymysql://{app.config['SQLALCHEMY_NAME']}:{app.config['SQLALCHEMY_PASSWORD']}@{app.config['SQLALCHEMY_HOST']}/fast_check_test"
-        )
+        # self.assertTrue(
+        #     app.config['SQLALCHEMY_DATABASE_URI'] == f"mysql+pymysql://{app.config['SQLALCHEMY_NAME']}:{app.config['SQLALCHEMY_PASSWORD']}@{app.config['SQLALCHEMY_HOST']}/fast_check_test"
+        # )
 
 
 class TestProductionConfig(TestCase):

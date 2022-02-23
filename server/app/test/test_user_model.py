@@ -1,8 +1,6 @@
-from io import BytesIO, StringIO
-from tkinter import Image
+from io import BytesIO
+import os
 import unittest
-import datetime
-import sys
 from app.main import db
 from app.main.model.user import User
 from app.test.base import BaseTestCase
@@ -12,8 +10,7 @@ from app.test.utils import call_api, convert_res_to_dict
 from app.main.service import config
 import logging
 from app.main.util.utils import get_response_image
-from app.test.utils import stringToImage
-from app.test.utils import call_api_upload_image
+from app.main.service.config import FILESYSTEM_PATH, IMAGES_PATH
 from utils import create_get_token
 class TestUserModel(BaseTestCase):
     logger = logging.getLogger(__name__)
@@ -54,7 +51,8 @@ class TestUserModel(BaseTestCase):
             self.assertIn('name', data)
             self.assertIn('email', data)
             self.assertNotIn('password', data)
-            true_image= get_response_image("C:/WebLearning/Fast-Check/server/app/test/asset/images/default-image.jpg")
+            true_image_dir=FILESYSTEM_PATH +"/"+IMAGES_PATH+"default-image.jpg"
+            true_image= get_response_image(true_image_dir)
             self.assertEqual(data['avatar'], true_image)
     def test_update_user(self):
         with self.client:
@@ -82,9 +80,9 @@ class TestUserModel(BaseTestCase):
     def test_upload_avatar_image(self):
         with self.client:
             user_token= create_get_token(self)
-            true_image= get_response_image("C:/WebLearning/Fast-Check/server/app/test/asset/images/test_avatar_image.jpg")
-
-            with open("C:/WebLearning/Fast-Check/server/app/test/asset/images/test_avatar_image.jpg", 'rb') as test_img:
+            # self.assertEqual(os.getcwd(), "", msg= os.getcwd())
+            true_image= get_response_image("./app/test/asset/images/test_avatar_image.jpg")
+            with open("./app/test/asset/images/test_avatar_image.jpg", 'rb') as test_img:
                 test_img_stringIO= BytesIO(test_img.read())
             user_response= call_api(self,'/user/uploadAvatar', 'POST', data={
                 "image": (test_img_stringIO, 'test_img.jpg')
@@ -99,7 +97,7 @@ class TestUserModel(BaseTestCase):
         # test upload wrong filetype
         with self.client:
             user_token= create_get_token(self)
-            with open("C:/WebLearning/Fast-Check/server/app/test/asset/images/test_avatar_image.jpg", 'rb') as test_img:
+            with open("./app/test/asset/images/test_avatar_image.jpg", 'rb') as test_img:
                 test_img_stringIO= BytesIO(test_img.read())
             user_response= call_api(self,'/user/uploadAvatar', 'POST', data={
                 "image": (test_img_stringIO, 'test_img.pdf')
