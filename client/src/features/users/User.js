@@ -27,7 +27,9 @@ export const User = (props) => {
             .catch((err) => {
                 toastError(err.message)
             })
-        dispatch(setLoading(false))
+        setTimeout(() => {
+            dispatch(setLoading(false));
+        }, 1000);
     }
     useEffect(() => {
         fetchUser()

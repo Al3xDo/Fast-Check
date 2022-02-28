@@ -42,7 +42,7 @@ class TestUserModel(BaseTestCase):
         with self.client:
             user_response= call_api(self,'/user/',token="123312312312312")
             # self.assertNotEqual(user_response.status_code, 200)
-            self.assertEqual(user_response.status_code, config.STATUS_CODE_NOT_ACCEPTABLE, msg=convert_res_to_dict(user_response))
+            self.assertEqual(user_response.status_code, config.STATUS_CODE_UNAUTHORIZED, msg=convert_res_to_dict(user_response))
     def test_get_user(self):
         with self.client:
             user_token= create_get_token(self)
@@ -75,7 +75,7 @@ class TestUserModel(BaseTestCase):
             self.assertEqual(user_response.status_code, config.STATUS_CODE_SUCCESS, msg= convert_res_to_dict(user_response))
 
             user_response=call_api(self,'/user/', 'GET', token=user_token)
-            self.assertEqual(user_response.status_code, config.STATUS_CODE_NOT_ACCEPTABLE)
+            self.assertEqual(user_response.status_code, config.STATUS_CODE_UNAUTHORIZED)
             data= convert_res_to_dict(user_response)
             self.assertEqual(data[config.MESSAGE], config.MSG_USER_NOT_FOUND)
     def test_upload_avatar_image(self):
@@ -88,7 +88,7 @@ class TestUserModel(BaseTestCase):
             user_response= call_api(self,'/user/uploadAvatar', 'POST', data={
                 "image": (test_img_stringIO, 'test_img.jpg')
             }, token=user_token, content_type="multipart/form-data")
-            self.assertEqual(user_response.status_code, config.STATUS_CODE_ACCEPTED, msg= convert_res_to_dict(user_response))
+            self.assertEqual(user_response.status_code, config.STATUS_CODE_ACCEPTED)
             # check if avatar has been saved
             user_response=call_api(self,'/user/', 'GET',token=user_token)
             data= convert_res_to_dict(user_response)
@@ -104,7 +104,7 @@ class TestUserModel(BaseTestCase):
                 "image": (test_img_stringIO, 'test_img.pdf')
             }, token=user_token, content_type="multipart/form-data")
             data= convert_res_to_dict(user_response)
-            self.assertEqual(user_response.status_code, config.STATUS_CODE_NOT_ACCEPTABLE, msg= convert_res_to_dict(user_response))
+            self.assertEqual(user_response.status_code, config.STATUS_CODE_NOT_ACCEPTABLE)
             self.assertEqual(data[config.MESSAGE], config.MSG_FILETYPE_IS_NOT_ALLOWED)
     def test_upload_sample_image(self):
         # with self.client:
