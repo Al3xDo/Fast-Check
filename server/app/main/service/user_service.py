@@ -1,8 +1,7 @@
-from datetime import datetime
 import os
 import uuid
 from app.main.util.preprocess_datetime import save_datetime_title
-
+from flask import jsonify
 from werkzeug.utils import secure_filename
 from app.main import db
 from app.main.model.user import User
@@ -132,7 +131,15 @@ class User_Service:
         except Exception as e:
             print(e)
             return utils_response_object.send_response_object_NOT_ACCEPTABLE(config.MSG_UPLOAD_IMAGE_FAIL)
-
+    @staticmethod
+    def get_sample_image(id):
+        user= User.query.filter_by(id=id)
+        sample_image_folder= os.listdir(User_Service.getUserImgDir(id, False))
+        response_image={}
+        for path in sample_image_folder:
+            full_path= FILESYSTEM_PATH + path
+            response_image[path]= get_response_image(full_path)
+        return response_image, 200
 
 def save_changes(data):
     db.session.add(data)
