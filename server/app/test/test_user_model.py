@@ -77,7 +77,7 @@ class TestUserModel(BaseTestCase):
             user_response=call_api(self,'/user/', 'GET', token=user_token)
             self.assertEqual(user_response.status_code, config.STATUS_CODE_UNAUTHORIZED)
             data= convert_res_to_dict(user_response)
-            self.assertEqual(data[config.MESSAGE], config.MSG_USER_NOT_FOUND)
+            self.assertEqual(data[config.MESSAGE], config.MSG_NOT_VALID_TOKEN)
     def test_upload_avatar_image(self):
         with self.client:
             user_token= create_get_token(self)
