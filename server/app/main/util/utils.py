@@ -8,6 +8,8 @@ from PIL import Image
 import cv2
 import io
 
+from app.main.service.config import DEFAULT_NOT_EXIST_PATH
+
 
 def get_JWT_identity(request):
     data = request.headers.get('Authorization')
@@ -85,7 +87,7 @@ def get_response_image(imageDir):
             img_byte_arr.getvalue()).decode('ascii')
         return my_encoded_img
     except:
-        img = Image.open("./app/filesystem/attendance_status/not_exist.jpg", mode='r')
+        img = Image.open(DEFAULT_NOT_EXIST_PATH, mode='r')
         img_byte_arr = io.BytesIO()
         img.save(img_byte_arr, format='PNG')
         my_encoded_img = base64.encodebytes(

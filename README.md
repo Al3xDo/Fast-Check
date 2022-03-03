@@ -146,8 +146,10 @@ I hope this project will help speeding up the checking attendance process
 <!-- USAGE EXAMPLES -->
 
 ## Usage
+
 You need to open 2 terminal, one for client and one for server
 For running production app, set environment varible **API_ENV=prod**
+
 1. Run the client (first terminal)
    ```sh
    cd client
@@ -168,9 +170,9 @@ For running production app, set environment varible **API_ENV=prod**
    ```sh
    python manage.py run
    ```
-Access http://localhost:3000/ to see the webpage
-   <p align="right">(<a href="#top">back to top</a>)</p>
-<!-- _For more examples, please refer to the [Documentation](https://example.com)_ -->
+   Access http://localhost:3000/ to see the webpage
+      <p align="right">(<a href="#top">back to top</a>)</p>
+   <!-- _For more examples, please refer to the [Documentation](https://example.com)_ -->
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
@@ -214,7 +216,7 @@ Don't forget to give the project a star! Thanks again!
 
 ## License
 
-Distributed under the MIT License. See `LICENSE.txt` for more information.
+Distributed under the MIT License. See `LICENSE.md` for more information.
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
@@ -222,7 +224,7 @@ Distributed under the MIT License. See `LICENSE.txt` for more information.
 
 ## Contact
 
-Project Link: [https://github.com/Al3xDo/Fast-Check/](https://github.com/Al3xDo/Fast-Check/]()
+Project Link: [https://github.com/Al3xDo/Fast-Check/](https://github.com/Al3xDo/Fast-Check/)()
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 

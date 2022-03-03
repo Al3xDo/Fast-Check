@@ -14,25 +14,6 @@ services:
       - server
     ports:
       - "3000:3000"
-  server:
-    container_name: fast-check-api-no-dlib
-    # restart: always
-    build:
-      context: ./server
-      dockerfile: dockerfile.server
-    environment:
-      - API_ENV: 'prod'
-    image: fast-check-api-no-dlib
-    volumes:
-      - ./server:/backend
-    links:
-      - mysql5_7
-    ports:
-      - "3001:3001"
-    # command: python manage.py db upgrade
-    command: >
-      sh -c " 
-      python manage.py run"
   mysql5_7:
     image: mysql:5.7
     restart: always
@@ -45,3 +26,25 @@ services:
       # MYSQL_HOST: '0.0.0.0'
     ports:
       - "32000:3306"
+  server:
+    container_name: fast-check-api-no-dlib
+    # restart: always
+    build:
+      context: ./server
+      dockerfile: dockerfile.server
+    environment:
+      API_ENV: 'docker_prod'
+    image: fast-check-api-no-dlib
+    volumes:
+      - ./server:/backend
+    links:
+      - mysql5_7
+    ports:
+      - "3001:3001"
+    # command: python manage.py db upgrade
+    command: >
+      sh -c " 
+      python manage.py db init &&
+      python manage.py db migrate &&
+      python manage.py db upgrade &&
+      python manage.py run"

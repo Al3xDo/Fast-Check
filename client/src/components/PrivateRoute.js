@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react'
 import { Route, Redirect, useLocation } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
-import { AuToken, selectAuth } from '../features/auth/authSlice'
+import { selectAuth } from '../features/auth/authSlice'
 import { load } from '../features/auth/authSlice'
 // A wrapper for <Route> that redirects to the login
 // screen if you're not yet authenticated or if auth is not

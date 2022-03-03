@@ -14,6 +14,8 @@ import { JoinRoomModal } from './JoinRoomModal';
 import { InviteModal } from "./InviteModal"
 import { useDispatch } from 'react-redux';
 import { setLoading } from '../Loading/loadingSlice';
+import { rm } from "../auth/authSlice"
+import { useHistory } from 'react-router';
 // import socketIOClient from "socket.io-client"
 import { AttendaceModal } from './AttendanceModal';
 // const HOST = "http://localhost:3001"
@@ -22,6 +24,7 @@ import { AttendaceModal } from './AttendanceModal';
 export const Home = () => {
     const authState = useSelector(selectAuth)
     const dispatch = useDispatch()
+    const history = useHistory()
     const [rooms, setRooms] = useState([])
     const [open, setOpen] = useState("")
     const [openEdit, setOpenEdit] = useState("")
@@ -93,16 +96,23 @@ export const Home = () => {
         }
     }
     function fetchRooms() {
+        dispatch(setLoading(true));
+
         callApi("room/rooms", "GET", {}, authState.token)
             .then(res => {
                 setRooms(res.data)
             })
             .catch(e => {
                 if (e.response.status === 401) {
+                    dispatch(rm())
+                    history.push("/login")
                     toastError(e.response.data.message)
                 }
                 toastError(e.response.data.message)
             })
+        setTimeout(() => {
+            dispatch(setLoading(false));
+        }, 1000);
 
     }
     useEffect(() => {

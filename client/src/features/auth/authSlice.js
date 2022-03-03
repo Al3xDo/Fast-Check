@@ -91,6 +91,11 @@ export const authSlice = createSlice({
             if (state.token) {
                 state.loading = "loaded"
             }
+        },
+        rm: (state) => {
+            window.localStorage.removeItem("item")
+            state.token = ""
+            state.loading = "idle"
         }
     },
     extraReducers: (builder) => {
@@ -147,7 +152,7 @@ export const authSlice = createSlice({
         })
     }
 })
-export const { load } = authSlice.actions
+export const { load, rm } = authSlice.actions
 export const selectAuth = createSelector(
     (state) => ({
         loading: state.auth.loading,

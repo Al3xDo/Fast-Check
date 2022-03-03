@@ -14,181 +14,130 @@ from sqlalchemy import text
 
 # need a writing log service to tracking the error
 
-
-def save_new_room(data, userId):
-    user= User.query.filter_by(id= str(userId)).first()
-    if user:
-        new_room = Room(
-            roomName=data['roomName'],
-            id= str(uuid.uuid4()),
-            publicId= str(uuid.uuid4().hex)
-        )
-        new_participant= Participant(userId, new_room.id, datetime.datetime.now().strftime("%d-%m-%Y"), 1)
-        save_changes(new_room, new_participant)
-        return utils_response_object.send_response_object_CREATED(config.MSG_CREATE_ROOM_SUCCESS)
-    else:
-        return utils_response_object.send_response_object_INTERNAL_ERROR()
-def serialize_room(room, admin_name,isAdmin=None,AttendanceId=None):
-    roomDict={
-        "id": room.id,
-        "roomName": room.roomName,
-        "isAdmin": True if isAdmin ==1 else False,
-        "publicId": room.publicId,
-        "AttendanceId": AttendanceId,
-        "adminName":admin_name
-    }
-    try:
-        roomDict["dateSchedule"] = room.dateSchedule
-    except:
-        pass
-    try:
-        roomDict["timeSchedule"] = room.timeSchedule
-    except:
-        pass
-    try:
-        roomDict["participantNumber"] = room.participantNumber
-    except:
-        pass
-    return roomDict
-def get_all_room(userId):
-    current_date_time= getCurrentDateTime()
-    query= db.engine.execute(text('''
-        SELECT room.*, attendanceIds.statusId, participants.isAdmin, attendanceIds.isPresent
-        FROM room
-        LEFT JOIN (SELECT roomId, attendance_status.id AS statusId, attendance_status.isPresent
-				FROM attendance_history, attendance_status
-				WHERE :current_date_time BETWEEN timeStart AND timeEnd
-				AND attendance_history.id = attendance_status.attendanceHistoryId
-				AND attendance_status.userId = :userId
-				) AS attendanceIds
-        ON attendanceIds.roomId = room.id
-        LEFT JOIN participants
-        ON participants.roomId = room.id
-        WHERE participants.userId=:userId
-        '''),{'userId': userId, 'current_date_time': current_date_time})
-    item, joinedRooms = {}, []
-    for row in query:
-        for column, value in row.items():
-            # build up the dictionary
-            item = {**item, **{column: value}}
-        joinedRooms.append(item)
-    return joinedRooms
-
-
-def get_a_room(userId,public_id):
-    try:
-        room_id= convertPublicIdToRoomId(public_id)
-        query= db.session.query(Room, Participant.isAdmin).join(Participant).filter(Participant.userId == userId, Participant.roomId == room_id).first()
-        admin_name=get_room_admin_email(room_id)
-        return serialize_room(query[0], admin_name,query[1])
-    except exc.NoResultFound:
-        return utils_response_object.send_response_object_NOT_ACCEPTABLE(config.MSG_ROOM_NOT_EXISTS)
-
-def delete_a_room(userId, id):
-    # try:
-    # check if user is admin
-    # need add transaction
-    userRight= db.session.query(Participant).filter_by(userId= userId, roomId= id).first()
-    if userRight.isAdmin ==1:
-        try:
-            # delete participant
-            db.session.query(Participant).filter_by(userId= userId, roomId= str(id)).delete()
-            # delete room
-            db.session.query(Room).filter_by(id= str(id)).delete()
-            db.session.commit()
-            return utils_response_object.send_response_object_SUCCESS(config.MSG_DELETE_ROOM_SUCCESS)
-        except sexc.SQLAlchemyError as e:
+class Room_Service:
+    @staticmethod
+    def save_new_room(data, userId):
+        user= User.query.filter_by(id= str(userId)).first()
+        if user:
+            new_room = Room(
+                roomName=data['roomName'],
+                id= str(uuid.uuid4()),
+                publicId= str(uuid.uuid4().hex)
+            )
+            new_participant= Participant(userId, new_room.id, datetime.datetime.now().strftime("%d-%m-%Y"), 1)
+            save_changes(new_room, new_participant)
+            return utils_response_object.send_response_object_CREATED(config.MSG_CREATE_ROOM_SUCCESS)
+        else:
             return utils_response_object.send_response_object_INTERNAL_ERROR()
-    else:
-        return utils_response_object.send_response_object_ERROR(config.MSG_USER_DONT_HAVE_RIGHT)
+    @staticmethod
+    def serialize_room(room, admin_name,isAdmin=None,AttendanceId=None):
+        roomDict={
+            "id": room.id,
+            "roomName": room.roomName,
+            "isAdmin": True if isAdmin ==1 else False,
+            "publicId": room.publicId,
+            "AttendanceId": AttendanceId,
+            "adminName":admin_name
+        }
+        try:
+            roomDict["dateSchedule"] = room.dateSchedule
+        except:
+            pass
+        try:
+            roomDict["timeSchedule"] = room.timeSchedule
+        except:
+            pass
+        try:
+            roomDict["participantNumber"] = room.participantNumber
+        except:
+            pass
+        return roomDict
+    @staticmethod
+    def get_all_room(userId):
+        current_date_time= getCurrentDateTime()
+        query= db.engine.execute(text('''
+            SELECT room.*, attendanceIds.statusId, participants.isAdmin, attendanceIds.isPresent
+            FROM room
+            LEFT JOIN (SELECT roomId, attendance_status.id AS statusId, attendance_status.isPresent
+                    FROM attendance_history, attendance_status
+                    WHERE :current_date_time BETWEEN timeStart AND timeEnd
+                    AND attendance_history.id = attendance_status.attendanceHistoryId
+                    AND attendance_status.userId = :userId
+                    ) AS attendanceIds
+            ON attendanceIds.roomId = room.id
+            LEFT JOIN participants
+            ON participants.roomId = room.id
+            WHERE participants.userId=:userId
+            '''),{'userId': userId, 'current_date_time': current_date_time})
+        item, joinedRooms = {}, []
+        for row in query:
+            for column, value in row.items():
+                # build up the dictionary
+                item = {**item, **{column: value}}
+            joinedRooms.append(item)
+        return joinedRooms
 
 
-def update_a_room(userId,data):
-    # try:
-    # check if user is admin
-    query= db.session.query(Participant).filter_by(userId= userId, roomId= data['id']).first()
-    if query.isAdmin ==1:
-        # remove isAdmin field
-        del data['isAdmin']
+    @staticmethod
+    def get_a_room(userId,public_id):
+        try:
+            room_id= Room_Service.convertPublicIdToRoomId(public_id)
+            query= db.session.query(Room, Participant.isAdmin).join(Participant).filter(Participant.userId == userId, Participant.roomId == room_id).first()
+            admin_name=Room_Service.get_room_admin_email(room_id)
+            return Room_Service.serialize_room(query[0], admin_name,query[1])
+        except exc.NoResultFound:
+            return utils_response_object.send_response_object_NOT_ACCEPTABLE(config.MSG_ROOM_NOT_EXISTS)
+
+    @staticmethod
+    def delete_a_room(userId, id):
         # try:
-        query= db.session.query(Room).filter_by(id= str(data['id'])).update(dict(data))
-        db.session.commit()
-        return utils_response_object.send_response_object_SUCCESS(config.MSG_UPDATE_ROOM_SUCCESS)
-        # except sexc.SQLAlchemyError as e:
-        #     return utils_response_object.send_response_object_INTERNAL_ERROR()
-    else:
-        return utils_response_object.send_response_object_ERROR(config.MSG_USER_DONT_HAVE_RIGHT)
+        # check if user is admin
+        # need add transaction
+        userRight= db.session.query(Participant).filter_by(userId= userId, roomId= id).first()
+        if userRight.isAdmin ==1:
+            try:
+                # delete participant
+                db.session.query(Participant).filter_by(userId= userId, roomId= str(id)).delete()
+                # delete room
+                db.session.query(Room).filter_by(id= str(id)).delete()
+                db.session.commit()
+                return utils_response_object.send_response_object_SUCCESS(config.MSG_DELETE_ROOM_SUCCESS)
+            except sexc.SQLAlchemyError as e:
+                return utils_response_object.send_response_object_INTERNAL_ERROR()
+        else:
+            return utils_response_object.send_response_object_ERROR(config.MSG_USER_DONT_HAVE_RIGHT)
 
-def convertPublicIdToRoomId(publicId):
-    try:
-        room= Room.query.filter_by(publicId=publicId).first()
-        return room.id
-    except:
-        return None
 
-def get_room_admin_email(room_id):
-    admin_name= db.session.query(User.email).join(Participant).filter(Participant.userId == User.id, Participant.roomId== room_id, Participant.isAdmin==1).first()
-    return admin_name
+    @staticmethod
+    def update_a_room(userId,data):
+        # try:
+        # check if user is admin
+        query= db.session.query(Participant).filter_by(userId= userId, roomId= data['id']).first()
+        if query.isAdmin ==1:
+            # remove isAdmin field
+            del data['isAdmin']
+            # try:
+            query= db.session.query(Room).filter_by(id= str(data['id'])).update(dict(data))
+            db.session.commit()
+            return utils_response_object.send_response_object_SUCCESS(config.MSG_UPDATE_ROOM_SUCCESS)
+            # except sexc.SQLAlchemyError as e:
+            #     return utils_response_object.send_response_object_INTERNAL_ERROR()
+        else:
+            return utils_response_object.send_response_object_ERROR(config.MSG_USER_DONT_HAVE_RIGHT)
 
-# def create_room_report(public_id, user_id):
-#     room_id= convertPublicIdToRoomId(public_id)
-#     result=[]
-#     if (check_user_is_room_admin(room_id, user_id)):
-#         query=db.session.query(
-#         AttendanceHistory.timeStart, AttendanceHistory.timeEnd,
-#         func.count(AttendanceStatus.isPresent)
-#         ).filter(AttendanceHistory.id == AttendanceStatus.attendanceHistoryId,
-#         AttendanceHistory.roomId== room_id, AttendanceStatus.isPresent ==1).group_by(AttendanceHistory.id).order_by(desc(AttendanceHistory.timeStart)).all()
-#         for i in query:
-#             item={
-#                 'timeStart': str(i[0]),
-#                 'timeEnd': str(i[1]),
-#                 'checkedParticipantNumber': str(i[2])
-#             }
-#             result.append(item)
-#     else:
-#         query=db.session.query(
-#         AttendanceHistory.timeStart, AttendanceHistory.timeEnd,
-#         AttendanceStatus.isPresent, AttendanceStatus.checkedTime, AttendanceStatus.id
-#         ).filter(AttendanceHistory.id == AttendanceStatus.attendanceHistoryId,
-#         AttendanceHistory.roomId== room_id, AttendanceStatus.userId == user_id).order_by(desc(AttendanceHistory.timeStart)).all()
-#         for i in query:
-#             image_title= get_attendance_status_image_name(user_id, i[4])
-#             encoded_image= get_response_image(image_title)
-#             item={
-#                 'timeStart': str(i[0]),
-#                 'timeEnd': str(i[1]),
-#                 'isPresent': True if i[2] == 1 else False,
-#                 'checkedTime': str(i[3]),
-#                 'encodedImage': encoded_image
-#             }
-#             result.append(item)
-#     return result, config.STATUS_CODE_SUCCESS
-# def create_attendance_status_report(attendance_history_id, user_id):
-#     is_admin= db.session.query(Participant.isAdmin).filter(
-#         Participant.userId == user_id, AttendanceHistory.id == attendance_history_id, AttendanceHistory.roomId == Participant.roomId
-#     ).first()
-#     if (not is_admin[0]):
-#         return utils_response_object.send_response_object_NOT_ACCEPTABLE(config.MSG_USER_DONT_HAVE_RIGHT)
-#     result=[]
-#     query= db.session.query(User.email, User.name, AttendanceStatus.isPresent, AttendanceStatus.checkedTime).filter(AttendanceStatus.userId == User.id,
-#     AttendanceStatus.attendanceHistoryId == attendance_history_id).all()
-#     result=[]
-#     for i in query:
-#         item={
-#             'email': str(i[0]),
-#             'name': str(i[1]),
-#             'isPresent': True if i[2] == 1 else False,
-#             'checkedTime': str(i[3])
-#         }
-#         result.append(item)
-#     return result, config.STATUS_CODE_SUCCESS
-# def get_attendance_status_detail(attendance_status_id, user_id):
-#     query=db.session.query(AttendanceStatus).filter(AttendanceStatus.userId == user_id, AttendanceStatus.id== attendance_status_id).first()
-#     if not query:
-#         return utils_response_object.send_response_object_NOT_ACCEPTABLE(config.MSG_USER_DONT_HAVE_RIGHT)
-#     # find sample image
-#     # find log image
+    @staticmethod
+    def convertPublicIdToRoomId(publicId):
+        try:
+            room= Room.query.filter_by(publicId=publicId).first()
+            return room.id
+        except:
+            return None
+
+    @staticmethod
+    def get_room_admin_email(room_id):
+        admin_name= db.session.query(User.email).join(Participant).filter(Participant.userId == User.id, Participant.roomId== room_id, Participant.isAdmin==1).first()
+        return admin_name
+
 
 def save_changes(room, participant):
     db.session.add(room)

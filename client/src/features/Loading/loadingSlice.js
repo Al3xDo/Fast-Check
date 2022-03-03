@@ -1,5 +1,8 @@
 import { createSlice } from "@reduxjs/toolkit";
 
+function timeout(delay) {
+    return new Promise(res => setTimeout(res, delay));
+}
 export const loadingSlice = createSlice({
     name: "loading",
     initialState: {
@@ -7,9 +10,6 @@ export const loadingSlice = createSlice({
     },
     reducers: {
         setLoading: (state, { payload }) => {
-            // setTimeout(() => {
-            //     state.load = payload
-            // }, 1000)
             state.load = payload
         },
     },

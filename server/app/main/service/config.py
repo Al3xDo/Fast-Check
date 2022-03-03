@@ -5,6 +5,8 @@ MIN_PASSWORD_LENGTH = 8
 ACCESS_TOKEN_EXPIRES_DAYS = 7
 
 FILESYSTEM_PATH="./app/filesystem/"
+DEFAULT_AVATAR_PATH="./app/asset/images/default_avatar.jpg"
+DEFAULT_NOT_EXIST_PATH="./app/asset/images/not_exist.jpg"
 FACE_IMAGES_PATH="user_face_images/"
 IMAGES_PATH="images/"
 AVATAR_PATH="user_avatar/"
@@ -89,6 +91,4 @@ MSG_INTERNAL_ERROR = "Internal Server Error"
 
 # ULTIS
 ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg'])
-UPLOAD_FOLDER = 'C:/WebLearning/cat-check-backend/app/filesystem/images'
-FACES_FOLDER = "C:/WebLearning/cat-check-backend/app/filesystem/user_face_images"
-LOG_IMAGES_FOLDER= "C:/WebLearning/cat-check-backend/app/filesystem/logs-image"
+

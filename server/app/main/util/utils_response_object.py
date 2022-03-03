@@ -53,6 +53,14 @@ def send_response_object_ERROR(message):
             config.MESSAGE: message
             }
     return response_object, config.STATUS_CODE_ERROR
+def send_response_object_UNAUTHORIZED(message):
+    response_object= {
+            config.STATUS: config.STATUS_FAIL,
+            config.MESSAGE: message
+            }
+    return response_object, config.STATUS_CODE_UNAUTHORIZED
+
+
 def send_response_object_NOT_ACCEPTABLE(message):
     response_object= {
             config.STATUS: config.STATUS_FAIL,
