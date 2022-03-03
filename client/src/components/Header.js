@@ -4,11 +4,14 @@ import { logOut } from "../features/auth/authSlice"
 import { useDispatch } from "react-redux"
 import { selectAuth } from "../features/auth/authSlice"
 import { useSelector } from "react-redux"
+import { useHistory } from "react-router"
 const Header = (props) => {
     const dispatch = useDispatch()
+    const history = useHistory()
     const authState = useSelector(selectAuth)
     const onLogOut = () => {
         dispatch(logOut(authState.token))
+        history.push("/login")
     }
     return (
         <nav className="navbar is-light mb-30" role="navigation" aria-label="main navigation">

@@ -1,8 +1,7 @@
 from flask import request
 from flask_restplus import Resource
-from app.main.service.participants_service import checkAttendance
 from ..util.dto import UserDto
-from ..service.user_service import  delete_a_user, save_new_user, update_a_user, upload_image, get_a_user
+from ..service.user_service import  User_Service
 from ..util.decorators import token_required
 from ..util.utils import get_JWT_identity
 import re
@@ -33,7 +32,7 @@ class UserSignUp(Resource):
     def post(self):
         """Creates a new User """
         data = request.json
-        return save_new_user(data=data)
+        return User_Service.save_new_user(data=data)
 
 
 @api.route(USER_ENDPOINT)
@@ -44,7 +43,7 @@ class User(Resource):
     def get(self):
         """get a user given its identifier"""
         userId = get_JWT_identity(request)
-        return get_a_user(userId)
+        return User_Service.get_a_user(userId)
 
     @api.doc('update a user')
     # @api.marshal_with(_user)
@@ -53,12 +52,12 @@ class User(Resource):
         """get a user given its identifier"""
         data = request.json
         userId = get_JWT_identity(request)
-        return update_a_user(data, userId)
+        return User_Service.update_a_user(data, userId)
 
     @token_required
     def delete(self):
         userId = get_JWT_identity(request)
-        return delete_a_user(userId)
+        return User_Service.delete_a_user(userId)
 
 
 @api.route(UPLOAD_AVATAR)
@@ -73,7 +72,7 @@ class User(Resource):
         # img = cv2.imdecode(image, cv2.IMREAD_COLOR)
         file= request.files["image"]
         print(file)
-        return upload_image(userId, file)
+        return User_Service.upload_image(userId, file)
 
 
 @api.route(UPLOAD_SAMPLE)
@@ -91,4 +90,4 @@ class User(Resource):
         img = cv2.imdecode(image, cv2.IMREAD_COLOR)
         # file= request.form['image']
         # print(request.data)
-        return upload_image(userId, img, isAvatar=False)
+        return User_Service.upload_image(userId, img, isAvatar=False)

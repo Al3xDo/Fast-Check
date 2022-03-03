@@ -62,7 +62,7 @@ class Auth:
                 #         config.STATUS: config.STATUS_FAIL,
                 #         config.MESSAGE: config.MSG_USER_NOT_FOUND
                 #     }
-            return utils_response_object.send_response_object_UNAUTHORIZED(config.MSG_USER_NOT_FOUND)
+            return utils_response_object.send_response_object_UNAUTHORIZED(config.MSG_NOT_VALID_TOKEN)
         else:
             return utils_response_object.send_response_object_UNAUTHORIZED(config.MSG_NOT_VALID_TOKEN)
     # def log_out_user():

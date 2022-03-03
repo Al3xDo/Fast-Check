@@ -4,7 +4,7 @@ from flask_restplus import Resource
 from ..util.dto import ParticipantDto
 from ..util.decorators import token_required
 from ..util.utils import get_JWT_identity
-from ..service.participants_service import join_a_room, out_a_room, createAttendance, checkAttendance,create_attendance_status_report, create_room_report
+from ..service.participants_service import Participant_Service
 import re
 import base64
 import numpy as np
@@ -26,7 +26,7 @@ class Room(Resource):
     def get(self, id):
         userId= get_JWT_identity(request)
         print(userId)
-        return out_a_room(userId, id)
+        return Participant_Service.out_a_room(userId, id)
 
 @api.route(JOIN_ROOM_ENDPOINT+'/<id>')
 class Room(Resource):
@@ -34,7 +34,7 @@ class Room(Resource):
     @token_required
     def get(self, id):
         userId= get_JWT_identity(request)
-        return join_a_room(userId, id)
+        return Participant_Service.join_a_room(userId, id)
 
 @api.route(CREATE_ATTENDANCE_ENDPOINT+'/<publicId>')
 class Room(Resource):
@@ -43,7 +43,7 @@ class Room(Resource):
     def post(self, publicId):
         userId= get_JWT_identity(request)
         data= request.json
-        return createAttendance(userId, publicId,data)
+        return Participant_Service.createAttendance(userId, publicId,data)
 @api.route(CHECK_ATTENDANCE_ENDPOINT)
 class Room(Resource):
     @api.doc('check attendance')
@@ -55,7 +55,7 @@ class Room(Resource):
         image = np.fromstring(base64.b64decode(image), np.uint8)
         img = cv2.imdecode(image, cv2.IMREAD_COLOR)
         attendanceStatusId= data['attendanceStatusId']
-        return checkAttendance(img, userId,attendanceStatusId)
+        return Participant_Service.checkAttendance(img, userId,attendanceStatusId)
 
 @api.route(CREATE_REPORT_ENDPOINT+'/<id>')
 class Room(Resource):
@@ -63,7 +63,7 @@ class Room(Resource):
     @token_required
     def get(self, id):
         user_id= get_JWT_identity(request)
-        return create_room_report(id, user_id)
+        return Participant_Service.create_room_report(id, user_id)
 
 @api.route(CREATE_STATUS_REPORT_ENDPOINT+'/<attendanceHistoryId>')
 class Room(Resource):
@@ -71,4 +71,4 @@ class Room(Resource):
     @token_required
     def get(self, attendanceHistoryId):
         user_id= get_JWT_identity(request)
-        return create_attendance_status_report(attendanceHistoryId, user_id)
+        return Participant_Service.create_attendance_status_report(attendanceHistoryId, user_id)

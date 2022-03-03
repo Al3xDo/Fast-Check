@@ -3,10 +3,10 @@ from flask_restplus import Resource
 
 
 from ..util.dto import RoomDto
-from ..service.room_service import  get_a_room, get_all_room, save_new_room, update_a_room, delete_a_room
+from ..service.room_service import  Room_Service
 from ..util.decorators import token_required
 from ..util.utils import get_JWT_identity
-from ..service.participants_service import join_a_room, out_a_room
+from ..service.participants_service import Participant_Service
 
 
 # room_controller
@@ -31,7 +31,7 @@ class RoomList(Resource):
     @token_required
     def get(self):
         userId= get_JWT_identity(request)
-        return get_all_room(userId)
+        return Room_Service.get_all_room(userId)
 
 
 @api.route(CREATE_ROOM_ENDPOINT)
@@ -43,7 +43,7 @@ class Rooms(Resource):
         """Creates a new Room """
         data = request.json
         userId= get_JWT_identity(request)
-        return save_new_room(data, userId)
+        return Room_Service.save_new_room(data, userId)
 
 
 # @api.route("/testToken")
@@ -62,14 +62,14 @@ class Room(Resource):
     @token_required
     def get(self, id):
         userId= get_JWT_identity(request)
-        return get_a_room(userId, id)
+        return Room_Service.get_a_room(userId, id)
 
     @api.doc('delete a room')
     @token_required
     def delete(self, id):
         print(request)
         userId= get_JWT_identity(request)
-        return delete_a_room(userId, id)
+        return Room_Service.delete_a_room(userId, id)
 @api.route('/')
 @api.response(404, 'Room not found.')
 class Room(Resource):
@@ -78,7 +78,7 @@ class Room(Resource):
     def put(self):
         data= request.json
         userId= get_JWT_identity(request)
-        return update_a_room(userId, data)
+        return Room_Service.update_a_room(userId, data)
 
 
 @api.route(OUT_ROOM_ENDPOINT+'/<id>')
@@ -87,7 +87,7 @@ class Room(Resource):
     @token_required
     def get(self, id):
         userId= get_JWT_identity(request)
-        return out_a_room(userId, id)
+        return Participant_Service.out_a_room(userId, id)
 
 @api.route(JOIN_ROOM_ENDPOINT+'/<id>')
 class Room(Resource):
@@ -95,7 +95,7 @@ class Room(Resource):
     @token_required
     def get(self, id):
         userId= get_JWT_identity(request)
-        return join_a_room(userId, id)
+        return Participant_Service.join_a_room(userId, id)
 
 # @api.route(CREATE_REPORT_ENDPOINT+'/<id>')
 # class Room(Resource):
