@@ -28,14 +28,14 @@
 <!-- PROJECT LOGO -->
 <br />
 <div align="center">
-  <a href="https://github.com/othneildrew/Best-README-Template">
+  <a href="https://github.com/Al3xDo/Fast-Check/">
     <img src="https://github.com/Al3xDo/Fast-Check/blob/main/client/public/icon.jpg" alt="Logo" width="80" height="80">
   </a>
 
   <h3 align="center">FAST CHECK WEBSITE</h3>
 
   <p align="center">
-    An awesome README template to jumpstart your projects!
+    An awesome Website allow attendance checking for teacher, leader
     <br />
     <a href="https://github.com/Al3xDo/Fast-Check/"><strong>Explore the docs »</strong></a>
     <br />
