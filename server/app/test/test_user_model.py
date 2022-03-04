@@ -26,7 +26,7 @@ class TestUserModel(BaseTestCase):
         db.session.add(user)
         db.session.commit()
         auth_token = user.encode_auth_token(user.id)
-        self.assertTrue(isinstance(auth_token, bytes))
+        self.assertTrue(isinstance(auth_token, str))
 
     def test_decode_auth_token(self):
         user = User(
@@ -37,7 +37,7 @@ class TestUserModel(BaseTestCase):
         db.session.add(user)
         db.session.commit()
         auth_token = user.encode_auth_token(user.id)
-        self.assertTrue(isinstance(auth_token, bytes))
+        self.assertTrue(isinstance(auth_token, str))
     def test_unauthorize_user(self):
         with self.client:
             user_response= call_api(self,'/user/',token="123312312312312")

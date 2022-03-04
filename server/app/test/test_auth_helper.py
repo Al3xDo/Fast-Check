@@ -33,7 +33,7 @@ class TestAuthBlueprint(BaseTestCase):
         """ Test for logout before token expires """
         with self.client:
             # user registration
-            user_response = register_user(self)
+            register_user(self)
             # registered user login
             login_response = login_user(self)
             # valid token logout

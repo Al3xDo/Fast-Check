@@ -8,6 +8,7 @@ from app.main.model.user import User
 from app.main.service import config
 from app.main.util import utils_response_object
 from ..util.utils import get_response_image
+import urllib
 import cv2
 import face_recognition
 from app.main.service.config import FILESYSTEM_PATH, FACE_IMAGES_PATH, DEFAULT_AVATAR_PATH, AVATAR_PATH
@@ -23,6 +24,31 @@ class User_Service:
                     password=data['password'],
                     name=data['email'].split("@")[0]
                 )
+            except AttributeError:
+                return utils_response_object.write_response_object(config.STATUS_FAIL, config.MSG_JSON_NOT_VALIDATE), config.STATUS_CODE_CONFLICT
+            save_changes(new_user)
+            return  {
+                config.STATUS: config.STATUS_SUCCESS,
+                config.MESSAGE: config.MSG_ADD_USER_SUCCESS,
+                "token": str(new_user.encode_auth_token(new_user.id))
+                }, config.STATUS_CODE_CREATED
+        else:
+            return utils_response_object.write_response_object(config.STATUS_FAIL, config.MSG_USER_ALREADY_EXIST), config.STATUS_CODE_CONFLICT
+
+    @staticmethod
+    def save_new_user_google(data):
+        user = User.query.filter_by(email=data['email']).first()
+        if not user:
+            try:
+                new_user = User(
+                    id=str(uuid.uuid4()),
+                    email=data['email'],
+                    name=data['name'],
+                    hasAvatar=True,
+                    password=str(uuid.uuid4())
+                )
+                img_dir= User_Service.getUserImgDir(new_user.id)
+                urllib.request.urlretrieve(data['imageUrl'], img_dir)
             except AttributeError:
                 return utils_response_object.write_response_object(config.STATUS_FAIL, config.MSG_JSON_NOT_VALIDATE), config.STATUS_CODE_CONFLICT
             save_changes(new_user)

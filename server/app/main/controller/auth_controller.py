@@ -2,22 +2,25 @@ from flask import request
 from flask_restplus import Resource
 
 from app.main.service.auth_helper import Auth
-from ..util.dto import AuthDto
+from app.main.dto.auth import AuthDto
 from ..util.decorators import token_required
+from flask_accept import accept
 LOGIN_ENDPOINT="/login"
 LOGOUT_ENDPOINT= "/logout"
 CHECK_TOKEN="/checkToken"
+
+
 api = AuthDto.api
-user_auth = AuthDto.user_auth
+auth_dto = AuthDto.auth
 
-
+@accept("application/json")
 @api.route(LOGIN_ENDPOINT)
 class UserLogin(Resource):
     """
         User Login Resource
     """
     @api.doc('user login')
-    @api.expect(user_auth, validate=True)
+    @api.expect(auth_dto, validate=True)
     def post(self):
         # get the post data
         post_data = request.json

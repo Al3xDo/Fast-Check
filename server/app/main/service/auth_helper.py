@@ -1,4 +1,5 @@
 from app.main.model.user import User
+from app.main.model.participants import Participant
 from ..service.blacklist_service import save_token
 from app.main.service import config
 
@@ -15,7 +16,7 @@ class Auth:
                     response_object = {
                         config.STATUS: config.STATUS_SUCCESS,
                         config.MESSAGE: 'Successfully logged in.',
-                        'token': auth_token.decode()
+                        'token': auth_token
                     }
                     return response_object, config.STATUS_CODE_SUCCESS
             else:
@@ -24,7 +25,6 @@ class Auth:
                     config.MESSAGE: config.MSG_INFO_NOT_MATCH
                 }
                 return response_object, config.STATUS_CODE_NOT_FOUND
-
         except Exception as e:
             response_object = {
                 config.STATUS: config.STATUS_FAIL,
@@ -56,7 +56,7 @@ class Auth:
             user = User.query.filter_by(id=resp).first()
             # check if resp is token
             if user:
-                return utils_response_object.send_response_object_SUCCESS("")
+                return utils_response_object.send_response_object_SUCCESS("success")
                 # except exc.NoResultFound as e:
                 #     response_object= {
                 #         config.STATUS: config.STATUS_FAIL,
@@ -65,6 +65,20 @@ class Auth:
             return utils_response_object.send_response_object_UNAUTHORIZED(config.MSG_NOT_VALID_TOKEN)
         else:
             return utils_response_object.send_response_object_UNAUTHORIZED(config.MSG_NOT_VALID_TOKEN)
+    @staticmethod
+    def get_logged_in_admin_room(new_request):
+        data= new_request.headers.get("Authorization")
+        auth_token = str.replace(str(data), 'Bearer ', '')
+        if auth_token != 'None':
+            resp = User.decode_auth_token(auth_token)
+            isAdmin = Participant.query.filter_by(userId=resp).isAdmin
+            if isAdmin:
+                return utils_response_object.send_response_object_SUCCESS("success")
+            else:
+                return utils_response_object.send_response_object_UNAUTHORIZED(config.MSG_USER_DONT_HAVE_RIGHT)
+        else:
+            return utils_response_object.send_response_object_INTERNAL_ERROR()
+
     # def log_out_user():
         # return save_token(token=auth_token)
         # return send_response_object_SUCCESS(config.MSG_LOG_OUT_SUCCESSFULLY)

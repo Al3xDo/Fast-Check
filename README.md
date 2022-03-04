@@ -115,6 +115,26 @@ I hope this project will help speeding up the checking attendance process
   npm install npm@latest -g
   ```
 
+### Set up env file for project
+
+1. client env
+   Create a .env file in client root folder with content:
+
+```sh
+REACT_APP_CLIENT_ID = xxxxx.apps.googleusercontent.com (your client ID for google login feature)
+```
+
+Create a .env file in server root folder with content:
+
+```sh
+SECRET_KEY='SECRET'
+DB_NAME='your name'
+DB_PASSWORD='your pass'
+DB_HOST='your host'
+DB_PROD_HOST='your product db host'
+DB_DOCKER_HOST='your docker db host'
+```
+
 ### Installation
 
 1. Clone the repo
@@ -181,17 +201,21 @@ For running production app, set environment varible **API_ENV=prod**
 ## Roadmap
 
 - [x] Allow User to upload their sample image
-- [ ] Allow User to see their sample image
-- [ ] Add 'login by google' feature
-- [ ] Add fake detect or liveliness detection
+- [x] Allow User to see their sample image
+- [x] Add 'login by google' feature
+- [ ] Add 'change password' feature (send email verification)
+- [ ] Add 'change email' feature (send email verification)
+- [ ] Set up nginx
+- [ ] Add diagram, database visulization
 - [ ] Add 'kick participant' feature
+- [ ] Add fake detect or liveliness detection
 - [ ] Add 'Admin Dashboard'
 - [ ] Speed up performance
 - [ ] Multi-language Support
   - [ ] VietNamese
   - [x] English
 
-See the [open issues](https://github.com/othneildrew/Best-README-Template/issues) for a full list of proposed features (and known issues).
+See the [open issues](https://github.com/Al3xDo/Fast-Check/issues) for a full list of proposed features (and known issues).
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 

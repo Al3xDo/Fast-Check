@@ -39,6 +39,25 @@ export const logIn = createAsyncThunk(
         }
     }
 )
+export const logInByGoogle = createAsyncThunk(
+    'auth/loginByGoogle',
+    async (user, thunkAPI) => {
+        try {
+            let config = {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': "*/*",
+                    'Access-Control-Allow-Origin': '*',
+                }
+            }
+            const response = await axios.post('http://localhost:3001/user/googleLogIn', user, config)
+            return response;
+        } catch (error) {
+            toastError(error.response.data.message)
+            return thunkAPI.rejectWithValue(error.response.data.message);
+        }
+    }
+)
 export const logOut = createAsyncThunk(
     'auth/logout',
     async (token, thunkAPI) => {
@@ -112,20 +131,30 @@ export const authSlice = createSlice({
                 state.loading = "error";
                 state.error = action.error
             });
+        builder.addCase(logInByGoogle.pending, (state) => {
+            state.token = {};
+            state.loading = "loading"
+        })
+            .addCase(logInByGoogle.fulfilled, (state, { payload }) => {
+                state.token = payload.data.token;
+                window.localStorage.setItem("token", payload.data.token);
+                state.loading = "loaded"
+            })
+            .addCase(logInByGoogle.rejected, (state, action) => {
+                state.loading = "error";
+                state.error = action.error
+            });
         builder.addCase(logIn.pending, (state) => {
             state.token = {};
             state.loading = "loading"
         })
             .addCase(logIn.fulfilled, (state, { payload }) => {
-                // console.log(payload)
                 state.token = payload.data.token;
                 window.localStorage.setItem("token", payload.data.token);
                 state.loading = "loaded"
             })
             .addCase(logIn.rejected, (state, action) => {
-                // console.log(action)
                 state.loading = "error";
-                // console.log(action)
                 state.error = action.payload
             });
         builder.addCase(AuToken.pending, (state) => {
