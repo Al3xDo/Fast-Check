@@ -67,3 +67,10 @@ def send_response_object_NOT_ACCEPTABLE(message):
             config.MESSAGE: message
             }
     return response_object, config.STATUS_CODE_NOT_ACCEPTABLE
+
+def send_response_object_FORBIDDEN(message):
+    response_object= {
+            config.STATUS: config.STATUS_FAIL,
+            config.MESSAGE: message
+            }
+    return response_object, config.STATUS_CODE_FORBIDEN

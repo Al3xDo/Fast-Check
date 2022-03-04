@@ -1,16 +1,10 @@
 from array import array
-from lib2to3.pgen2.token import AT
 import os
-from unittest import result
-
 import cv2
 from app.main import db
 from app.main.model.participants import Participant,AttendanceHistory, AttendanceStatus
-# from app.main.model.attendance import 
 from app.main.model.participants import Participant
-from sqlalchemy.orm import exc
 from sqlalchemy import exc as exc1
-from sqlalchemy import between
 from app.main.service.room_service import Room_Service
 from app.main.util import utils_response_object
 import datetime
@@ -94,6 +88,7 @@ class Participant_Service:
     def get_attendance_status_image_name(user_id:str, attendance_history_id:str) -> str:
         img_dir = config.FILESYSTEM_PATH+config.ATTENDANCE_STATUS_PATH+str(attendance_history_id)+"/" + user_id+".jpg" 
         return img_dir
+    @staticmethod
     def create_attendance_status_folder_if_not_exist(attendance_history_id: str) -> None:
         path=config.FILESYSTEM_PATH+config.ATTENDANCE_STATUS_PATH+str(attendance_history_id)+"/"
         if not (os.path.exists(path)):
@@ -188,11 +183,6 @@ class Participant_Service:
     # add pagination to report
     @staticmethod
     def create_attendance_status_report(attendance_history_id, user_id):
-        is_admin= db.session.query(Participant.isAdmin).filter(
-            Participant.userId == user_id, AttendanceHistory.id == attendance_history_id, AttendanceHistory.roomId == Participant.roomId
-        ).first()
-        if (not is_admin[0]):
-            return utils_response_object.send_response_object_NOT_ACCEPTABLE(config.MSG_USER_DONT_HAVE_RIGHT)
         result=[]
         query= db.session.query(User.email, User.name, AttendanceStatus.isPresent, AttendanceStatus.checkedTime, User.id).filter(
         AttendanceStatus.attendanceHistoryId == attendance_history_id, User.id== AttendanceStatus.userId,

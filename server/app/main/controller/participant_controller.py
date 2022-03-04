@@ -1,14 +1,16 @@
 from flask import request
 from flask_restplus import Resource
 
-from ..util.dto import ParticipantDto
-from ..util.decorators import token_required
+from ..util.decorators import admin_token_required, token_required
 from ..util.utils import get_JWT_identity
 from ..service.participants_service import Participant_Service
 import re
 import base64
 import numpy as np
 import cv2
+from app.main.dto.participants import ParticipantDto
+
+
 OUT_ROOM_ENDPOINT="/out"
 JOIN_ROOM_ENDPOINT="/join"
 CREATE_ATTENDANCE_ENDPOINT="/create_attendance"
@@ -17,7 +19,8 @@ CREATE_REPORT_ENDPOINT="/report"
 CREATE_STATUS_REPORT_ENDPOINT="/report_status"
 
 api = ParticipantDto.api
-# _room = RoomDto.room
+create_attendance_dto = ParticipantDto.create_attendance
+check_attendance_dto = ParticipantDto.check_attendance
 
 @api.route(OUT_ROOM_ENDPOINT+'/<id>')
 class Room(Resource):
@@ -25,7 +28,6 @@ class Room(Resource):
     @token_required
     def get(self, id):
         userId= get_JWT_identity(request)
-        print(userId)
         return Participant_Service.out_a_room(userId, id)
 
 @api.route(JOIN_ROOM_ENDPOINT+'/<id>')
@@ -40,14 +42,17 @@ class Room(Resource):
 class Room(Resource):
     @api.doc('create attendance')
     @token_required
+    @api.expect(create_attendance_dto, validate=True)
     def post(self, publicId):
         userId= get_JWT_identity(request)
         data= request.json
         return Participant_Service.createAttendance(userId, publicId,data)
+
 @api.route(CHECK_ATTENDANCE_ENDPOINT)
 class Room(Resource):
     @api.doc('check attendance')
     @token_required
+    @api.expect(check_attendance_dto, validate=True)
     def post(self):
         userId = get_JWT_identity(request)
         data = request.json
@@ -68,7 +73,7 @@ class Room(Resource):
 @api.route(CREATE_STATUS_REPORT_ENDPOINT+'/<attendanceHistoryId>')
 class Room(Resource):
     @api.doc('create status report for room')
-    @token_required
+    @admin_token_required
     def get(self, attendanceHistoryId):
         user_id= get_JWT_identity(request)
         return Participant_Service.create_attendance_status_report(attendanceHistoryId, user_id)

@@ -1,9 +1,10 @@
 from flask import request
 from flask_restplus import Resource
-from ..util.dto import UserDto
+from app.main.dto.user import UserDto
 from ..service.user_service import  User_Service
 from ..util.decorators import token_required
 from ..util.utils import get_JWT_identity
+from flask_accept import accept
 import re
 import base64
 import numpy as np
@@ -18,23 +19,22 @@ PREDICT_IMG = "/predict"
 CHECK_IMAGE= "/checkImage"
 SHOW_SAMPLE='/showSample'
 api = UserDto.api
-_user = UserDto.user
-
-
+create_user_dto = UserDto.create_user
+update_user_dto= UserDto.update_user
+@accept("application/json")
 @api.route(SIGNUP_ENDPOINT)
 @api.response(201, 'User successfully created.')
 @api.doc('get a user')
 @api.doc('create a new user')
 class UserSignUp(Resource):
-    # @api.marshal_with(_user)
-    # @api.expect(_user, validate=True)
+    @api.expect(create_user_dto, validate=True)
     # @cross_origin(supports_credentials=True)
     def post(self):
         """Creates a new User """
         data = request.json
         return User_Service.save_new_user(data=data)
 
-
+@accept("application/json")
 @api.route(USER_ENDPOINT)
 class User(Resource):
     @api.doc('get a user')
@@ -46,8 +46,8 @@ class User(Resource):
         return User_Service.get_a_user(user_id)
 
     @api.doc('update a user')
-    # @api.marshal_with(_user)
     @token_required
+    @api.expect(update_user_dto, validate=True)
     def put(self):
         """get a user given its identifier"""
         data = request.json
@@ -59,7 +59,7 @@ class User(Resource):
         user_id = get_JWT_identity(request)
         return User_Service.delete_a_user(user_id)
 
-
+@accept("multipart/form-data")
 @api.route(UPLOAD_AVATAR)
 class User(Resource):
     @api.doc('upload user avatar image')
@@ -67,10 +67,9 @@ class User(Resource):
     def post(self):
         user_id = get_JWT_identity(request)
         file= request.files["image"]
-        print(file)
         return User_Service.upload_image(user_id, file)
 
-
+@accept("application/json")
 @api.route(UPLOAD_SAMPLE)
 class User(Resource):
     @api.doc('upload sample user image')
@@ -82,6 +81,8 @@ class User(Resource):
         img = cv2.imdecode(image, cv2.IMREAD_COLOR)
         return User_Service.upload_image(user_id, img, isAvatar=False)
 
+
+@accept("application/json")
 @api.route(SHOW_SAMPLE)
 class User(Resource):
     @api.doc('show sample user image')
