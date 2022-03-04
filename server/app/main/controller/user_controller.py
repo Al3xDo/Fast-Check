@@ -1,3 +1,4 @@
+from attr import validate
 from flask import request
 from flask_restplus import Resource
 from app.main.dto.user import UserDto
@@ -11,6 +12,7 @@ import numpy as np
 import cv2
 # user_controller
 SIGNUP_ENDPOINT = "/signup"
+GOOGLE_LOGIN_ENDPOINT='/googleLogIn'
 USER_ENDPOINT = "/"
 UPLOAD_AVATAR = "/uploadAvatar"
 UPLOAD_SAMPLE = "/uploadSample"
@@ -18,9 +20,13 @@ CHECK_TOKEN = "/checkToken"
 PREDICT_IMG = "/predict"
 CHECK_IMAGE= "/checkImage"
 SHOW_SAMPLE='/showSample'
+
+
 api = UserDto.api
 create_user_dto = UserDto.create_user
+create_user_google_dto = UserDto.create_user_google
 update_user_dto= UserDto.update_user
+
 @accept("application/json")
 @api.route(SIGNUP_ENDPOINT)
 @api.response(201, 'User successfully created.')
@@ -33,6 +39,20 @@ class UserSignUp(Resource):
         """Creates a new User """
         data = request.json
         return User_Service.save_new_user(data=data)
+
+
+@accept("application/json")
+@api.route(GOOGLE_LOGIN_ENDPOINT)
+@api.response(201, 'User successfully created.')
+@api.doc('create a user by google')
+@api.doc('create a new user')
+class UserSignUp(Resource):
+    # @cross_origin(supports_credentials=True)
+    @api.expect(create_user_google_dto, validate=True)
+    def post(self):
+        """Creates a new User """
+        data= request.json
+        return User_Service.save_new_user_google(data)
 
 @accept("application/json")
 @api.route(USER_ENDPOINT)

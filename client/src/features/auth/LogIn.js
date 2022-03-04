@@ -2,10 +2,11 @@ import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux"
 import { Redirect } from "react-router";
 import { toastError } from "../../utils/toastNotify";
-import { selectAuth, logIn } from "./authSlice";
+import { selectAuth, logIn, logInByGoogle } from "./authSlice";
 import { useLocation } from "react-router";
 import "./style.css"
-import { callApi } from "../../utils/apiCaller";
+import { GoogleLogin } from "react-google-login"
+import { callApi, callApiUploadImage } from "../../utils/apiCaller";
 export const LogIn = (props) => {
     const authState = useSelector(selectAuth)
     const dispatch = useDispatch()
@@ -25,6 +26,18 @@ export const LogIn = (props) => {
         // }
         dispatch(logIn(user))
         // console.log(result)
+    }
+    const onSuccess = (res) => {
+        const { email, name, imageUrl } = res.profileObj
+        const data = {
+            email: email,
+            name: name,
+            imageUrl: imageUrl
+        }
+        dispatch(logInByGoogle(data))
+    }
+    const onFailure = (res) => {
+        toastError(res)
     }
     if (authState.loading === "error") toastError(authState.error)
     if (authState.loading === "loaded") return <Redirect to={location.state ? location.state.from.pathname : "/"} />
@@ -78,6 +91,30 @@ export const LogIn = (props) => {
                         <a href="/signup">
                             Sign Up
                         </a>
+                    </div>
+                </div>
+                <div className="is-block is-centered">
+                    {/* <p className="button is-primary is-block mb-3">
+                        <span className="icon-text">
+                            <span>
+                                Log in by Google
+                            </span>
+                            <span className="icon is-large">
+                                <ion-icon name="logo-google"></ion-icon>
+                            </span>
+
+                        </span>
+                    </p> */}
+                    <div>
+                        <GoogleLogin
+                            clientId={process.env.REACT_APP_CLIENT_ID}
+                            buttonText="Log in by Google"
+                            onSuccess={onSuccess}
+                            onFailure={onFailure}
+                            cookiePolicy={'single_host_origin'}
+                            isSignedIn={true}
+
+                        />
                     </div>
                 </div>
             </div>

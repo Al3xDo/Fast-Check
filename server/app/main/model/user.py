@@ -38,11 +38,12 @@ class User(db.Model):
                 'iat': datetime.datetime.utcnow(),
                 'sub': user_id
             }
+
             return jwt.encode(
                 payload,
                 key,
                 algorithm='HS256'
-            )
+            ).decode('utf-8')
         except Exception as e:
             return e
     @staticmethod  

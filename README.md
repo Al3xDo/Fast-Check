@@ -181,8 +181,8 @@ For running production app, set environment varible **API_ENV=prod**
 ## Roadmap
 
 - [x] Allow User to upload their sample image
-- [ ] Allow User to see their sample image
-- [ ] Add 'login by google' feature
+- [x] Allow User to see their sample image
+- [x] Add 'login by google' feature
 - [ ] Add fake detect or liveliness detection
 - [ ] Add 'kick participant' feature
 - [ ] Add 'Admin Dashboard'
