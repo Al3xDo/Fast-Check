@@ -16,7 +16,7 @@ class Auth:
                     response_object = {
                         config.STATUS: config.STATUS_SUCCESS,
                         config.MESSAGE: 'Successfully logged in.',
-                        'token': auth_token.decode()
+                        'token': auth_token
                     }
                     return response_object, config.STATUS_CODE_SUCCESS
             else:
@@ -25,7 +25,6 @@ class Auth:
                     config.MESSAGE: config.MSG_INFO_NOT_MATCH
                 }
                 return response_object, config.STATUS_CODE_NOT_FOUND
-
         except Exception as e:
             response_object = {
                 config.STATUS: config.STATUS_FAIL,

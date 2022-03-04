@@ -9,7 +9,7 @@ import base64
 import numpy as np
 import cv2
 from app.main.dto.participants import ParticipantDto
-
+from flask_accept import accept
 
 OUT_ROOM_ENDPOINT="/out"
 JOIN_ROOM_ENDPOINT="/join"
@@ -25,6 +25,7 @@ check_attendance_dto = ParticipantDto.check_attendance
 @api.route(OUT_ROOM_ENDPOINT+'/<id>')
 class Room(Resource):
     @api.doc('out a room')
+    @accept("application/json")
     @token_required
     def get(self, id):
         userId= get_JWT_identity(request)
@@ -33,6 +34,7 @@ class Room(Resource):
 @api.route(JOIN_ROOM_ENDPOINT+'/<id>')
 class Room(Resource):
     @api.doc('join a room')
+    @accept("application/json")
     @token_required
     def get(self, id):
         userId= get_JWT_identity(request)
@@ -41,6 +43,7 @@ class Room(Resource):
 @api.route(CREATE_ATTENDANCE_ENDPOINT+'/<publicId>')
 class Room(Resource):
     @api.doc('create attendance')
+    @accept("application/json")
     @token_required
     @api.expect(create_attendance_dto, validate=True)
     def post(self, publicId):
@@ -51,6 +54,7 @@ class Room(Resource):
 @api.route(CHECK_ATTENDANCE_ENDPOINT)
 class Room(Resource):
     @api.doc('check attendance')
+    @accept("application/json")
     @token_required
     @api.expect(check_attendance_dto, validate=True)
     def post(self):
@@ -65,6 +69,7 @@ class Room(Resource):
 @api.route(CREATE_REPORT_ENDPOINT+'/<id>')
 class Room(Resource):
     @api.doc('create report for room')
+    @accept("application/json")
     @token_required
     def get(self, id):
         user_id= get_JWT_identity(request)
@@ -73,6 +78,7 @@ class Room(Resource):
 @api.route(CREATE_STATUS_REPORT_ENDPOINT+'/<attendanceHistoryId>')
 class Room(Resource):
     @api.doc('create status report for room')
+    @accept("application/json")
     @admin_token_required
     def get(self, attendanceHistoryId):
         user_id= get_JWT_identity(request)
