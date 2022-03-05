@@ -47,7 +47,7 @@ class User_Service:
                     hasAvatar=True,
                     password=str(uuid.uuid4())
                 )
-                img_dir= User_Service.getUserImgDir(new_user.id)
+                img_dir= User_Service.get_user_img_dir(new_user.id)
                 urllib.request.urlretrieve(data['imageUrl'], img_dir)
             except AttributeError:
                 return utils_response_object.write_response_object(config.STATUS_FAIL, config.MSG_JSON_NOT_VALIDATE), config.STATUS_CODE_CONFLICT
@@ -71,7 +71,7 @@ class User_Service:
 
 
     @staticmethod
-    def getUserImgDir(id, isAvatar=True):
+    def get_user_img_dir(id, isAvatar=True):
         if isAvatar:
             imgDir = FILESYSTEM_PATH+AVATAR_PATH+str(id) +".jpg"
         else:
@@ -84,7 +84,7 @@ class User_Service:
         user = User.query.filter_by(id=userId).first()
         if user:
             if user.hasAvatar:
-                imgDir = User_Service.getUserImgDir(userId)
+                imgDir = User_Service.get_user_img_dir(userId)
                 encodedImg = get_response_image(imgDir)
                 return User_Service.serialize_user(user, encodedImg), config.STATUS_CODE_SUCCESS
             else:
@@ -129,14 +129,14 @@ class User_Service:
                 # print(file)
                 if not User_Service.allowed_file(filename):
                     return utils_response_object.send_response_object_NOT_ACCEPTABLE(config.MSG_FILETYPE_IS_NOT_ALLOWED)
-                saveDir = User_Service.getUserImgDir(userId)
+                saveDir = User_Service.get_user_img_dir(userId)
                 # save to the filesystem
                 file.save(saveDir)
                 user.hasAvatar = True
                 db.session.commit()
                 return utils_response_object.send_response_object_ACCEPTED(config.MSG_UPLOAD_IMAGE_SUCCESS)
             else:
-                saveFolder = User_Service.getUserImgDir(userId, False)
+                saveFolder = User_Service.get_user_img_dir(userId, False)
                 if not os.path.exists(saveFolder):
                     os.mkdir(saveFolder)
                 image_num= len(os.listdir(saveFolder))
@@ -150,7 +150,7 @@ class User_Service:
                 for face_location in face_locations:
                     top, right, bottom, left = face_location
                     user_face_location= file[top:bottom, left:right]
-                saveFolder = User_Service.getUserImgDir(userId, False)
+                saveFolder = User_Service.get_user_img_dir(userId, False)
                 title= save_datetime_title()
                 cv2.imwrite(saveFolder+title+".jpg", user_face_location)
                 return utils_response_object.send_response_object_CREATED(config.MSG_UPLOAD_SAMPLE_IMAGE_SUCCESS)
@@ -159,11 +159,13 @@ class User_Service:
             return utils_response_object.send_response_object_NOT_ACCEPTABLE(config.MSG_UPLOAD_IMAGE_FAIL)
     @staticmethod
     def get_sample_image(id):
-        user= User.query.filter_by(id=id)
-        sample_image_folder= os.listdir(User_Service.getUserImgDir(id, False))
+        sample_images_path= User_Service.get_user_img_dir(id,False)
+        if (not os.path.exists(sample_images_path)):
+            return utils_response_object.send_response_object_NOT_ACCEPTABLE("")
+        sample_image_folder= os.listdir(User_Service.get_user_img_dir(id, False))
         response_image={}
         for path in sample_image_folder:
-            full_path= FILESYSTEM_PATH + path
+            full_path= sample_images_path+ path
             response_image[path]= get_response_image(full_path)
         return response_image, 200
 

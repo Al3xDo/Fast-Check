@@ -122,7 +122,7 @@ class Participant_Service:
             return utils_response_object.send_response_object_SUCCESS(config.MSG_ALREADY_HAVE_CHECKED_ATTENDANCE)
         else:
             if attendance_history.timeStart <= current_date_time <= attendance_history.timeEnd:
-                saveFolder= User_Service.getUserImgDir(userId,False)
+                saveFolder= User_Service.get_user_img_dir(userId,False)
                 if not (os.path.exists(saveFolder)):
                     return utils_response_object.send_response_object_NOT_ACCEPTABLE(config.MSG_NOT_UPLOAD_SAMPLE_IMAGE)
                 image_names= os.listdir(saveFolder)
@@ -192,7 +192,7 @@ class Participant_Service:
             # print(i)
             image_title= Participant_Service.get_attendance_status_image_name(i[4],attendance_history_id)
             encoded_image= get_response_image(image_title)
-            sample_folder= User_Service.getUserImgDir(i[4],False)
+            sample_folder= User_Service.get_user_img_dir(i[4],False)
             sample_image= os.listdir(sample_folder)[0]
             encoded_sample_image= get_response_image(os.path.join(sample_folder,sample_image))
             item={
