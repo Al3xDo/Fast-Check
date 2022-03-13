@@ -15,22 +15,22 @@ class Config(object):
     LOGGING_FORMAT = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
     LOGGING_LOCATION = 'flask-base.log'
     LOGGING_LEVEL = logging.DEBUG
-    RESULT_BACKEND = 'redis://127.0.0.1:6379'
-    BROKER_URL = 'redis://127.0.0.1:6379'
-    MAIL_SERVER='smtp.mailtrap.io'
-    MAIL_PORT = 2525
-    MAIL_USERNAME = 'b3bc4c01b36478'
-    MAIL_PASSWORD = '499a2d068095bf'
-    MAIL_DEFAULT_SENDER="fast_check@mailtrap.com"
+    RESULT_BACKEND = os.getenv('RESULT_BACKEND')
+    BROKER_URL = os.getenv('BROKDER_URL')
+    MAIL_SERVER=os.getenv('MAIL_SERVER')
+    MAIL_PORT = os.getenv('MAIL_PORT')
+    MAIL_USERNAME = os.getenv('MAIL_USERNAME')
+    MAIL_PASSWORD = os.getenv('MAIL_PASSWORD')
+    MAIL_DEFAULT_SENDER=os.getenv('MAIL_DEFAULT_SENDER')
     MAIL_USE_TLS = True
     MAIL_USE_SSL = False
-    MAIL_DEBUG=True
 
 
 class ProductionConfig(Config):
     SQLALCHEMY_ECHO = False
     SQLALCHEMY_TRACK_MODIFICATIONS = True
     SQLALCHEMY_DATABASE_URI = f"mysql+pymysql://{Config.DB_NAME}:{Config.DB_PASSWORD}@{Config.DB_HOST_PROD_HOST}/fast_check_prod"
+    MAIL_DEBUG=False
     
 
 
@@ -43,6 +43,7 @@ class DevelopmentConfig(Config):
     SQLALCHEMY_ECHO = False
     SQLALCHEMY_TRACK_MODIFICATIONS = True
     SQLALCHEMY_DATABASE_URI = f"mysql+pymysql://{Config.DB_NAME}:{Config.DB_PASSWORD}@{Config.DB_HOST}/fast_check"
+    MAIL_DEBUG=False
 
 
 class TestingConfig(Config):
@@ -52,6 +53,7 @@ class TestingConfig(Config):
     SQLALCHEMY_ECHO = False
     SQLALCHEMY_TRACK_MODIFICATIONS = True
     SQLALCHEMY_DATABASE_URI = f"mysql+pymysql://root:root@127.0.0.1/fast_check_test"
+    MAIL_DEBUG=False
 
 class ActionTestingConfig(Config):
     TESTING = True
@@ -62,6 +64,7 @@ class ActionTestingConfig(Config):
     # DB_NAME= os.environ.get("DB_NAME")
     # DB_HOST= os.environ.get("DB_HOST")
     # DB_PASSWORD= os.environ.get("DB_PASSWORD")
+    MAIL_DEBUG=False
     SQLALCHEMY_DATABASE_URI = f"mysql+pymysql://root:root@127.0.0.1/fast_check_test"
 
 class DockerProductionConfig(Config):

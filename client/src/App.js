@@ -10,6 +10,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import { PrivateRoute } from "./components/PrivateRoute";
 import { LogIn, SignUp } from "./features/auth";
 import { PageLoading } from "./features/Loading/PageLoading";
+import Recover from "./features/recover/Recover";
 const showContentMenus = (routes) => {
   var result = null;
   if (routes.length > 0) {
@@ -47,6 +48,9 @@ const App = () => {
             </Route>
             <Route path="/signup" exact={true}>
               <SignUp />
+            </Route>
+            <Route path="/recover/:id" exact={true}>
+              <Recover />
             </Route>
             {showContentMenus(routes)}
           </Switch>
