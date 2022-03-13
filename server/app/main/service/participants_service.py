@@ -211,7 +211,6 @@ class Participant_Service:
         if not query:
             return utils_response_object.send_response_object_NOT_ACCEPTABLE(config.MSG_USER_DONT_HAVE_RIGHT)
         # find log image
-    
 
 def save_changes(data):
     db.session.add(data)

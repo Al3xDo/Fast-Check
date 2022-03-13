@@ -27,12 +27,11 @@ create_user_dto = UserDto.create_user
 create_user_google_dto = UserDto.create_user_google
 update_user_dto= UserDto.update_user
 
-@accept("application/json")
 @api.route(SIGNUP_ENDPOINT)
 @api.response(201, 'User successfully created.')
-@api.doc('get a user')
 @api.doc('create a new user')
 class UserSignUp(Resource):
+    @accept("application/json")
     @api.expect(create_user_dto, validate=True)
     # @cross_origin(supports_credentials=True)
     def post(self):
@@ -41,20 +40,19 @@ class UserSignUp(Resource):
         return User_Service.save_new_user(data=data)
 
 
-@accept("application/json")
 @api.route(GOOGLE_LOGIN_ENDPOINT)
 @api.response(201, 'User successfully created.')
 @api.doc('create a user by google')
 @api.doc('create a new user')
 class UserSignUp(Resource):
     # @cross_origin(supports_credentials=True)
+    @accept("application/json")
     @api.expect(create_user_google_dto, validate=True)
     def post(self):
         """Creates a new User """
         data= request.json
         return User_Service.save_new_user_google(data)
 
-@accept("application/json")
 @api.route(USER_ENDPOINT)
 class User(Resource):
     @api.doc('get a user')
@@ -66,6 +64,7 @@ class User(Resource):
         return User_Service.get_a_user(user_id)
 
     @api.doc('update a user')
+    @accept("application/json")
     @token_required
     @api.expect(update_user_dto, validate=True)
     def put(self):
@@ -79,21 +78,21 @@ class User(Resource):
         user_id = get_JWT_identity(request)
         return User_Service.delete_a_user(user_id)
 
-@accept("multipart/form-data")
 @api.route(UPLOAD_AVATAR)
 class User(Resource):
     @api.doc('upload user avatar image')
     @token_required
+    @accept("multipart/form-data")
     def post(self):
         user_id = get_JWT_identity(request)
         file= request.files["image"]
         return User_Service.upload_image(user_id, file)
 
-@accept("application/json")
 @api.route(UPLOAD_SAMPLE)
 class User(Resource):
     @api.doc('upload sample user image')
     @token_required
+    @accept("application/json")
     def post(self):
         user_id = get_JWT_identity(request)
         file = re.sub('^data:image/.+;base64,', '', request.form['image'])
@@ -102,7 +101,6 @@ class User(Resource):
         return User_Service.upload_image(user_id, img, isAvatar=False)
 
 
-@accept("application/json")
 @api.route(SHOW_SAMPLE)
 class User(Resource):
     @api.doc('show sample user image')
@@ -110,3 +108,19 @@ class User(Resource):
     def get(self):
         user_id= get_JWT_identity(request)
         return User_Service.get_sample_image(user_id)
+
+@api.route("/forget-password")
+class User(Resource):
+    @api.doc("forget password")
+    @token_required
+    def get(self):
+        user_id= get_JWT_identity(request)
+        return User_Service.password_recover(user_id)
+
+RECOVER_PASSWORD_ENDPOINT='/recover'
+@api.route("/recover/<recover_id>")
+class User(Resource):
+    @api.doc("recover password")
+    def post(self, recover_id):
+        data= request.json
+        return User_Service.change_password(recover_id, data)

@@ -1,3 +1,6 @@
+FAST_CHECK_HREF= "http://localhost:3000/"
+FAST_CHECK_PASSWORD_RECOVERY_HREF= "http://localhost:3000/recover/"
+
 MAX_NAME_LENGTH = 50
 MIN_PASSWORD_LENGTH = 8
 
@@ -23,6 +26,7 @@ STATUS_CODE_CREATED = 201
 STATUS_CODE_ACCEPTED = 202
 
 STATUS_CODE_MOVED_PERMANENTLY = 301
+MSG_STATUS_CODE_BAD_REQUEST=400
 STATUS_CODE_ERROR = 401
 STATUS_CODE_UNAUTHORIZED = 401
 STATUS_CODE_FORBIDEN = 403
@@ -33,12 +37,15 @@ STATUS_CODE_CONFLICT = 409
 
 STATUS_CODE_INTERNAL_ERROR = 500
 
-
+# COMMON
+MSG_BAD_REQUEST= "There was an error, Please try again"
+# AUTH
 AUTH_ERROR = "Email or password is invalid"
 AUTH_SUCCESS = "Login successfully"
 SIGNUP_SUCCESS = "Signed Up successfully"
 SIGNUP_FAILD = "Signed Up Fail"
-
+MSG_PASSWORD_RECOVER_LINK_EXPIRES= "Link is expired, please try again"
+MSG_PASSWORD_RECOVER_MAIL_SENT="Password recover link has been sent to your email"
 # ROOM
 MSG_GET_ROOM_SUCCESS = "created room successfully"
 MSG_CREATE_ROOM_SUCCESS = "created room successfully"
@@ -67,6 +74,7 @@ MSG_USER_VERIFICATION_FAIL= "verification fail"
 MSG_USER_CANT_DETECT_FACE= "can't detect face"
 MSG_UPLOAD_SAMPLE_IMAGE_SUCCESS= "Upload sample image success"
 MSG_TOO_MUCH_FACE_IN_SAMPLE_IMAGE="Too many face in the sample image"
+MSG_CHANGE_PASSWORD_SUCCESS= "Your password has been changed"
 # AUTH HELPER
 MSG_LOGGED_IN_SUCCESS = "Sucessfully logged in"
 MSG_INFO_NOT_MATCH = 'email or password does not match.'

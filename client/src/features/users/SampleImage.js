@@ -35,7 +35,7 @@ export const SampleImage = () => {
             {Object.keys(data).length == 0 ? (
                 <div className="columns mt-2" style={{ height: "77%", width: "100%", margin: "auto", textAlign: "center", backgroundColor: "hsl(0, 0%, 90%)" }}>
                     <span className='icon is-block' style={{ margin: "auto", fontSize: "60px" }}>
-                        <ion-icon name="cloud-upload-outline"></ion-icon>
+                        <ion-icon name="file-tray-outline"></ion-icon>
                     </span>
                 </div>
             ) : (

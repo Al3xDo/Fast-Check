@@ -1,5 +1,7 @@
 import os
 import uuid
+
+from celery import current_app
 from app.main.util.preprocess_datetime import save_datetime_title
 from flask import jsonify
 from werkzeug.utils import secure_filename
@@ -7,11 +9,15 @@ from app.main import db
 from app.main.model.user import User
 from app.main.service import config
 from app.main.util import utils_response_object
+from app.main.model.reset_password import ResetPassword
+from app.main.util.preprocess_datetime import get_current_date_time
 from ..util.utils import get_response_image
 import urllib
 import cv2
+from flask import render_template
 import face_recognition
 from app.main.service.config import FILESYSTEM_PATH, FACE_IMAGES_PATH, DEFAULT_AVATAR_PATH, AVATAR_PATH
+from .mail_service import Mail_Service
 class User_Service:
     @staticmethod
     def save_new_user(data):
@@ -168,7 +174,37 @@ class User_Service:
             full_path= sample_images_path+ path
             response_image[path]= get_response_image(full_path)
         return response_image, 200
-
+    
+    @staticmethod
+    def password_recover(user_id):
+        user= User.query.filter_by(id=user_id).first()
+        if user:
+            # create password recover instances
+            # get the id of instance
+            # attach to the email
+            current= get_current_date_time()
+            reset_password_log= ResetPassword(user_id= user.id, id=str(uuid.uuid4()),created_at= current)
+            save_changes(reset_password_log)
+            Mail_Service.send_async_email(reset_password_log.id, user.email)
+            return utils_response_object.send_response_object_SUCCESS(config.MSG_PASSWORD_RECOVER_MAIL_SENT)
+        else:
+            return utils_response_object.send_response_object_BAD_REQUEST()
+    @staticmethod
+    def change_password(recover_id,data):
+        # get id
+        # check if link expires
+        # allow change password
+        password_recover_log= ResetPassword(id= recover_id).first()
+        current= get_current_date_time()
+        print(current - password_recover_log.created_at)
+        if current - password_recover_log.created_at >1 or password_recover_log.is_used:
+            return utils_response_object.send_response_object_BAD_REQUEST(config.MSG_PASSWORD_RECOVER_LINK_EXPIRES)
+        else:
+            password_recover_log.is_used=True
+            save_changes(password_recover_log)
+            user= User.query.filter_by(id=password_recover_log.user_id)
+            user.password= data['new_password']
+            return utils_response_object.send_response_object_SUCCESS(config.MSG_CHANGE_PASSWORD_SUCCESS)
 def save_changes(data):
     db.session.add(data)
     db.session.commit()

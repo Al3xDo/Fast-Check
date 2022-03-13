@@ -10,7 +10,7 @@ class Participant(db.Model):
     userId = db.Column(db.String(150), db.ForeignKey(
         'user.id'), nullable=False)
     dateJoined = db.Column(db.Text, nullable=False)
-    user = db.relationship('User', backref=db.backref('user', lazy=True))
+    # user = db.relationship('User', backref=db.backref('user', lazy=True))
     room = db.relationship('Room', backref=db.backref('room', lazy=True))
     isAdmin = db.Column(db.SmallInteger())
 

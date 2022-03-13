@@ -4,6 +4,8 @@ def getCurrentDate():
 
 def getCurrentDateTime():
     return datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+def get_current_date_time():
+    return datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 def combineTimeAndCurrentDate(time):
     current_date= datetime.datetime.now().date()
     current_datetime=datetime.datetime.combine(current_date, datetime.datetime.strptime(time, "%H:%M").time())

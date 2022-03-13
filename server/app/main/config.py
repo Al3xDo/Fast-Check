@@ -1,6 +1,6 @@
 import os
 from dotenv import load_dotenv
-
+import logging
 load_dotenv()
 
 class Config(object):
@@ -12,6 +12,19 @@ class Config(object):
     DB_HOST=os.getenv('DB_HOST')
     DB_HOST_PROD_HOST=os.getenv('DB_PROD_HOST')
     DB_DOCKER_HOST=os.getenv('DB_DOCKER_HOST')
+    LOGGING_FORMAT = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+    LOGGING_LOCATION = 'flask-base.log'
+    LOGGING_LEVEL = logging.DEBUG
+    RESULT_BACKEND = 'redis://127.0.0.1:6379'
+    BROKER_URL = 'redis://127.0.0.1:6379'
+    MAIL_SERVER='smtp.mailtrap.io'
+    MAIL_PORT = 2525
+    MAIL_USERNAME = 'b3bc4c01b36478'
+    MAIL_PASSWORD = '499a2d068095bf'
+    MAIL_DEFAULT_SENDER="fast_check@mailtrap.com"
+    MAIL_USE_TLS = True
+    MAIL_USE_SSL = False
+    MAIL_DEBUG=True
 
 
 class ProductionConfig(Config):
