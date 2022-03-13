@@ -106,9 +106,8 @@ export const Home = () => {
                 if (e.response.status === 401) {
                     dispatch(rm())
                     history.push("/login")
-                    toastError(e.response.data.message)
                 }
-                toastError(e.response.data.message)
+                // toastError(e.response.data.message)
             })
         setTimeout(() => {
             dispatch(setLoading(false));

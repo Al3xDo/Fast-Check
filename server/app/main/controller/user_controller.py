@@ -20,7 +20,8 @@ CHECK_TOKEN = "/checkToken"
 PREDICT_IMG = "/predict"
 CHECK_IMAGE= "/checkImage"
 SHOW_SAMPLE='/showSample'
-
+RECOVER_PASSWORD_ENDPOINT='/recover/<recover_id>'
+FORGET_PASSWORD_ENDPOINT="/forget-password"
 
 api = UserDto.api
 create_user_dto = UserDto.create_user
@@ -109,16 +110,14 @@ class User(Resource):
         user_id= get_JWT_identity(request)
         return User_Service.get_sample_image(user_id)
 
-@api.route("/forget-password")
+@api.route(FORGET_PASSWORD_ENDPOINT)
 class User(Resource):
     @api.doc("forget password")
-    @token_required
-    def get(self):
-        user_id= get_JWT_identity(request)
-        return User_Service.password_recover(user_id)
+    def post(self):
+        data= request.json
+        return User_Service.password_recover(data)
 
-RECOVER_PASSWORD_ENDPOINT='/recover'
-@api.route("/recover/<recover_id>")
+@api.route(RECOVER_PASSWORD_ENDPOINT)
 class User(Resource):
     @api.doc("recover password")
     def post(self, recover_id):

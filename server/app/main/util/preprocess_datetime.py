@@ -1,11 +1,10 @@
 import datetime
 def getCurrentDate():
     return datetime.datetime.now().strftime("%d-%m-%Y")
-
 def getCurrentDateTime():
     return datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 def get_current_date_time():
-    return datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    return datetime.datetime.now()
 def combineTimeAndCurrentDate(time):
     current_date= datetime.datetime.now().date()
     current_datetime=datetime.datetime.combine(current_date, datetime.datetime.strptime(time, "%H:%M").time())

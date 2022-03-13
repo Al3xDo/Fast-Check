@@ -9,16 +9,19 @@ const Recover = () => {
     const [passwordConfirmed, setPasswordConfirmed] = useState("")
     const [isSucceed, setIsSucceed] = useState(true)
     const history = useHistory()
-    const onSubmit = () => {
+    const params = useParams()
+    // console.log(recover_id)
+    const onSubmit = (e) => {
+        e.preventDefault()
         const data = {
             newPassword: password
         }
-        callApi("recover/", "POST", data)
+        callApi(`user/recover/${params.id}`, "POST", data)
             .then(req => {
-                history.push("/")
+                history.push("/login")
             })
             .catch(err => {
-                setIsSucceed(false)
+                // setIsSucceed(false)
                 toastError(err.response.message)
             })
     }
@@ -38,10 +41,10 @@ const Recover = () => {
                                 {isSucceed ? (
                                     <>
                                         <div className="field">
-                                            <label for="" className="label">New Password</label>
+                                            <label className="label">New Password</label>
                                             <div className="control has-icons-left">
                                                 <input type="password"
-                                                    className="input"
+                                                    className="input is-rounded"
                                                     required
                                                     name="password"
                                                     value={password}
@@ -53,10 +56,10 @@ const Recover = () => {
                                             </div>
                                         </div>
                                         <div className="field">
-                                            <label for="" className="label">Confirm New Password</label>
+                                            <label className="label">Confirm New Password</label>
                                             <div className="control has-icons-left">
                                                 <input type="password"
-                                                    className="input"
+                                                    className="input is-rounded"
                                                     required
                                                     name="passwordConfirmed"
                                                     value={passwordConfirmed}

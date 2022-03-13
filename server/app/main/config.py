@@ -15,8 +15,9 @@ class Config(object):
     LOGGING_FORMAT = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
     LOGGING_LOCATION = 'flask-base.log'
     LOGGING_LEVEL = logging.DEBUG
+    print()
     RESULT_BACKEND = os.getenv('RESULT_BACKEND')
-    BROKER_URL = os.getenv('BROKDER_URL')
+    BROKER_URL = os.getenv('BROKER_URL')
     MAIL_SERVER=os.getenv('MAIL_SERVER')
     MAIL_PORT = os.getenv('MAIL_PORT')
     MAIL_USERNAME = os.getenv('MAIL_USERNAME')
