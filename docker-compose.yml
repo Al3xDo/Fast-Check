@@ -20,25 +20,34 @@ services:
     volumes:
       - ./mysql5_7:/docker-entrypoint-initdb.d/:ro
     environment:
-      MYSQL_ROOT_PASSWORD: 'root'
-      MYSQL_ROOT_USER: 'root'
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+      MYSQL_ROOT_USER: ${DB_NAME}
       MYSQL_DATABASE: 'fast_check_prod'
       # MYSQL_HOST: '0.0.0.0'
     ports:
       - "32000:3306"
+  redis:
+    image: redis:6.2.6
+    restart: always
+    volumes:
+      - ./redis
+    ports:
+     - "6379:6379"
+    command: celery -A tasks worker -l info pool=solo
   server:
-    container_name: fast-check-api-no-dlib
+    container_name: fast-check-api
     # restart: always
     build:
       context: ./server
       dockerfile: dockerfile.server
     environment:
       API_ENV: 'docker_prod'
-    image: fast-check-api-no-dlib
+    image: fast-check-api
     volumes:
       - ./server:/backend
     links:
       - mysql5_7
+      - redis
     ports:
       - "3001:3001"
     # command: python manage.py db upgrade

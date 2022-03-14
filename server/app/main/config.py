@@ -15,7 +15,6 @@ class Config(object):
     LOGGING_FORMAT = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
     LOGGING_LOCATION = 'flask-base.log'
     LOGGING_LEVEL = logging.DEBUG
-    print()
     RESULT_BACKEND = os.getenv('RESULT_BACKEND')
     BROKER_URL = os.getenv('BROKER_URL')
     MAIL_SERVER=os.getenv('MAIL_SERVER')
@@ -62,11 +61,11 @@ class ActionTestingConfig(Config):
     FLASK_DEBUG=1
     SQLALCHEMY_ECHO = False
     SQLALCHEMY_TRACK_MODIFICATIONS = True
-    # DB_NAME= os.environ.get("DB_NAME")
-    # DB_HOST= os.environ.get("DB_HOST")
-    # DB_PASSWORD= os.environ.get("DB_PASSWORD")
+    DB_NAME= os.environ.get("DB_NAME")
+    DB_HOST= os.environ.get("DB_HOST")
+    DB_PASSWORD= os.environ.get("DB_PASSWORD")
     MAIL_DEBUG=False
-    SQLALCHEMY_DATABASE_URI = f"mysql+pymysql://root:root@127.0.0.1/fast_check_test"
+    SQLALCHEMY_DATABASE_URI = f"mysql+pymysql://{DB_NAME}:{DB_PASSWORD}@{DB_HOST}/fast_check_test"
 
 class DockerProductionConfig(Config):
     SQLALCHEMY_ECHO = False

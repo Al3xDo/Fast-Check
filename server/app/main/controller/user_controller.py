@@ -32,7 +32,6 @@ update_user_dto= UserDto.update_user
 @api.response(201, 'User successfully created.')
 @api.doc('create a new user')
 class UserSignUp(Resource):
-    @accept("application/json")
     @api.expect(create_user_dto, validate=True)
     # @cross_origin(supports_credentials=True)
     def post(self):
@@ -47,7 +46,6 @@ class UserSignUp(Resource):
 @api.doc('create a new user')
 class UserSignUp(Resource):
     # @cross_origin(supports_credentials=True)
-    @accept("application/json")
     @api.expect(create_user_google_dto, validate=True)
     def post(self):
         """Creates a new User """
@@ -65,7 +63,6 @@ class User(Resource):
         return User_Service.get_a_user(user_id)
 
     @api.doc('update a user')
-    @accept("application/json")
     @token_required
     @api.expect(update_user_dto, validate=True)
     def put(self):
@@ -83,7 +80,6 @@ class User(Resource):
 class User(Resource):
     @api.doc('upload user avatar image')
     @token_required
-    @accept("multipart/form-data")
     def post(self):
         user_id = get_JWT_identity(request)
         file= request.files["image"]
@@ -93,7 +89,6 @@ class User(Resource):
 class User(Resource):
     @api.doc('upload sample user image')
     @token_required
-    @accept("application/json")
     def post(self):
         user_id = get_JWT_identity(request)
         file = re.sub('^data:image/.+;base64,', '', request.form['image'])

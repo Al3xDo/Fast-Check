@@ -20,7 +20,7 @@ class TestAuthBlueprint(BaseTestCase):
                 # user registration
                 user_response = register_user(self)
                 response_data = json.loads(user_response.data.decode())
-                self.assertEqual(response_data[config.STATUS], config.STATUS_SUCCESS)
+                self.assertEqual(response_data[config.STATUS], config.STATUS_SUCCESS, msg=response_data)
                 self.assertEqual(user_response.status_code, config.STATUS_CODE_CREATED)
 
                 # registered user login

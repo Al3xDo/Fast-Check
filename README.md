@@ -133,6 +133,13 @@ DB_PASSWORD='your pass'
 DB_HOST='your host'
 DB_PROD_HOST='your product db host'
 DB_DOCKER_HOST='your docker db host'
+RESULT_BACKEND = 'redis://{your_host}:{your_port}'
+BROKER_URL = 'redis://{your_host}:{your_port}'
+MAIL_SERVER='your mail server'
+MAIL_PORT = 'your mailport'
+MAIL_USERNAME = 'MAIL USERNAME'
+MAIL_PASSWORD = 'your mail password'
+MAIL_DEFAULT_SENDER="your mail default sender"
 ```
 
 ### Installation
@@ -203,7 +210,7 @@ For running production app, set environment varible **API_ENV=prod**
 - [x] Allow User to upload their sample image
 - [x] Allow User to see their sample image
 - [x] Add 'login by google' feature
-- [ ] Add 'change password' feature (send email verification)
+- [x] Add 'change password' feature (send email verification)
 - [ ] Add 'change email' feature (send email verification)
 - [ ] Set up nginx
 - [ ] Add diagram, database visulization
