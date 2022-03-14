@@ -7,7 +7,6 @@ from ..service.room_service import  Room_Service
 from ..util.decorators import token_required
 from ..util.utils import get_JWT_identity
 from ..service.participants_service import Participant_Service
-from flask_accept import accept
 
 # room_controller
 ROOMS_ENDPOINT="/rooms"
@@ -29,7 +28,6 @@ class RoomList(Resource):
     @api.doc('list_of_all_created_room')
     # @api.marshal_list_with(_room, envelope='data')
     @token_required
-    @accept("application/json")
     def get(self):
         userId= get_JWT_identity(request)
         return Room_Service.get_all_room(userId)
@@ -66,7 +64,6 @@ class Room(Resource):
 @api.response(404, 'Room not found.')
 class Room(Resource):
     @api.doc('update a room')
-    @accept("application/json")
     @token_required
     @api.expect(room_dto, validate=True)
     def put(self):

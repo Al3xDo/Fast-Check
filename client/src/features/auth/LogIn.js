@@ -13,19 +13,13 @@ export const LogIn = (props) => {
     const [email, setEmail] = useState("")
     const location = useLocation()
     const [password, setPassword] = useState("")
+    const [recover, setRecover] = useState(false)
     const handleSubmit = () => {
         const user = {
             email: email,
             password: password
         }
-        // try {
-        //     dispatch(logIn(user))
-        // }
-        // catch (e) {
-        //     console.log("error", e)
-        // }
         dispatch(logIn(user))
-        // console.log(result)
     }
     const onSuccess = (res) => {
         const { email, name, imageUrl } = res.profileObj
@@ -34,12 +28,13 @@ export const LogIn = (props) => {
             name: name,
             imageUrl: imageUrl
         }
+        // console.log("on Success")
         dispatch(logInByGoogle(data))
     }
     const onFailure = (res) => {
         toastError(res)
     }
-    if (authState.loading === "error") toastError(authState.error)
+    // if (authState.loading === "error") toastError(authState.error)
     if (authState.loading === "loaded") return <Redirect to={location.state ? location.state.from.pathname : "/"} />
     return (
         <form className="my-form" >
@@ -93,6 +88,13 @@ export const LogIn = (props) => {
                         </a>
                     </div>
                 </div>
+                <div className="columns mt-20px form-setting">
+                    <div >
+                        <a href="/forget-password" >
+                            Forget Password
+                        </a>
+                    </div>
+                </div>
                 <div className="is-block is-centered">
                     {/* <p className="button is-primary is-block mb-3">
                         <span className="icon-text">
@@ -112,8 +114,8 @@ export const LogIn = (props) => {
                             onSuccess={onSuccess}
                             onFailure={onFailure}
                             cookiePolicy={'single_host_origin'}
-                            isSignedIn={true}
-
+                            isSignedIn={false}
+                        // autoLoad={false}
                         />
                     </div>
                 </div>

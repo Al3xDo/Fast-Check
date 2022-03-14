@@ -16,17 +16,17 @@ def write_response_object_INTERNAL_ERROR():
             config.MESSAGE: config.MSG_INTERNAL_ERROR
             }
     return response_object, config.STATUS_CODE_INTERNAL_ERROR
-def send_response_object_INTERNAL_ERROR():
+def send_response_object_BAD_REQUEST(message=None):
     response_object= {
             config.STATUS: config.STATUS_FAIL,
-            config.MESSAGE: config.MSG_INTERNAL_ERROR
+            config.MESSAGE: config.MSG_BAD_REQUEST if message == None else message
             }
-    return response_object, config.STATUS_CODE_INTERNAL_ERROR
+    return response_object, config.MSG_STATUS_CODE_BAD_REQUEST
 
-def send_response_object_CREATED(message,otherData=None):
+def send_response_object_CREATED(message=None,otherData=None):
     response_object= {
             config.STATUS: config.STATUS_SUCCESS,
-            config.MESSAGE: message
+            config.MESSAGE: "Success" if message==None else message
             }
     if otherData != None:
         response_object.update(otherData)

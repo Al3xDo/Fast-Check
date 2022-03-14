@@ -164,28 +164,29 @@ export const User = (props) => {
                 </div>
 
             </div>
-            <div className="columns mt-20">
-                <div className="information" >
-                    <div className="columns">
-                        <div>
-                            <button
-                                className="button is-info mgr-10"
-                            > <ion-icon name="list-outline"></ion-icon></button>
-                            <button
-                                className="button is-info mgr-10"
-                            > <ion-icon name="calendar-outline"></ion-icon></button>
-                            <button
-                                className="button is-info mgr-10"
-                            > <ion-icon name="add-outline"></ion-icon></button>
-                            <input className="search-field" type="text" placeholder="class name" />
+            <div className="column is-6">
+                <div className="columns mt-20">
+                    <div className="information" >
+                        <div className="columns">
+                            <div>
+                                <button
+                                    className="button is-info mgr-10"
+                                > <ion-icon name="list-outline"></ion-icon></button>
+                                <button
+                                    className="button is-info mgr-10"
+                                > <ion-icon name="calendar-outline"></ion-icon></button>
+                                <button
+                                    className="button is-info mgr-10"
+                                > <ion-icon name="add-outline"></ion-icon></button>
+                                <input className="search-field" type="text" placeholder="class name" />
+                            </div>
                         </div>
-                    </div>
-                    <h1 className="is-size-3 has-text-centered">Sample Image</h1>
-                    <div className="columns">
+                        <h1 className="is-size-3 has-text-centered">Sample Image</h1>
+
                         <SampleImage />
 
+                        {/* <Calendar /> */}
                     </div>
-                    {/* <Calendar /> */}
                 </div>
             </div>
         </div>

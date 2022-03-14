@@ -20,17 +20,16 @@ CHECK_TOKEN = "/checkToken"
 PREDICT_IMG = "/predict"
 CHECK_IMAGE= "/checkImage"
 SHOW_SAMPLE='/showSample'
-
+RECOVER_PASSWORD_ENDPOINT='/recover/<recover_id>'
+FORGET_PASSWORD_ENDPOINT="/forget-password"
 
 api = UserDto.api
 create_user_dto = UserDto.create_user
 create_user_google_dto = UserDto.create_user_google
 update_user_dto= UserDto.update_user
 
-@accept("application/json")
 @api.route(SIGNUP_ENDPOINT)
 @api.response(201, 'User successfully created.')
-@api.doc('get a user')
 @api.doc('create a new user')
 class UserSignUp(Resource):
     @api.expect(create_user_dto, validate=True)
@@ -41,7 +40,6 @@ class UserSignUp(Resource):
         return User_Service.save_new_user(data=data)
 
 
-@accept("application/json")
 @api.route(GOOGLE_LOGIN_ENDPOINT)
 @api.response(201, 'User successfully created.')
 @api.doc('create a user by google')
@@ -54,7 +52,6 @@ class UserSignUp(Resource):
         data= request.json
         return User_Service.save_new_user_google(data)
 
-@accept("application/json")
 @api.route(USER_ENDPOINT)
 class User(Resource):
     @api.doc('get a user')
@@ -79,7 +76,6 @@ class User(Resource):
         user_id = get_JWT_identity(request)
         return User_Service.delete_a_user(user_id)
 
-@accept("multipart/form-data")
 @api.route(UPLOAD_AVATAR)
 class User(Resource):
     @api.doc('upload user avatar image')
@@ -89,7 +85,6 @@ class User(Resource):
         file= request.files["image"]
         return User_Service.upload_image(user_id, file)
 
-@accept("application/json")
 @api.route(UPLOAD_SAMPLE)
 class User(Resource):
     @api.doc('upload sample user image')
@@ -102,7 +97,6 @@ class User(Resource):
         return User_Service.upload_image(user_id, img, isAvatar=False)
 
 
-@accept("application/json")
 @api.route(SHOW_SAMPLE)
 class User(Resource):
     @api.doc('show sample user image')
@@ -110,3 +104,17 @@ class User(Resource):
     def get(self):
         user_id= get_JWT_identity(request)
         return User_Service.get_sample_image(user_id)
+
+@api.route(FORGET_PASSWORD_ENDPOINT)
+class User(Resource):
+    @api.doc("forget password")
+    def post(self):
+        data= request.json
+        return User_Service.password_recover(data)
+
+@api.route(RECOVER_PASSWORD_ENDPOINT)
+class User(Resource):
+    @api.doc("recover password")
+    def post(self, recover_id):
+        data= request.json
+        return User_Service.change_password(recover_id, data)

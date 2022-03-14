@@ -4,7 +4,6 @@ from flask_restplus import Resource
 from app.main.service.auth_helper import Auth
 from app.main.dto.auth import AuthDto
 from ..util.decorators import token_required
-from flask_accept import accept
 LOGIN_ENDPOINT="/login"
 LOGOUT_ENDPOINT= "/logout"
 CHECK_TOKEN="/checkToken"
@@ -13,7 +12,6 @@ CHECK_TOKEN="/checkToken"
 api = AuthDto.api
 auth_dto = AuthDto.auth
 
-@accept("application/json")
 @api.route(LOGIN_ENDPOINT)
 class UserLogin(Resource):
     """

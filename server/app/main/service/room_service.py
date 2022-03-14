@@ -4,7 +4,7 @@ import datetime
 from app.main import db
 from app.main.model.room import Room
 from app.main.model.user import User
-from app.main.model.participants import Participant, AttendanceHistory, AttendanceStatus
+from app.main.model.participants import Participant
 from sqlalchemy.orm import exc
 from sqlalchemy import exc as sexc
 from app.main.service import config

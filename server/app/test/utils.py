@@ -16,7 +16,7 @@ def register_user(self, email="test123@gmail.com", password="123"):
             email=email,
             password=password
         )),
-        content_type='application/json'
+        content_type='application/json',
     )
 
 

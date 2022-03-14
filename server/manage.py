@@ -1,9 +1,8 @@
 import os
 import unittest
-
-from flask_migrate import Migrate, MigrateCommand
+from flask_migrate import MigrateCommand
 from flask_script import Manager
-from app.main import create_app,db
+from app.main import create_app
 from app.main.model import user
 from app.main.model import room
 from app.main.model import blacklist
@@ -11,14 +10,21 @@ from app.main.model import participants
 from app import blueprint
 import os
 from HTMLTestRunner import HTMLTestRunner
+from app.main import make_celery
 
+# app= create_app(os.getenv("API_ENV") or "dev")
+# app.register_blueprint(blueprint)
+# app.app_context().push()
+# manager = Manager(app)
+# migrate = Migrate().init_app(app, db)
+# celery= make_celery(app)
+# manager.add_command('db', MigrateCommand)
 app= create_app(os.getenv("API_ENV") or "dev")
+celery=make_celery(app)
 app.register_blueprint(blueprint)
 app.app_context().push()
-manager = Manager(app)
-migrate = Migrate().init_app(app, db)
+manager= Manager(app)
 manager.add_command('db', MigrateCommand)
-
 
 @manager.command
 def run():

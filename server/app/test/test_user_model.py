@@ -10,7 +10,6 @@ from app.test.utils import call_api, convert_res_to_dict
 from app.main.service import config
 import logging
 from app.main.util.utils import get_response_image
-from app.main.service.config import FILESYSTEM_PATH, IMAGES_PATH
 from app.main.service.config import DEFAULT_AVATAR_PATH
 from utils import create_get_token
 class TestUserModel(BaseTestCase):
