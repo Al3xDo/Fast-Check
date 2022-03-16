@@ -35,7 +35,7 @@
   <h3 align="center">FAST CHECK WEBSITE</h3>
 
   <p align="center">
-    An awesome README template to jumpstart your projects!
+    An awesome Website allow attendance checking for teacher, leader
     <br />
     <a href="https://github.com/Al3xDo/Fast-Check/"><strong>Explore the docs »</strong></a>
     <br />
