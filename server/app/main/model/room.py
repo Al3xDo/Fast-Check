@@ -1,4 +1,3 @@
-from flask_restplus.utils import default_id
 from .. import db
 
 
