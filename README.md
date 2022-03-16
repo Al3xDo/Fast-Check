@@ -28,7 +28,7 @@
 <!-- PROJECT LOGO -->
 <br />
 <div align="center">
-  <a href="https://github.com/othneildrew/Best-README-Template">
+  <a href="https://github.com/Al3xDo/Fast-Check">
     <img src="https://github.com/Al3xDo/Fast-Check/blob/main/client/public/icon.jpg" alt="Logo" width="80" height="80">
   </a>
 
@@ -40,7 +40,7 @@
     <a href="https://github.com/Al3xDo/Fast-Check/"><strong>Explore the docs »</strong></a>
     <br />
     <br />
-    <a href="https://github.com/othneildrew/Best-README-Template">View Demo</a>
+    <a href="https://github.com/Al3xDo/Fast-Check">View Demo</a>
     ·
     <a href="https://github.com/Al3xDo/Fast-Check/issues">Report Bug</a>
     ·
@@ -78,11 +78,11 @@
 
 ## About The Project
 
-[![Product Name Screen Shot][product-screenshot]](https://github.com/Al3xDo/Fast-Check/blob/develop/ReadMe/LogIn.png)
+[![Product Name Screen Shot][product-screenshot]](https://github.com/Al3xDo/Fast-Check/blob/develop/docs/LogIn.png)
 
-[![Product Name Screen Shot][product-screenshot2]](https://github.com/Al3xDo/Fast-Check/blob/develop/ReadMe/Home.png)
+[![Product Name Screen Shot][product-screenshot2]](https://github.com/Al3xDo/Fast-Check/blob/develop/docs/Home.png)
 
-[![Product Name Screen Shot][product-screenshot3]](https://github.com/Al3xDo/Fast-Check/blob/develop/ReadMe/User.png)
+[![Product Name Screen Shot][product-screenshot3]](https://github.com/Al3xDo/Fast-Check/blob/develop/docs/User.png)
 
 The Fast-Check project will allow the user to
 
@@ -99,6 +99,8 @@ I hope this project will help speeding up the checking attendance process
 <div align="center">  
 <img style="margin: 10px" src="https://profilinator.rishav.dev/skills-assets/react-original-wordmark.svg" alt="React" height="50" />  
 <img style="margin: 10px" src="https://profilinator.rishav.dev/skills-assets/mysql-original-wordmark.svg" alt="MySQL" height="50" />  
+<img style="margin: 10px" src="https://profilinator.rishav.dev/skills-assets/docker-original-wordmark.svg" alt="Docker" height="50" />  
+<img style="margin: 10px" src="https://profilinator.rishav.dev/skills-assets/redis-original-wordmark.svg" alt="" height="50" />  
 <img style="margin: 10px" src="https://profilinator.rishav.dev/skills-assets/flask.png" alt="Flask" height="50" />  
 </div>
 
@@ -289,6 +291,6 @@ Project Link: [https://github.com/Al3xDo/Fast-Check/](https://github.com/Al3xDo/
 [license-url]: https://github.com/Al3xDo/Fast-Check/blob/main/LICENSE.md
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
 [linkedin-url]: https://www.linkedin.com/in/huy-do-2000/
-[product-screenshot]: https://github.com/Al3xDo/Fast-Check/blob/develop/ReadMe/LogIn.png
-[product-screenshot2]: https://github.com/Al3xDo/Fast-Check/blob/develop/ReadMe/Home.png
-[product-screenshot3]: https://github.com/Al3xDo/Fast-Check/blob/develop/ReadMe/User.png
+[product-screenshot]: https://github.com/Al3xDo/Fast-Check/blob/develop/docs/LogIn.png
+[product-screenshot2]: https://github.com/Al3xDo/Fast-Check/blob/develop/docs/Home.png
+[product-screenshot3]: https://github.com/Al3xDo/Fast-Check/blob/develop/docs/User.png
