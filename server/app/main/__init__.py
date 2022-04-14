@@ -5,13 +5,17 @@ from flask_bcrypt import Bcrypt
 from flask_cors import CORS
 from flask_mail import Mail
 from flask_migrate import Migrate
+from flask_caching import Cache
 # from app.main.tasks import mail_tasks
 # from app import blueprint
 import os
+from app.main.logger.log_config import LOGGING_CONFIG
 from .config import config_by_name
 from celery import Celery
+from celery.schedules import crontab
 db= SQLAlchemy()
 mail= Mail()
+cache= Cache()
 # socketio= SocketIO()
 def create_app(config_name):
     app= Flask(__name__)
@@ -23,6 +27,7 @@ def create_app(config_name):
     mail.init_app(app)
     Bcrypt().init_app(app)
     Migrate().init_app(app, db)
+    cache.init_app(app, config={'CACHE_TYPE': 'RedisCache'})
     return app
 
 def make_celery(app):

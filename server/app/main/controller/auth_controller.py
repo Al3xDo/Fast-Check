@@ -32,9 +32,7 @@ class LogoutAPI(Resource):
     """
     @api.doc('logout a user')
     def post(self):
-        # get auth token
         return Auth.logout_user(request)
-        # return Auth.log_out_user()
 
 @api.route(CHECK_TOKEN)
 class User(Resource):

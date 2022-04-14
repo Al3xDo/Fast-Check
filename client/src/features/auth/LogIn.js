@@ -96,17 +96,6 @@ export const LogIn = (props) => {
                     </div>
                 </div>
                 <div className="is-block is-centered">
-                    {/* <p className="button is-primary is-block mb-3">
-                        <span className="icon-text">
-                            <span>
-                                Log in by Google
-                            </span>
-                            <span className="icon is-large">
-                                <ion-icon name="logo-google"></ion-icon>
-                            </span>
-
-                        </span>
-                    </p> */}
                     <div>
                         <GoogleLogin
                             clientId={process.env.REACT_APP_CLIENT_ID}

@@ -11,12 +11,17 @@ class Config(object):
     DB_PASSWORD=os.getenv('DB_PASSWORD')
     DB_HOST=os.getenv('DB_HOST')
     DB_HOST_PROD_HOST=os.getenv('DB_PROD_HOST')
+    DB_HOST_PROD=os.getenv('DB_PROD_HOST')
     DB_DOCKER_HOST=os.getenv('DB_DOCKER_HOST')
     LOGGING_FORMAT = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
     LOGGING_LOCATION = 'flask-base.log'
+    CELERYBEAT_SCHEDULE=""
     LOGGING_LEVEL = logging.DEBUG
     RESULT_BACKEND = os.getenv('RESULT_BACKEND')
     BROKER_URL = os.getenv('BROKER_URL')
+    CACHE_REDIS_HOST= os.getenv("CACHE_REDIS_HOST")
+    CACHE_REDIS_PORT= os.getenv("CACHE_REDIS_PORT")
+    CACHE_REDIS_URL= os.getenv("CACHE_REDIS_URL")
     MAIL_SERVER=os.getenv('MAIL_SERVER')
     MAIL_PORT = os.getenv('MAIL_PORT')
     MAIL_USERNAME = os.getenv('MAIL_USERNAME')
@@ -30,6 +35,7 @@ class ProductionConfig(Config):
     SQLALCHEMY_ECHO = False
     SQLALCHEMY_TRACK_MODIFICATIONS = True
     SQLALCHEMY_DATABASE_URI = f"mysql+pymysql://{Config.DB_NAME}:{Config.DB_PASSWORD}@{Config.DB_HOST_PROD_HOST}/fast_check_prod"
+    beat_dburi = f"mysql+pymysql://{Config.DB_NAME}:{Config.DB_PASSWORD}@{Config.DB_HOST_PROD_HOST}/celery_schedule_prod"
     MAIL_DEBUG=False
     
 
@@ -43,6 +49,7 @@ class DevelopmentConfig(Config):
     SQLALCHEMY_ECHO = False
     SQLALCHEMY_TRACK_MODIFICATIONS = True
     SQLALCHEMY_DATABASE_URI = f"mysql+pymysql://{Config.DB_NAME}:{Config.DB_PASSWORD}@{Config.DB_HOST}/fast_check"
+    beat_dburi = f"mysql+pymysql://{Config.DB_NAME}:{Config.DB_PASSWORD}@{Config.DB_HOST_PROD}/celery_schedule"
     MAIL_DEBUG=False
 
 
@@ -52,7 +59,8 @@ class TestingConfig(Config):
     FLASK_DEBUG=1
     SQLALCHEMY_ECHO = False
     SQLALCHEMY_TRACK_MODIFICATIONS = True
-    SQLALCHEMY_DATABASE_URI = f"mysql+pymysql://root:root@127.0.0.1/fast_check_test"
+    SQLALCHEMY_DATABASE_URI = f"mysql+pymysql://{Config.DB_NAME}:{Config.DB_PASSWORD}@{Config.DB_HOST_PROD_HOST}/fast_check_test"
+    beat_dburi = f"mysql+pymysql://{Config.DB_NAME}:{Config.DB_PASSWORD}@{Config.DB_HOST_PROD}/celery_schedule_test"
     MAIL_DEBUG=False
 
 class ActionTestingConfig(Config):
@@ -66,11 +74,13 @@ class ActionTestingConfig(Config):
     DB_PASSWORD= os.environ.get("DB_PASSWORD")
     MAIL_DEBUG=False
     SQLALCHEMY_DATABASE_URI = f"mysql+pymysql://{DB_NAME}:{DB_PASSWORD}@{DB_HOST}/fast_check_test"
+    beat_dburi = f"mysql+pymysql://{DB_NAME}:{DB_PASSWORD}@{DB_HOST}/celery_schedule_test"
 
 class DockerProductionConfig(Config):
     SQLALCHEMY_ECHO = False
     SQLALCHEMY_TRACK_MODIFICATIONS = True
     SQLALCHEMY_DATABASE_URI = f"mysql+pymysql://{Config.DB_NAME}:{Config.DB_PASSWORD}@{Config.DB_DOCKER_HOST}/fast_check_prod"
+    beat_dburi = f"mysql+pymysql://{Config.DB_NAME}:{Config.DB_PASSWORD}@{Config.DB_DOCKER_HOST}/celery_schedule_test"
 
 config_by_name= dict(
     dev= DevelopmentConfig,
