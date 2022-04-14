@@ -1,7 +1,6 @@
 import uuid
 from .. import db
 
-
 class AttendanceStatus(db.Model):
     __tablename__ = "attendance_status"
     id = db.Column(db.String(150), primary_key=True, nullable=False)

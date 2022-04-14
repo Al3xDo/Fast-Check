@@ -7,7 +7,7 @@ from ..service.room_service import  Room_Service
 from ..util.decorators import token_required
 from ..util.utils import get_JWT_identity
 from ..service.participants_service import Participant_Service
-
+from app.main import cache
 # room_controller
 ROOMS_ENDPOINT="/rooms"
 ROOM_ENDPOINT="/room"
@@ -27,6 +27,7 @@ room_dto = RoomDto.room
 class RoomList(Resource):
     @api.doc('list_of_all_created_room')
     # @api.marshal_list_with(_room, envelope='data')
+    # @cache(timeout=50, query_string=True )
     @token_required
     def get(self):
         userId= get_JWT_identity(request)

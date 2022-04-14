@@ -2,8 +2,9 @@ from app.main.model.user import User
 from app.main.model.participants import Participant
 from ..service.blacklist_service import save_token
 from app.main.service import config
-
 from app.main.util import utils_response_object
+import logging
+logger= logging.getLogger("debug_log")
 class Auth:
     @staticmethod
     def login_user(data):
@@ -40,6 +41,7 @@ class Auth:
             resp = User.decode_auth_token(auth_token)
             if resp.count("-") >0:
                 # mark the token as blacklisted
+                logger.info(f"token {auth_token} marked as blacked list")
                 return save_token(token=auth_token)
             else:
                 return utils_response_object.send_response_object_NOT_ACCEPTABLE(resp)
@@ -56,6 +58,7 @@ class Auth:
             user = User.query.filter_by(id=resp).first()
             # check if resp is token
             if user:
+                logger.info(f"user {user.name} logged in")
                 return utils_response_object.send_response_object_SUCCESS("success")
                 # except exc.NoResultFound as e:
                 #     response_object= {

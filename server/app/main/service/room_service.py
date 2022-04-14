@@ -11,9 +11,7 @@ from app.main.service import config
 from app.main.util import utils_response_object
 from app.main.util.preprocess_datetime import getCurrentDateTime
 from sqlalchemy import text
-
 # need a writing log service to tracking the error
-
 class Room_Service:
     @staticmethod
     def save_new_room(data, userId):
