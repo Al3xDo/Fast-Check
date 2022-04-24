@@ -289,6 +289,6 @@ Project Link: [https://github.com/Al3xDo/Fast-Check/](https://github.com/Al3xDo/
 [license-url]: https://github.com/Al3xDo/Fast-Check/blob/main/LICENSE.md
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
 [linkedin-url]: https://www.linkedin.com/in/huy-do-2000/
-[product-screenshot]: https://github.com/Al3xDo/Fast-Check/blob/develop/ReadMe/LogIn.png
-[product-screenshot2]: https://github.com/Al3xDo/Fast-Check/blob/develop/ReadMe/Home.png
-[product-screenshot3]: https://github.com/Al3xDo/Fast-Check/blob/develop/ReadMe/User.png
+[product-screenshot]: https://github.com/Al3xDo/Fast-Check/blob/main/ReadMe/LogIn.png
+[product-screenshot2]: https://github.com/Al3xDo/Fast-Check/blob/main/ReadMe/Home.png
+[product-screenshot3]: https://github.com/Al3xDo/Fast-Check/blob/main/ReadMe/User.png
