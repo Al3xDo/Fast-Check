@@ -78,11 +78,11 @@
 
 ## About The Project
 
-[![Product Name Screen Shot][product-screenshot]](https://github.com/Al3xDo/Fast-Check/blob/develop/ReadMe/LogIn.png)
+[![Product Name Screen Shot][product-screenshot]](https://github.com/Al3xDo/Fast-Check/blob/main/ReadMe/LogIn.png)
 
-[![Product Name Screen Shot][product-screenshot2]](https://github.com/Al3xDo/Fast-Check/blob/develop/ReadMe/Home.png)
+[![Product Name Screen Shot][product-screenshot2]](https://github.com/Al3xDo/Fast-Check/blob/main/ReadMe/Home.png)
 
-[![Product Name Screen Shot][product-screenshot3]](https://github.com/Al3xDo/Fast-Check/blob/develop/ReadMe/User.png)
+[![Product Name Screen Shot][product-screenshot3]](https://github.com/Al3xDo/Fast-Check/blob/main/ReadMe/User.png)
 
 The Fast-Check project will allow the user to
 
